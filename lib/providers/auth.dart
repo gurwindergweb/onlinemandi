@@ -2,6 +2,7 @@ import 'dart:async' as prefix0;
 import 'dart:convert';
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:onlinemandi/providers/weight.dart';
@@ -9,7 +10,9 @@ import 'package:onlinemandi/providers/weights.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:global_configuration/global_configuration.dart';
 import '../models/http_exception.dart';
-
+import 'intercept.dart';
+import 'package:sqflite/sqflite.dart';
+import 'database.dart';
 class Auth with ChangeNotifier {
   String _token;
   DateTime _expiryDate;
@@ -29,6 +32,9 @@ class Auth with ChangeNotifier {
   List<DropdownModel> _states = [];
   List<DropdownModel> _cities = [];
   List<DropdownModel> _emptyCities = [];
+  final dio = new Dio();
+  static Database _db;
+
   bool get isAuth {
     return token != null;
   }
@@ -55,7 +61,6 @@ class Auth with ChangeNotifier {
   String get userId {
     return _userId;
   }
-
   Future<void> _authenticate( String email, String password) async {
     final url = GlobalConfiguration().getString("baseURL") + 'index/login';
     try {
@@ -65,7 +70,6 @@ class Auth with ChangeNotifier {
 
       );
       final responseData = json.decode(response.body);
-      print(responseData);
       if (responseData['result'] != 1) {
         throw HttpException('Login failed, please try again.');
       }
@@ -93,7 +97,7 @@ class Auth with ChangeNotifier {
       //_autoLogout();
       final prefs = await SharedPreferences.getInstance();
       Weights weightsObj = new Weights(_token, _userId);
-      //List weights = await weightsObj.fetchAndSetWeights();
+      await weightsObj.fetchAndSetWeights();
       //print(weights);
       //final weightData = json.encode(weights);
 

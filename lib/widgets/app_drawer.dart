@@ -86,7 +86,7 @@ class AppDrawerState extends State<AppDrawer> {
                   .pushReplacementNamed(OrdersScreen.routeName);
             },
           ),
-          Divider(),
+          /*Divider(),
           ListTile(
             leading: Icon(Icons.edit,color: Color(0xFF609f38)),
             trailing:Icon (Icons.keyboard_arrow_right,color:Color(0xFF609f38)),
@@ -95,7 +95,7 @@ class AppDrawerState extends State<AppDrawer> {
               Navigator.of(context)
                   .pushReplacementNamed(UserProductsScreen.routeName);
             },
-          ),
+          ),*/
           Divider(),
           ListTile(
             leading: Icon(Icons.person,color: Color(0xFF609f38)),

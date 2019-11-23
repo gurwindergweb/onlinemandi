@@ -10,7 +10,7 @@ class Product with ChangeNotifier {
   final double price;
   final String imageUrl;
   final bool quality;
-  final weights;
+  List weights;
   bool isFavorite;
 
   Product({
@@ -49,4 +49,11 @@ class Product with ChangeNotifier {
       _setFavValue(oldStatus);
     }
   }
+}
+
+class ProductWeight{
+  String id;
+  String name;
+  ProductWeight({@required this.id,@required this.name});
+
 }

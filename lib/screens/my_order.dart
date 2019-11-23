@@ -1,14 +1,43 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:onlinemandi/providers/auth.dart';
+import 'package:onlinemandi/providers/orders.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/app_drawer.dart';
 
 class MyOrder extends StatefulWidget {
   @override
   MyOrderState createState() => MyOrderState();
   static const routeName = '/myorder';
+
 }
 class MyOrderState extends State<MyOrder> {
+  var order;
+  var auth = Auth();
+
+  @override
+  Future initState()  {
+    // TODO: implement initState
+   getuser();
+  }
+getuser() async {
+  var  prefs = await SharedPreferences.getInstance();
+  var resp = await prefs.get('userData');
+  var user = json.decode(resp);
+
+  var orders = GetOrder(user['token'],user['userId']);
+  await orders.getOrders().then((orders){
+
+    this.order = orders;
+
+  });
+  return resp;
+}
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
           title: Text('Order Details',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
@@ -45,9 +74,9 @@ class MyOrderState extends State<MyOrder> {
                     padding: EdgeInsets.all(1),
                     child: Column(
                       children: <Widget>[
-                        Text('0',style: TextStyle(color: Color(0xFF609f38),fontWeight: FontWeight.w600,fontSize: 16)),
+                        Text(order['tot'],style: TextStyle(color: Color(0xFF609f38),fontWeight: FontWeight.w600,fontSize: 16)),
                         Padding(padding: EdgeInsets.all(8)),
-                        Text('Rs: 250.00',style: TextStyle(color: Color(0xFF609f38),fontWeight: FontWeight.w600,fontSize: 16)),
+                        Text('Rs: ${order['tp']}',style: TextStyle(color: Color(0xFF609f38),fontWeight: FontWeight.w600,fontSize: 16)),
                       ],
                     ),
                   ),
@@ -61,7 +90,7 @@ class MyOrderState extends State<MyOrder> {
             Card(
               elevation: 12,
               child: ListTile(
-                title: Text('Active Orders (0)',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16)),
+                title: Text('Active Orders (${order['act']})',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16)),
                 /*subtitle:  Padding(
                   padding: EdgeInsets.fromLTRB(0,5,0,5),
                   child: Text('Customer Support Numbers:',style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,fontSize: 14,)),
@@ -76,7 +105,7 @@ class MyOrderState extends State<MyOrder> {
             Card(
               elevation: 12,
               child: ListTile(
-                title: Text('Completed Orders (0)',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16)),
+                title: Text('Completed Orders (${order['com']})',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16)),
                 /*subtitle:  Padding(
                   padding: EdgeInsets.fromLTRB(0,5,0,5),
                   child: Text('Customer Support Numbers:',style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,fontSize: 14,)),
@@ -91,7 +120,7 @@ class MyOrderState extends State<MyOrder> {
             Card(
               elevation: 12,
               child: ListTile(
-                title: Text('Cancelled Orders (0)',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16)),
+                title: Text('Cancelled Orders (${order['can']})',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16)),
                 /*subtitle:  Padding(
                   padding: EdgeInsets.fromLTRB(0,5,0,5),
                   child: Text('Customer Support Numbers:',style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,fontSize: 14,)),

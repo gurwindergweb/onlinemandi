@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/http_exception.dart';
 import './weight.dart';
+import 'database.dart';
 import 'intercept.dart';
 
 class Weights extends Intercept with ChangeNotifier {
@@ -15,7 +16,7 @@ class Weights extends Intercept with ChangeNotifier {
 
   String authToken;
   String userId;
-
+  var dbprovider = DBProvider();
   Weights(String authToken, String userId)
       : super(authToken, userId) {
     this.authToken = authToken;
@@ -23,7 +24,7 @@ class Weights extends Intercept with ChangeNotifier {
   }
 
 
-  Future<bool> fetchAndSetWeights() async {
+  /*Future<bool> fetchAndSetWeights() async {
     //final filterString = filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
     var url = GlobalConfiguration().getString("baseURL") + 'index/weights';
     try {
@@ -57,6 +58,56 @@ class Weights extends Intercept with ChangeNotifier {
     } catch (error) {
       throw (error);
     }
+  }*/
+  Future<bool> fetchAndSetWeights() async {
+    //final filterString = filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
+    var url = GlobalConfiguration().getString("baseURL") + 'index/weights';
+    var weight;
+    try {
+      final response = await dio.get(url);//await http.get(url);
+      //print(response);
+      final extractedData = response.data;
+
+      List loadedWeights = List();
+
+      extractedData.forEach((prodData) {
+        loadedWeights.add({
+          "id": prodData['id'],
+          "name": prodData['name'].toString(),
+          "unitId": prodData['unitId'],
+          "depends": prodData['depends'],
+          "multiplier": prodData['multiplier'].toDouble(),
+        });
+        /*_items.add(Weight(
+          id: prodData['id'],
+          name: prodData['name'].toString(),
+          unitId: prodData['unitId'],
+          depends: prodData['depends'],
+          multiplier: prodData['multiplier'].toDouble(),
+        ));*/
+      });
+      //final prefs = await SharedPreferences.getInstance();
+      //prefs.setString('weightData', );
+     // prefs.clear();
+      var dbclient = await dbprovider.database;
+     var weightdata = await dbprovider.getAllRecords('Weight');
+       await DeleteWeight();
+       await loadedWeights.forEach((data) async {
+         var res = await dbclient.insert("Weight",data);
+       });
+       weightdata = await dbprovider.getAllRecords('Weight');
+      // weightdata.where((wd)=>wd['id'] ==1)
+
+
+       return true;
+    } catch (error) {
+      throw (error);
+    }
+  }
+  Future<int> DeleteWeight() async {
+    var dbClient = await dbprovider.database;
+    int res = await dbClient.delete("Weight");
+    return res;
   }
   Future<bool> createWeights() async {
     final prefs = await SharedPreferences.getInstance();

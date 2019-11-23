@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';
+import 'package:onlinemandi/providers/database.dart';
 import 'package:onlinemandi/providers/weights.dart';
 import 'package:onlinemandi/screens/edit_product_screen.dart';
 import 'package:provider/provider.dart';
@@ -19,18 +20,13 @@ class ProductItemState extends State<ProductItem> {
   // final String id;
   // final String title;
   // final String imageUrl;
-
+  var dbprovider = DBProvider();
+  var weightdata;
   // ProductItem(this.id, this.title, this.imageUrl);
   var selectedweight;
-  getweights() async {
-    var prefs = await SharedPreferences.getInstance();
-   var data = prefs.get('weightData');
-   print('weights data -');
-   print(data);
-  }
+
   @override
   Widget build(BuildContext context) {
-    getweights();
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
     final authData = Provider.of<Auth>(context, listen: false);
@@ -175,35 +171,37 @@ class ProductItemState extends State<ProductItem> {
           padding: EdgeInsets.fromLTRB(0,10,0,10),
           child: GridTileBar(
             leading: Consumer<Product>(
-                builder: (ctx, product, _) => Container(
-                  //color: Colors.lightGreen,
-                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(2.0)),
-                    color: Color(0xFF609f38),
-                    border: Border.all(
+                builder: (ctx, product, _){
+                  return Container(
+
+                    //color: Colors.lightGreen,
+                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(2.0)),
                       color: Color(0xFF609f38),
-                      style: BorderStyle.solid,
-                    ),
-                  ),
-                  child: Row(
-                    children:[
-                      Text(
-                        'Quantity: ',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 17,
-                          color: Colors.white,
-                        ),
+                      border: Border.all(
+                        color: Color(0xFF609f38),
+                        style: BorderStyle.solid,
                       ),
-                      Container(
-                        color: Colors.white,
-                        padding: EdgeInsets.only(left: 8),
-                        child: new Theme(
-                          data: Theme.of(context).copyWith(
-                            canvasColor: Colors.white,
+                    ),
+                    child: Row(
+                      children:[
+                        Text(
+                          'Quantity: ',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 17,
+                            color: Colors.white,
                           ),
-                        child: /*DropdownButton<String>(
+                        ),
+                        Container(
+                          color: Colors.white,
+                          padding: EdgeInsets.only(left: 8),
+                          child: new Theme(
+                            data: Theme.of(context).copyWith(
+                              canvasColor: Colors.white,
+                            ),
+                            child: /*DropdownButton<String>(
                           icon: Icon(
                             Icons.arrow_drop_down,
                             color: Color(0xFF609f38),
@@ -232,33 +230,42 @@ class ProductItemState extends State<ProductItem> {
                           isDense: true,
                           iconSize: 38.0,
                         ),*/
-                        new DropdownButton<String>(
-                          icon: Icon(
-                            Icons.arrow_drop_down,
-                            color: Color(0xFF609f38),
-                            size: 35,
-                          ),
-                          items: ["1","2","3"].map((String value) {
+                            new DropdownButton<String>(
+                              icon: Icon(
+                                Icons.arrow_drop_down,
+                                color: Color(0xFF609f38),
+                                size: 35,
+                              ),
+
+                              /* items: product.weights.map((value) {
                             return new DropdownMenuItem<String>(
-                              value: value,
-                              child: new Text(value,style: TextStyle(color: Color(0xFF609f38),fontSize: 16),
+                              value: value.id,
+                              child: new Text(value.name,style: TextStyle(color: Color(0xFF609f38),fontSize: 16),
 
                             ));
-                          }).toList(),
+                          }).toList(),*/
+                            items: [
+                            DropdownMenuItem<String>(
+                            value:'tr',
+                              child: new Text('ccc',style: TextStyle(color: Color(0xFF609f38),fontSize: 16),
 
-                          onChanged: (val) {
-                            setState(() {
-                              selectedweight = val;
-                            });
+                              ))
+                            ],
 
-                          },
-                          value: selectedweight,
+                              onChanged: (val) {
+                                setState(() {
+                                  selectedweight = val;
+                                });
+
+                              },
+                              value: selectedweight,
+                            ),
+                          ),
                         ),
-                      ),
-                      ),
-                    ],
-                  ),
-                )
+                      ],
+                    ),
+                  );
+                }
             ),
             title: MaterialButton(
                elevation: 8,

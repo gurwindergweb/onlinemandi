@@ -7,7 +7,9 @@ import 'package:http/http.dart' as http;
 
 import '../models/http_exception.dart';
 import './product.dart';
+import 'database.dart';
 import 'intercept.dart';
+import 'weight.dart';
 
 class Products extends Intercept with ChangeNotifier {
   List<Product> _items = [
@@ -47,11 +49,14 @@ class Products extends Intercept with ChangeNotifier {
   // var _showFavoritesOnly = false;
   String authToken;
   String userId;
+
   Products(String authToken, String userId, List<Product> items) : super(authToken, userId){
     this.authToken = authToken;
     this.userId = userId;
     this._items = items;
+
   }
+  var dbprovider = DBProvider();
 
   List<Product> get items {
     // if (_showFavoritesOnly) {
@@ -77,18 +82,16 @@ class Products extends Intercept with ChangeNotifier {
   //   _showFavoritesOnly = false;
   //   notifyListeners();
   // }
-
   Future<void> fetchAndSetProducts(int type, [bool filterByUser = false]) async {
     //final filterString = filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
     var url = GlobalConfiguration().getString("baseURL") + 'fruits/index2?status=22';
     final response = await dio.get(url);//await http.get(url);
-    print(response);
     try {
       final response = await dio.get(url);//await http.get(url);
       //print(response);
       final extractedData = response.data['fruits'];
       final favData = response.data['fav'];
-      print(response.data['fruits']);
+      // print(response.data['fruits']);
       //if (extractedData == null) {
       //  return;
       //}
@@ -96,7 +99,9 @@ class Products extends Intercept with ChangeNotifier {
       //final favoriteResponse = await http.get(url);
       //final favoriteData = json.decode(favoriteResponse.body);
       final List<Product> loadedProducts = [];
-      extractedData.forEach((prodData) {
+
+      extractedData.forEach((prodData) async {
+       // List<ProductWeight> weightlist = await createWeightList(prodData['weights']);
         loadedProducts.add(Product(
           id: prodData['id'].toString(),
           title: prodData['name'],
@@ -105,17 +110,34 @@ class Products extends Intercept with ChangeNotifier {
           isFavorite:
           favData.contains(prodData['id']) ? true : false,
           imageUrl: prodData['img'],
-          weights: prodData['weights'],
+          weights: prodData['weights']
         ));
       });
       _items = loadedProducts;
-      print(loadedProducts);
       notifyListeners();
     } catch (error) {
       throw (error);
     }
   }
+ Future<List<ProductWeight>> createWeightList(List weightList) async {
+  var weightdata;
+  List<ProductWeight> weights;
+  dynamic data = await dbprovider.getAllRecords('Weight');
 
+   weightdata =  data.map((m) => Weight.weightFromMap(m));
+   weightdata = data;
+   weightList.forEach((value){
+     var name = weightdata.firstWhere((wd) => wd == value);
+     print('weightdata');
+     print(name);
+      /*weights.add(
+          new ProductWeight(id: value, name: '')
+      );*/
+    });
+
+  return weights;
+
+}
   Future<void> addProduct(Product product) async {
     final url =
         'https://flutter-update.firebaseio.com/products.json?auth=$authToken';

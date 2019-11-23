@@ -4,11 +4,11 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 class Weight with ChangeNotifier {
-  final int id;
-  final String name;
-  final int unitId;
-  final int depends;
-  final double multiplier;
+   int id;
+   String name;
+   int unitId;
+   int depends;
+   double multiplier;
 
   Weight({
     @required this.id,
@@ -17,4 +17,31 @@ class Weight with ChangeNotifier {
     @required this.depends,
     @required this.multiplier,
   });
+  Map<String, dynamic> toMap(){
+    var map = new Map<String, dynamic>();
+    map["id"] = id;
+    map["name"] = name;
+    map["unitId"] = unitId;
+    map["depends"] = depends;
+    map["multiplier"] = multiplier;
+    return map;
+  }
+  Weight.map(dynamic obj){
+    this.id = obj["id"];
+    this.name = obj["name"];
+    this.unitId = obj["unitId"];
+    this.depends = obj["depends"];
+    this.multiplier = obj["multiplier"];
+  }
+  static Weight weightFromMap(Map obj) {
+
+     Weight weight = Weight();
+     weight.id = obj["id"];
+     weight.name = obj["name"];
+     weight.unitId = obj["unitId"];
+     weight.depends = obj["depends"];
+     weight.multiplier = obj["multiplier"];
+
+     return weight;
+   }
 }

@@ -44,7 +44,45 @@ class AuthScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Flexible(
+                  Container(
+                    //margin: EdgeInsets.only(bottom: 20.0),
+                    padding: EdgeInsets.only(top: 25.0),
+                    child:Container(
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.all(5.0),
+                            decoration: new BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                width:5.2,
+                                color: Color(0xFF609f38),
+                              ),
+                              borderRadius: new BorderRadius.circular(100.0),
+                            ),
+                            //child: Icon(Icons.supervised_user_circle,size: 73,color: Colors.green),
+                            child: Image.asset(
+                              'images/online-logo.png',
+                              width: 90,
+                              height: 90,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Text(
+                            'OnlineMandi',
+                            style: TextStyle(
+                              //color: Color(0xff006600),
+                              color:Color(0xFF609f38),
+                              fontSize: 38,
+                              fontFamily: 'Anton',
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                 /* Flexible(
                     child: Container(
                       //margin: EdgeInsets.only(bottom: 20.0),
                       padding: EdgeInsets.only(top: 25.0),
@@ -83,9 +121,9 @@ class AuthScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ),
+                  ),*/
                   Flexible(
-                    flex: deviceSize.width > 600 ? 0 : 3,
+                    //flex: deviceSize.width > 600 ? 0 : 3,
                     child: AuthCard(),
                   ),
                 ],
@@ -299,6 +337,7 @@ class _AuthCardState extends State<AuthCard> {
       }
       _showErrorDialog(errorMessage);
     } catch (error) {
+      print(error);
       const errorMessage =
           'Could not authenticate you. Please try again later.';
       _showErrorDialog(errorMessage);

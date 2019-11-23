@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:onlinemandi/providers/Utilities.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/app_drawer.dart';
 
@@ -15,6 +17,9 @@ class UserDetailState extends State<UserDetail> {
   var resp;
   var userData;
   var prefs;
+  var contact1 = TextEditingController();
+  var contact2 = TextEditingController();
+  var loading = false;
   @override
   void initState() {
     getuserdetail();
@@ -24,11 +29,53 @@ class UserDetailState extends State<UserDetail> {
      resp = prefs.get('userData');
      setState(() {
        userData = json.decode(resp);
+       this.contact1.text = userData['contact1'];
+       this.contact2.text = userData['contact2'];
      });
   }
   editnumber(){
     smsOTPDialog(context).then((val){
 
+    });
+  }
+  updatenumbers(){
+    setState(() {
+      loading = true;
+    });
+    var utilities = Utilities(userData['token'],userData['userId']);
+    utilities.changenumber(this.contact1.text, this.contact2.text).then((resp) async {
+      if(resp == 'success'){
+        await Fluttertoast.showToast(
+            msg: "Contact numbers updated successfully",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIos: 1,
+            backgroundColor: Colors.black,
+            textColor: Colors.white,
+            fontSize: 14.0
+        ).then((val){
+          setState(() {
+            loading = false;
+          });
+          Navigator.of(context).pop();
+          Navigator.of(context).pushReplacementNamed('/');
+        });
+      }
+      else{
+        await Fluttertoast.showToast(
+            msg: "Something went wrong!",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIos: 1,
+            backgroundColor: Colors.black,
+            textColor: Colors.white,
+            fontSize: 14.0
+        ).then((val){
+          setState(() {
+            loading = false;
+          });
+        });
+      }
     });
   }
   Future<bool> smsOTPDialog(BuildContext context) {
@@ -54,16 +101,28 @@ class UserDetailState extends State<UserDetail> {
                   child: Icon(Icons.perm_phone_msg,color: Color.fromRGBO(76,165,13 ,1),size:62),
                 ),
                 Padding(padding: EdgeInsets.fromLTRB(0,2,0,2)),
-                Text('Edit Your Number!',style: TextStyle(color:Color.fromRGBO(76,165,13 ,1),fontWeight: FontWeight.bold,fontSize: 18)),
+                Text('Change Contact Number!',style: TextStyle(color:Color.fromRGBO(76,165,13 ,1),fontWeight: FontWeight.bold,fontSize: 18)),
 
               ],
             ),
-            content: TextField(
-              keyboardType :
-              TextInputType.number,
-              onChanged: (value) {
-
-              },
+            content: loading == 'true'? CircularProgressIndicator(): Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text('Mobile Number 1',),
+                TextField(
+                  keyboardType :
+                  TextInputType.number,
+                  maxLength: 10,
+                  controller: contact1,
+                ),
+                Text('Mobile Number 2'),
+                TextField(
+                  keyboardType :
+                  TextInputType.number,
+                  maxLength: 10,
+                  controller: contact2,
+                ),
+              ],
             ),
 
             contentPadding: EdgeInsets.all(10),
@@ -71,9 +130,8 @@ class UserDetailState extends State<UserDetail> {
               MaterialButton(
                 elevation: 10.0,
                 minWidth: 150,
-                height: 45.0,
                 colorBrightness: Brightness.dark,
-                color: new Color(0xFFFDB60C),
+                color: new Color(0xFF609f38),
                 shape: RoundedRectangleBorder(side: BorderSide(
                     color: Colors.white30,
                     width: 1.3,
@@ -81,9 +139,25 @@ class UserDetailState extends State<UserDetail> {
                 ),
                   borderRadius: BorderRadius.circular(50),
                 ),
-                child: Text( 'Verify',style: TextStyle(color: Colors.white)),
-                onPressed: (){
+                child: Text( 'Update',style: TextStyle(color: Colors.white)),
+                onPressed: updatenumbers,
+              ),
+              MaterialButton(
+                elevation: 10.0,
+                minWidth: 150,
 
+                colorBrightness: Brightness.dark,
+                color: Colors.red,
+                shape: RoundedRectangleBorder(side: BorderSide(
+                    color: Colors.white30,
+                    width: 1.3,
+                    style: BorderStyle.solid
+                ),
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                child: Text( 'Cancel',style: TextStyle(color: Colors.white)),
+                onPressed: (){
+                  Navigator.of(context, rootNavigator: true).pop();
                 },
               )
             ],
@@ -188,7 +262,7 @@ class UserDetailState extends State<UserDetail> {
                   child: Icon(Icons.phone,color: Color(0xFF609f38),size: 24),
                 ),
                 title: Text('Phone Number.',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold)),
-                subtitle: Text(userData['contact1'],style: TextStyle(color: Colors.black54,fontWeight: FontWeight.normal)),
+                subtitle: Text(userData['contact1'] !='' ? userData['contact2']!='' ? userData['contact1']+', '+ userData['contact2'] : userData['contact1']  : '' ,style: TextStyle(color: Colors.black54,fontWeight: FontWeight.normal)),
                 trailing:
                 Container(
                   padding: EdgeInsets.all(10),
@@ -203,6 +277,7 @@ class UserDetailState extends State<UserDetail> {
                 ),
                 //Icon(Icons.edit,color: Color(0xFF609f38)),
               ),
+
               Divider(color: Colors.black38,),
               ListTile(
                 leading: Container(

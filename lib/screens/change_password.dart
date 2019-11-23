@@ -1,5 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:onlinemandi/providers/Utilities.dart';
+import 'package:onlinemandi/providers/auth.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../main.dart';
 import '../widgets/app_drawer.dart';
+import 'auth_screen.dart';
 
 class ChangePassword extends StatefulWidget {
   @override
@@ -7,6 +16,11 @@ class ChangePassword extends StatefulWidget {
   static const routeName = '/changepassword';
 }
 class ChangePasswordState extends State<ChangePassword> {
+  var npass = TextEditingController();
+  var opass = TextEditingController();
+  var cpass = TextEditingController();
+  var auth = Auth();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,29 +54,36 @@ class ChangePasswordState extends State<ChangePassword> {
                     Padding(
                       padding: EdgeInsets.fromLTRB(0,0,0,10),
                       child: TextField(
+                        obscureText: true,
                         decoration: InputDecoration(
                             labelText: 'Enter Old Password',
                             border: OutlineInputBorder()
                         ),
+                        controller: opass,
                       ),
                     ),
                     Padding(
                       padding: EdgeInsets.fromLTRB(0,0,0,10),
                       child:
                        TextField(
+                         obscureText: true,
                           decoration: InputDecoration(
                               labelText: 'Enter New Password',
                               border: OutlineInputBorder()
                           ),
+                         controller: npass,
+
                         ),
                     ),
                     Padding(
                       padding: EdgeInsets.fromLTRB(0,0,0,10),
-                      child: TextField(
+                      child: TextFormField(
                         decoration: InputDecoration(
                             labelText: 'Confirm Password',
                             border: OutlineInputBorder()
                         ),
+                        controller: cpass,
+
                       ),
                     ),
                     Row(
@@ -127,9 +148,7 @@ class ChangePasswordState extends State<ChangePassword> {
                               ],
                             ),
                           ),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
+                          onPressed: updatepass,
                         ),
                       ],
                     ),
@@ -142,5 +161,101 @@ class ChangePasswordState extends State<ChangePassword> {
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+  updatepass() async {
+    if(opass.text !='' && npass.text !='' && cpass.text !=''){
+      if(npass.text.length > 7 && npass.text.length < 12){
+        if(npass.text == cpass.text){
+          var prefs = await SharedPreferences.getInstance();
+          var userdata = json.decode(prefs.get('userData'));
+          print(userdata);
+          var utilities = Utilities(userdata['token'],userdata['userId']);
+          utilities.checkoldpass(opass.text).then((response){
+            print(response);
+            if(response == true){
+              utilities.changepassword(npass.text).then((changeresp) async {
+                if(changeresp == 'success'){
+                  await Fluttertoast.showToast(
+                      msg: "Password changed successfully",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIos: 1,
+                      backgroundColor: Colors.black,
+                      textColor: Colors.white,
+                      fontSize: 14.0
+                  ).then((val){
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pushReplacementNamed('/');
+                    Provider.of<Auth>(context, listen: false).logout();
+                  });
 
+                }
+                else{
+                  Fluttertoast.showToast(
+                      msg: changeresp,
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIos: 1,
+                      backgroundColor: Colors.black,
+                      textColor: Colors.white,
+                      fontSize: 14.0
+                  );
+                }
+              });
+
+              /*auth.changepassword(npass.text).then((resp){
+                print(resp);
+              });*/
+            }
+            else{
+              Fluttertoast.showToast(
+                  msg: 'Incorrect old password!',
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIos: 1,
+                  backgroundColor: Colors.black,
+                  textColor: Colors.white,
+                  fontSize: 14.0
+              );
+            }
+          });
+        }
+        else{
+          Fluttertoast.showToast(
+              msg: "Password does not match",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIos: 1,
+              backgroundColor: Colors.black,
+              textColor: Colors.white,
+              fontSize: 14.0
+          );
+          //
+
+        }
+      }
+      else{
+        Fluttertoast.showToast(
+            msg: "Password length should be between 8-11 characters",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIos: 1,
+            backgroundColor: Colors.black,
+            textColor: Colors.white,
+            fontSize: 14.0
+        );
+      }
+
+    }
+    else{
+      Fluttertoast.showToast(
+          msg: "Please fill all feilds",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIos: 1,
+          backgroundColor: Colors.black,
+          textColor: Colors.white,
+          fontSize: 14.0
+      );
+    }
+  }
 }

@@ -1,9 +1,12 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:global_configuration/global_configuration.dart';
 import 'package:http/http.dart' as http;
 
 import './cart.dart';
+import 'intercept.dart';
 
 class OrderItem {
   final String id;
@@ -19,26 +22,31 @@ class OrderItem {
   });
 }
 
-class Orders with ChangeNotifier {
+class Orders extends Intercept with ChangeNotifier {
   List<OrderItem> _orders = [];
   final String authToken;
   final String userId;
 
-  Orders(this.authToken, this.userId, this._orders);
-
+  Orders(this.authToken, this.userId, this._orders) : super(authToken, userId);
+final dio =Dio();
   List<OrderItem> get orders {
     return [..._orders];
   }
 
-  Future<void> fetchAndSetOrders() async {
-    final url = 'https://flutter-update.firebaseio.com/orders/$userId.json?auth=$authToken';
-    final response = await http.get(url);
+  Future fetchAndSetOrders() async {
+    final url = GlobalConfiguration().getString('baseURL')+'index/orders-detail';
+    final response = await dio.get(url);
     final List<OrderItem> loadedOrders = [];
-    final extractedData = json.decode(response.body) as Map<String, dynamic>;
+    print('response');
+    print(response.data);
+    final extractedData = json.decode(response.data);
+
     if (extractedData == null) {
       return;
     }
-    extractedData.forEach((orderId, orderData) {
+    print(extractedData);
+    print('respoonse end');
+    response.data.forEach((orderId, orderData) {
       loadedOrders.add(
         OrderItem(
           id: orderId,
@@ -58,10 +66,9 @@ class Orders with ChangeNotifier {
       );
     });
     _orders = loadedOrders.reversed.toList();
-    print('orders-');
-    print(_orders);
     notifyListeners();
   }
+
 
   Future<void> addOrder(List<CartItem> cartProducts, double total) async {
     final url = 'https://flutter-update.firebaseio.com/orders/$userId.json?auth=$authToken';
@@ -93,3 +100,14 @@ class Orders with ChangeNotifier {
     notifyListeners();
   }
 }
+class GetOrder extends Intercept with ChangeNotifier{
+  GetOrder(authToken, userId) : super(authToken, userId);
+
+
+  Future getOrders() async {
+    final url = GlobalConfiguration().getString('baseURL')+'index/orders-detail';
+    final response = await dio.get(url);
+    return response.data;
+  }
+}
+

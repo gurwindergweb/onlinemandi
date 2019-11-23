@@ -64,7 +64,7 @@ class MyAccountState extends State<MyAccount> {
               title: Text('My Orders'),
               onTap: () {
                 Navigator.of(context)
-                    .pushNamed(OrdersScreen.routeName);
+                    .pushNamed(MyOrder.routeName);
               },
             ),
             Divider(),
