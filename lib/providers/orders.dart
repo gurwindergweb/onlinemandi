@@ -109,5 +109,10 @@ class GetOrder extends Intercept with ChangeNotifier{
     final response = await dio.get(url);
     return response.data;
   }
+  Future getActiveOrders() async {
+    final url = GlobalConfiguration().getString('baseURL')+'index/active-orders';
+    final response = await dio.get(url);
+    return response.data;
+  }
 }
 

@@ -22,6 +22,7 @@ import './screens/edit_product_screen.dart';
 import './screens/auth_screen.dart';
 import './screens/change_password.dart';
 import 'screens/checkout.dart';
+import 'screens/edit_orders.dart';
 import 'screens/my_wallet.dart';
 
 void main(){
@@ -90,6 +91,7 @@ class MyApp extends StatelessWidget {
             ChangePassword.routeName: (ctx) => ChangePassword(),
             MyWallet.routeName: (ctx) => MyWallet(),
             Checkout.routeName: (ctx) => Checkout(),
+            EditOrder.routeName: (ctx) => EditOrder(),
           },
         ),
       ),

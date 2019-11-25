@@ -6,35 +6,25 @@ import 'package:onlinemandi/providers/orders.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/app_drawer.dart';
+import 'active_order.dart';
 
 class MyOrder extends StatefulWidget {
+  var order;
+  MyOrder({order}){
+    this.order = order;
+  }
   @override
-  MyOrderState createState() => MyOrderState();
+  MyOrderState createState() => MyOrderState(order:this.order);
   static const routeName = '/myorder';
 
 }
 class MyOrderState extends State<MyOrder> {
   var order;
   var auth = Auth();
-
-  @override
-  Future initState()  {
-    // TODO: implement initState
-   getuser();
-  }
-getuser() async {
-  var  prefs = await SharedPreferences.getInstance();
-  var resp = await prefs.get('userData');
-  var user = json.decode(resp);
-
-  var orders = GetOrder(user['token'],user['userId']);
-  await orders.getOrders().then((orders){
-
-    this.order = orders;
-
-  });
-  return resp;
+MyOrderState( {order}){
+  this.order = order;
 }
+
   @override
   Widget build(BuildContext context) {
 
@@ -89,18 +79,36 @@ getuser() async {
             ),
             Card(
               elevation: 12,
-              child: ListTile(
-                title: Text('Active Orders (${order['act']})',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16)),
-                /*subtitle:  Padding(
+              child: InkWell(
+                child: ListTile(
+                  title: Text('Active Orders (${order['act']})',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16)),
+                  /*subtitle:  Padding(
                   padding: EdgeInsets.fromLTRB(0,5,0,5),
                   child: Text('Customer Support Numbers:',style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,fontSize: 14,)),
                 ),*/
-                trailing:Icon(Icons.arrow_forward_ios,color: Color(0xFF609f38),size: 18),
-                leading: Padding(
-                  padding: EdgeInsets.fromLTRB(0,8,0,5),
-                  child: Icon(Icons.access_time,color: Color(0xFF609f38)),
+                  trailing:Icon(Icons.arrow_forward_ios,color: Color(0xFF609f38),size: 18),
+                  leading: Padding(
+                    padding: EdgeInsets.fromLTRB(0,8,0,5),
+                    child: Icon(Icons.access_time,color: Color(0xFF609f38)),
+                  ),
                 ),
-              ),
+                onTap: () async {
+                  var  prefs = await SharedPreferences.getInstance();
+                  var resp =  prefs.get('userData');
+                  var user = json.decode(resp);
+                  var orders = GetOrder(user['token'],user['userId']);
+                  orders.getActiveOrders().then((data){
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ActiveOrder(activeorder: data),
+                      ),
+                    );
+                  });
+
+                },
+              )
             ),
             Card(
               elevation: 12,
@@ -137,5 +145,6 @@ getuser() async {
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+
 
 }

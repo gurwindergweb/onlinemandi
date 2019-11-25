@@ -1,5 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:onlinemandi/providers/auth.dart';
+import 'package:onlinemandi/providers/orders.dart';
 import 'package:onlinemandi/screens/user_detail.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/app_drawer.dart';
 import 'care_center.dart';
 import 'my_order.dart';
@@ -14,7 +19,7 @@ class MyAccount extends StatefulWidget {
 }
 
 class MyAccountState extends State<MyAccount> {
-
+var auth = Auth();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,10 +67,7 @@ class MyAccountState extends State<MyAccount> {
               leading: Icon(Icons.shopping_basket,color: Color(0xFF609f38)),
               trailing:Icon (Icons.keyboard_arrow_right,color: Color(0xFF609f38)),
               title: Text('My Orders'),
-              onTap: () {
-                Navigator.of(context)
-                    .pushNamed(MyOrder.routeName);
-              },
+              onTap: getorders,
             ),
             Divider(),
             ListTile(
@@ -92,5 +94,21 @@ class MyAccountState extends State<MyAccount> {
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+getorders() async {
+  var  prefs = await SharedPreferences.getInstance();
+  var resp =  prefs.get('userData');
+  var user = json.decode(resp);
+
+  var orders = GetOrder(user['token'],user['userId']);
+  await orders.getOrders().then((orders){
+   Navigator.push(
+     context,
+     MaterialPageRoute(
+       builder: (context) => MyOrder(order: orders),
+     ),
+   );
+  });
+
+}
 
 }
