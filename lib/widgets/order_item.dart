@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import '../providers/orders.dart' as ord;
 
 class OrderItem extends StatefulWidget {
-  final ord.OrderItem order;
+  final  order;
 
   OrderItem(this.order);
 
@@ -24,9 +24,9 @@ class _OrderItemState extends State<OrderItem> {
       child: Column(
         children: <Widget>[
           ListTile(
-            title: Text('\$${widget.order.amount}'),
+            title: Text('\$${widget.order.orderAmount}'),
             subtitle: Text(
-              DateFormat('dd/MM/yyyy hh:mm').format(widget.order.dateTime),
+              DateFormat('dd/MM/yyyy hh:mm').format(widget.order.date),
             ),
             trailing: IconButton(
               icon: Icon(_expanded ? Icons.expand_less : Icons.expand_more),

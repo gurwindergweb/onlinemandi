@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:onlinemandi/providers/orderitem.dart';
+import 'package:onlinemandi/providers/orders.dart';
+import 'package:provider/provider.dart';
 
 import 'order_details.dart';
 
 class ActiveOrder extends StatefulWidget {
   var activeorders;
-  ActiveOrder({activeorder}){
-    this.activeorders = activeorder;
+  var title;
+  ActiveOrder({orderdetail, String title}){
+    this.activeorders = orderdetail;
+    this.title = title;
   }
   @override
   ActiveOrderState createState() => ActiveOrderState(this.activeorders);
@@ -14,25 +19,27 @@ class ActiveOrder extends StatefulWidget {
 }
 class ActiveOrderState extends State<ActiveOrder> {
   var orders;
+  var overview;
   ActiveOrderState(activeorder){
-    this.orders = activeorder;
-    print(this.orders['o'][1]);
+   // this.orders = activeorder;
   }
   @override
   Widget build(BuildContext context) {
     ScreenUtil.instance = ScreenUtil()..init(context);
+    final ordersData = Provider.of<Orders>(context);
+    final orders = ordersData.orders;
     return Scaffold(
       appBar: AppBar(
-          title: Text('Active Orders',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: ScreenUtil.getInstance().setSp(60))),
+          title: Text('${widget.title}',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: ScreenUtil.getInstance().setSp(60))),
           backgroundColor: Color(0xFF609f38),
           iconTheme: IconThemeData(color: Colors.white),
           centerTitle: true
       ),
-      body: new ListView.builder
-        (
-          itemCount: this.orders.length,
-          itemBuilder: (BuildContext ctxt, int index) {
-            return Container(
+      body: orders.length >0 ? new ListView.builder(
+          itemCount: orders.length,
+          itemBuilder: (ctx, index) => ChangeNotifierProvider.value(
+            value: orders[index],
+            child: Container(
               child:Container(
                 padding: const EdgeInsets.all(10.0),
                 decoration: BoxDecoration(
@@ -58,7 +65,7 @@ class ActiveOrderState extends State<ActiveOrder> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
-                            Text('Order Date: ${this.orders['o'][index]['date']}',style: TextStyle(color: Color(0xFF609f38),fontWeight: FontWeight.bold,
+                            Text('Order Date: ${orders[index].date}',style: TextStyle(color: Color(0xFF609f38),fontWeight: FontWeight.bold,
                               //fontSize: 17
                               fontSize: ScreenUtil.getInstance().setSp(50),
                             )),
@@ -70,7 +77,7 @@ class ActiveOrderState extends State<ActiveOrder> {
                                   //fontSize: 14
                                   fontSize: ScreenUtil.getInstance().setSp(42),
                                 )),
-                                Text('${this.orders['o'][index]['id']}',style: TextStyle(color: Colors.black,
+                                Text('${orders[index].id}',style: TextStyle(color: Colors.black,
                                   fontSize: ScreenUtil.getInstance().setSp(40),
                                 )),
                               ],
@@ -83,7 +90,7 @@ class ActiveOrderState extends State<ActiveOrder> {
                                   //fontSize: 14
                                   fontSize: ScreenUtil.getInstance().setSp(42),
                                 )),
-                                Text('${this.orders['o'][index]['ic']}',style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(40))),
+                                Text('${orders[index].products.length}',style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(40))),
                               ],
                             ),
                             Padding(padding: EdgeInsets.fromLTRB(0,10,0,0)),
@@ -94,7 +101,7 @@ class ActiveOrderState extends State<ActiveOrder> {
                                   //fontSize: 14
                                   fontSize: ScreenUtil.getInstance().setSp(42),
                                 )),
-                                Text('${this.orders['o'][index]['gt']}',style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(40))),
+                                Text('${orders[index].orderAmount}',style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(40))),
                               ],
                             ),
                             Padding(padding: EdgeInsets.fromLTRB(0,10,0,0)),
@@ -134,7 +141,7 @@ class ActiveOrderState extends State<ActiveOrder> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => OrderDetails(orderdetail: this.orders['o'][index]),
+                                        builder: (context) => OrderDetails(orderid: orders[index].id,title: widget.title),
                                       ),
                                     );
                                   },
@@ -149,8 +156,15 @@ class ActiveOrderState extends State<ActiveOrder> {
                   ],
                 ),
               ), // This trailing comma makes auto-formatting nicer for build methods.
-            );
-          }
+            ),
+          )
+            // this.orders.length >1 ?  this.overview = this.orders[index] : this.overview = this.orders;
+
+
+      ) : Container(
+        child: Center(
+          child: Text('No Orders Found'),
+        ),
       ) // This trailing comma makes auto-formatting nicer for build methods.
     );
   }

@@ -40,7 +40,9 @@ var auth = Auth();
               child: Icon(Icons.home),
             ),
           ],
+
       ),
+      drawer: AppDrawer(),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(0,0,0,0),
         child: Column(

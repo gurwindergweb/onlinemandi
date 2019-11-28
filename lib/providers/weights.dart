@@ -61,14 +61,16 @@ class Weights extends Intercept with ChangeNotifier {
   }*/
   Future<bool> fetchAndSetWeights() async {
     //final filterString = filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
-    var url = GlobalConfiguration().getString("baseURL") + 'index/weights';
+    var weightsurl = GlobalConfiguration().getString("baseURL") + 'index/weights';
+    var unitsurl = GlobalConfiguration().getString("baseURL") + 'index/units';
     var weight;
     try {
-      final response = await dio.get(url);//await http.get(url);
+      final response = await dio.get(weightsurl);//await http.get(url);
       //print(response);
       final extractedData = response.data;
 
       List loadedWeights = List();
+      List loadedUnits = List();
 
       extractedData.forEach((prodData) {
         loadedWeights.add({
@@ -86,27 +88,40 @@ class Weights extends Intercept with ChangeNotifier {
           multiplier: prodData['multiplier'].toDouble(),
         ));*/
       });
+      final unitresponse = await dio.get(unitsurl);
+      print(unitresponse);
+      final extractedunit = unitresponse.data;
+      extractedunit.forEach((unitdata){
+        loadedUnits.add({
+          "id": unitdata['id'],
+          "name": unitdata['name'],
+          "sname": unitdata['sname'],
+          "status": unitdata['status'],
+        });
+      });
       //final prefs = await SharedPreferences.getInstance();
       //prefs.setString('weightData', );
      // prefs.clear();
       var dbclient = await dbprovider.database;
-     var weightdata = await dbprovider.getAllRecords('Weight');
-       await DeleteWeight();
+       await DeleteTable("Weight");
        await loadedWeights.forEach((data) async {
          var res = await dbclient.insert("Weight",data);
-       });
-       weightdata = await dbprovider.getAllRecords('Weight');
-      // weightdata.where((wd)=>wd['id'] ==1)
 
+       });
+       await DeleteTable("Unit");
+      loadedUnits.forEach((udata) async{
+        await dbclient.insert("Unit", udata);
+      });
+       //
 
        return true;
     } catch (error) {
       throw (error);
     }
   }
-  Future<int> DeleteWeight() async {
+  Future<int> DeleteTable(table) async {
     var dbClient = await dbprovider.database;
-    int res = await dbClient.delete("Weight");
+    int res = await dbClient.delete(table);
     return res;
   }
   Future<bool> createWeights() async {

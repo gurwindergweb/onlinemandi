@@ -30,7 +30,7 @@ MyOrderState( {order}){
 
     return Scaffold(
       appBar: AppBar(
-          title: Text('Order Details',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
+          title: Text('My Orders',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
           backgroundColor: Color(0xFF609f38),
           iconTheme: IconThemeData(color: Colors.white),
           centerTitle: true
@@ -96,48 +96,80 @@ MyOrderState( {order}){
                   var  prefs = await SharedPreferences.getInstance();
                   var resp =  prefs.get('userData');
                   var user = json.decode(resp);
-                  var orders = GetOrder(user['token'],user['userId']);
-                  orders.getActiveOrders().then((data){
-
+                  var orders = Provider.of<Orders>(context,listen: false).getActiveOrders();
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ActiveOrder(activeorder: data),
+                        builder: (context) => ActiveOrder(orderdetail: '',title:'Active Orders'),
                       ),
                     );
-                  });
+
 
                 },
               )
             ),
             Card(
               elevation: 12,
-              child: ListTile(
-                title: Text('Completed Orders (${order['com']})',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16)),
-                /*subtitle:  Padding(
+              child: InkWell(
+                child: ListTile(
+                  title: Text('Completed Orders (${order['com']})',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16)),
+                  /*subtitle:  Padding(
                   padding: EdgeInsets.fromLTRB(0,5,0,5),
                   child: Text('Customer Support Numbers:',style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,fontSize: 14,)),
                 ),*/
-                trailing:Icon(Icons.arrow_forward_ios,color: Color(0xFF609f38),size: 18),
-                leading: Padding(
-                  padding: EdgeInsets.fromLTRB(0,8,0,5),
-                  child: Icon(Icons.check_circle_outline,color: Color(0xFF609f38)),
+                  trailing:Icon(Icons.arrow_forward_ios,color: Color(0xFF609f38),size: 18),
+                  leading: Padding(
+                    padding: EdgeInsets.fromLTRB(0,8,0,5),
+                    child: Icon(Icons.check_circle_outline,color: Color(0xFF609f38)),
+                  ),
                 ),
-              ),
+                onTap: () async {
+                  var  prefs = await SharedPreferences.getInstance();
+                  var resp =  prefs.get('userData');
+                  var user = json.decode(resp);
+                  var orders = GetOrder(user['token'],user['userId']);
+                  orders.getCompletedOrders().then((data){
+                    print(data['o']);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ActiveOrder(orderdetail: data['o'],title:'Completed Orders'),
+                      ),
+                    );
+                  });
+                },
+              )
             ),
             Card(
               elevation: 12,
-              child: ListTile(
-                title: Text('Cancelled Orders (${order['can']})',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16)),
-                /*subtitle:  Padding(
+              child: InkWell(
+                child: ListTile(
+                  title: Text('Cancelled Orders (${order['can']})',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16)),
+                  /*subtitle:  Padding(
                   padding: EdgeInsets.fromLTRB(0,5,0,5),
                   child: Text('Customer Support Numbers:',style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,fontSize: 14,)),
                 ),*/
-                trailing:Icon(Icons.arrow_forward_ios,color: Color(0xFF609f38),size: 18),
-                leading: Padding(
-                  padding: EdgeInsets.fromLTRB(0,8,0,5),
-                  child: Icon(Icons.cancel,color: Color(0xFF609f38)),
+                  trailing:Icon(Icons.arrow_forward_ios,color: Color(0xFF609f38),size: 18),
+                  leading: Padding(
+                    padding: EdgeInsets.fromLTRB(0,8,0,5),
+                    child: Icon(Icons.cancel,color: Color(0xFF609f38)),
+                  ),
                 ),
+                onTap: () async {
+                  var  prefs = await SharedPreferences.getInstance();
+                  var resp =  prefs.get('userData');
+                  var user = json.decode(resp);
+                  var orders = GetOrder(user['token'],user['userId']);
+                  orders.getCanceledOrders().then((data){
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ActiveOrder(orderdetail: data['o'],title:'Cancelled Orders'),
+                      ),
+                    );
+                  });
+                },
               ),
             ),
           ],

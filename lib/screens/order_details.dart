@@ -1,17 +1,25 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:onlinemandi/providers/database.dart';
+import 'package:onlinemandi/providers/orders.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/app_drawer.dart';
 import 'edit_orders.dart';
+import 'my_account.dart';
 //import 'confirm_order.dart';
 //import 'edit_orders.dart';
 
 class OrderDetails extends StatefulWidget {
-  var orderDetails;
-
-  OrderDetails({orderdetail}){
-    this.orderDetails = orderdetail;
+  var orderid;
+  var title;
+  OrderDetails({orderid, title}){
+    this.orderid = orderid;
+    this.title = title;
   }
 
   @override
@@ -22,23 +30,42 @@ class OrderDetailsState extends State<OrderDetails> {
   var weight;
   var loadedweight = false;
   var orderDetails;
+
+  var unit;
   OrderDetailsState({order}){
     this.orderDetails = order;
 
   }
-  getweight(wid) async {
+  Future<String> getweight(wid) async {
     var dbprovider = DBProvider();
     var dbclient = await dbprovider.database;
     var weightdata = await dbprovider.getweight(wid);
-    setState(() {
+    setState(()  {
+      print(weightdata);
       this.weight = weightdata[0]['name'];
+      this.unit = weightdata[0]['unitId'];
+      getunit(this.unit);
       loadedweight = true;
+    });
+    return this.weight;
+  }
+  getunit(uid) async {
+
+    var dbprovider = DBProvider();
+    var dbclient = await dbprovider.database;
+    var unitdata = await dbprovider.getUnit(uid);
+    setState(() {
+      print('asdf');
+      print(unitdata);
+      this.unit = unitdata[0]['sname'];
+
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    this.weight ==null? getweight(widget.orderDetails['items'][0]['q']): null;
+    final ordersData = Provider.of<Orders>(context, listen: false);
+    var orders = ordersData.orders.firstWhere((order) =>order.id == widget.orderid);
     ScreenUtil.instance = ScreenUtil()..init(context);
     return Scaffold(
       appBar: AppBar(
@@ -73,8 +100,8 @@ class OrderDetailsState extends State<OrderDetails> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      Text('Order Date: ${widget.orderDetails['date']}',style: TextStyle(color: Color(0xFF609f38),fontWeight: FontWeight.bold,
-                          //fontSize: 17
+                      Text('Order Date: ${orders.date}',style: TextStyle(color: Color(0xFF609f38),fontWeight: FontWeight.bold,
+                        //fontSize: 17
                         fontSize: ScreenUtil.getInstance().setSp(50),
                       )),
                       Padding(padding: EdgeInsets.fromLTRB(0,10,0,10)),
@@ -82,10 +109,10 @@ class OrderDetailsState extends State<OrderDetails> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Text('Order Number: ',style: TextStyle(fontWeight: FontWeight.bold,
-                              //fontSize: 14
+                            //fontSize: 14
                             fontSize: ScreenUtil.getInstance().setSp(40),
                           )),
-                          Text('${widget.orderDetails['id']}',style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(40))),
+                          Text('${orders.id}',style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(40))),
                         ],
                       ),
                       Padding(padding: EdgeInsets.fromLTRB(0,10,0,0)),
@@ -93,10 +120,10 @@ class OrderDetailsState extends State<OrderDetails> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Text('Number of Items:',style: TextStyle(fontWeight: FontWeight.bold,
-                              //fontSize: 14
+                            //fontSize: 14
                             fontSize: ScreenUtil.getInstance().setSp(40),
                           )),
-                          Text('${widget.orderDetails['ic']}',style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(40))),
+                          Text('${orders.products.length}',style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(40))),
                         ],
                       ),
                       Padding(padding: EdgeInsets.fromLTRB(0,10,0,0)),
@@ -104,10 +131,10 @@ class OrderDetailsState extends State<OrderDetails> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Text('Total Amount:',style: TextStyle(fontWeight: FontWeight.bold,
-                              //fontSize: 14
+                            //fontSize: 14
                             fontSize: ScreenUtil.getInstance().setSp(40),
                           )),
-                          Text('${widget.orderDetails['pt']}',style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(40))),
+                          Text('${orders.orderAmount}',style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(40))),
                         ],
                       ),
                       Padding(padding: EdgeInsets.fromLTRB(0,10,0,0)),
@@ -115,10 +142,10 @@ class OrderDetailsState extends State<OrderDetails> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Text('Shipping Charges:',style: TextStyle(fontWeight: FontWeight.bold,
-                              //fontSize: 14
+                            //fontSize: 14
                             fontSize: ScreenUtil.getInstance().setSp(40),
                           )),
-                          Text('${widget.orderDetails['dc']}',style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(40))),
+                          Text('',style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(40))),
                         ],
                       ),
                       Padding(padding: EdgeInsets.fromLTRB(0,10,0,0)),
@@ -126,10 +153,10 @@ class OrderDetailsState extends State<OrderDetails> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Text('Grand Total:',style: TextStyle(fontWeight: FontWeight.bold,
-                              //fontSize: 14
+                            //fontSize: 14
                             fontSize: ScreenUtil.getInstance().setSp(40),
                           )),
-                          Text('${widget.orderDetails['gt']}',style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(40))),
+                          Text('',style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(40))),
                         ],
                       ),
                       Padding(padding: EdgeInsets.fromLTRB(0,10,0,0)),
@@ -137,7 +164,7 @@ class OrderDetailsState extends State<OrderDetails> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           //Text('City:',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14,color:Colors.white)),
-                          MaterialButton(
+                          widget.title == 'Active Orders' ?  MaterialButton(
                             elevation: 9,
                             //minWidth: 180.0,
                             colorBrightness: Brightness.dark,
@@ -165,9 +192,9 @@ class OrderDetailsState extends State<OrderDetails> {
                                 ],
                               ),
                             ),
-                            onPressed: () => _displayDialog(context),
-                          ),
-                          MaterialButton(
+                            onPressed: () => _displayDialog(context,orders.orderAmount),
+                          ) : Text(''),
+                          widget.title == 'Active Orders' ?  MaterialButton(
                             elevation: 9,
                             //minWidth: 180.0,
                             colorBrightness: Brightness.dark,
@@ -196,15 +223,14 @@ class OrderDetailsState extends State<OrderDetails> {
                               ),
                             ),
                             onPressed: () {
-                               Navigator.of(context).pushNamed(EditOrder.routeName);
-                               Navigator.push(
-                                 context,
-                                 MaterialPageRoute(
-                                   builder: (context) => EditOrder(order: widget.orderDetails),
-                                 ),
-                               );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => EditOrder(order:''),
+                                ),
+                              );
                             },
-                          ),
+                          ) : Text(''),
                         ],
                       ),
                       Padding(padding: EdgeInsets.fromLTRB(0,10,0,0)),
@@ -212,7 +238,32 @@ class OrderDetailsState extends State<OrderDetails> {
                   ),
                 ),
               ),
-              Card(
+              Expanded(
+                  child: _displayitems(orders)
+              )
+
+            ],
+          ),
+        ), // This trailing comma makes auto-formatting nicer for build methods.
+      ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+  Widget _displayitems(orders){
+    final ordersData = Provider.of<Orders>(context,listen: false);
+     orders = ordersData.orders.firstWhere((order) =>order.id == widget.orderid);
+    return IconTheme(
+        data: new IconThemeData(color: Colors.green),
+        child: ListView.builder(
+            itemCount: orders.products.length,
+            itemBuilder: (BuildContext context, int index){
+              var weightd;
+              getweight(orders.products[index].quantity).then((data){
+
+                orders.products[index].quantity = data;
+                  print(orders.products[index].quantity);
+
+              });
+              return Card(
                 elevation:6,
                 //color: Colors.red,
                 margin: EdgeInsets.only(top: 12),
@@ -233,39 +284,20 @@ class OrderDetailsState extends State<OrderDetails> {
                         child: Padding(
                           padding: EdgeInsets.all(2),
                           child: Image.network(
-                            GlobalConfiguration().getString("assetsURL")+widget.orderDetails['items'][0]['img'],
+                            GlobalConfiguration().getString("assetsURL")+orders.products[index].image,
                             height: 100,
                             width: 100,
-                            ),
-                          /*CircleAvatar(
-                            backgroundImage: AssetImage(
-                              'images/download (1).jpg',
-                            ),
-                            backgroundColor: Colors.white12,
-                            radius: 25,
-                          ),*/
+                          ),
+
                         ),
                       ),
-                      /*trailing: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(top: 0),
-                            child: Icon(Icons.delete,size: 23,color: Colors.red),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 10),
-                            child: Icon(Icons.edit,size: 23,color: Colors.lightGreen),
-                          ),
-                        ],
-                      ),*/
+
                       title: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          Text('${widget.orderDetails['items'][0]['n']}',style: TextStyle(
-                              //fontSize: 14,
+                          Text('${orders.products[index].title}',style: TextStyle(
+                            //fontSize: 14,
                               fontSize: ScreenUtil.getInstance().setSp(45),
                               color: Colors.black,fontWeight: FontWeight.bold),
                           ),
@@ -278,7 +310,7 @@ class OrderDetailsState extends State<OrderDetails> {
                                   fontSize: ScreenUtil.getInstance().setSp(40),
                                   fontWeight: FontWeight.bold),
                               ),
-                              Text( '${widget.orderDetails['items'][0]['g']}',
+                              Text( '${orders.products[index].grade}',
                                 style: TextStyle(
                                   color: Colors.black,
                                   //fontSize: 13,
@@ -295,7 +327,7 @@ class OrderDetailsState extends State<OrderDetails> {
                                   fontSize: ScreenUtil.getInstance().setSp(40),
                                   fontWeight: FontWeight.bold),
                               ),
-                              Text('${this.weight} ${widget.orderDetails['items'][0]['u']}',
+                              Text('${orders.products[index].quantity}',
                                 style: TextStyle(
                                   color: Colors.black,
                                   //fontSize: 13,
@@ -312,7 +344,7 @@ class OrderDetailsState extends State<OrderDetails> {
                                   fontSize: ScreenUtil.getInstance().setSp(40),
                                   fontWeight: FontWeight.bold),
                               ),
-                              Text( '${widget.orderDetails['items'][0]['r']}/kg',
+                              Text('Rs ${orders.products[index].totalprice}/${orders.products[index].unit}',
                                 style: TextStyle(
                                   color: Colors.black,
                                   // fontSize: 13,
@@ -329,7 +361,7 @@ class OrderDetailsState extends State<OrderDetails> {
                                   fontSize: ScreenUtil.getInstance().setSp(40),
                                   fontWeight: FontWeight.bold),
                               ),
-                              Text('${widget.orderDetails['items'][0]['tp']}/kg',
+                              Text('Rs ${orders.products[index].totalprice}',
                                 style: TextStyle(
                                   color: Colors.black,
                                   //fontSize: 13,
@@ -345,21 +377,21 @@ class OrderDetailsState extends State<OrderDetails> {
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ), // This trailing comma makes auto-formatting nicer for build methods.
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+              );
+            }
+        )
     );
   }
-  _displayDialog(BuildContext context) async {
+  _displayDialog(BuildContext context,id) async {
+    final ordersData = Provider.of<Orders>(context);
+    final orders = ordersData.orders.firstWhere((order) =>order.id == widget.orderid);
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             backgroundColor: Colors.white,
             title: Text("Confirm Cancel order",style: TextStyle(
-                //fontSize:18,
+              //fontSize:18,
                 fontSize: ScreenUtil.getInstance().setSp(60),
                 color: Colors.black,fontWeight: FontWeight.bold)),
             content: SingleChildScrollView(
@@ -372,7 +404,7 @@ class OrderDetailsState extends State<OrderDetails> {
                       children: [
                         TextSpan(
                           text: 'Are you sure to ',style: TextStyle(color: Colors.black,
-                            //fontSize: 14
+                          //fontSize: 14
                           fontSize: ScreenUtil.getInstance().setSp(60),
                         ),
                         ),
@@ -395,7 +427,7 @@ class OrderDetailsState extends State<OrderDetails> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                   MaterialButton(
+                  MaterialButton(
                     elevation: 9,
                     colorBrightness: Brightness.dark,
                     color: Colors.green,
@@ -426,8 +458,8 @@ class OrderDetailsState extends State<OrderDetails> {
                       Navigator.of(context).pop();
                     },
                   ),
-                   Padding(padding: EdgeInsets.all(10)),
-                   MaterialButton(
+                  Padding(padding: EdgeInsets.all(10)),
+                  MaterialButton(
                     elevation: 9,
                     colorBrightness: Brightness.dark,
                     color: Colors.red,
@@ -454,15 +486,34 @@ class OrderDetailsState extends State<OrderDetails> {
                         ],
                       ),
                     ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
+                    onPressed: (){cancelOrder(orders.id);},
                   ),
                 ],
               ),
             ],
           );
         }
+    );
+  }
+  cancelOrder(orderId) async {
+    var pref = await SharedPreferences.getInstance();
+    var userdata = json.decode(pref.get('userData'));
+    var order = GetOrder(userdata['token'],userdata['userId']);
+    order.cancelOrder(orderId).then((data){
+      Fluttertoast.showToast(
+        msg: data['msg'],
+        textColor: Colors.white,
+        toastLength: Toast.LENGTH_SHORT,
+        timeInSecForIos: 1,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.black,
       );
-    }
+    }).then((data){
+      Navigator.of(context)
+          .pushReplacementNamed(MyAccount.routeName);
+
+    });
+
+
+  }
 }

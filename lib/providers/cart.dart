@@ -4,13 +4,23 @@ class CartItem {
   final String id;
   final String title;
   final int quantity;
-  final double price;
+  final String grade;
+  final double totalprice;
+  final double discountrate;
+  final double rate;
+  final String unit;
+  final String image;
 
   CartItem({
     @required this.id,
     @required this.title,
     @required this.quantity,
-    @required this.price,
+    @required this.grade,
+    @required this.totalprice,
+    @required this.discountrate,
+    @required this.rate,
+    @required this.unit,
+    @required this.image,
   });
 }
 
@@ -28,7 +38,7 @@ class Cart with ChangeNotifier {
   double get totalAmount {
     var total = 0.0;
     _items.forEach((key, cartItem) {
-      total += cartItem.price * cartItem.quantity;
+      total += cartItem.totalprice * cartItem.quantity;
     });
     return total;
   }
@@ -45,7 +55,7 @@ class Cart with ChangeNotifier {
         (existingCartItem) => CartItem(
               id: existingCartItem.id,
               title: existingCartItem.title,
-              price: existingCartItem.price,
+              totalprice: existingCartItem.totalprice,
               quantity: existingCartItem.quantity + 1,
             ),
       );
@@ -55,8 +65,9 @@ class Cart with ChangeNotifier {
         () => CartItem(
               id: DateTime.now().toString(),
               title: title,
-              price: price,
+              totalprice: price,
               quantity: 1,
+
             ),
       );
     }
@@ -78,7 +89,7 @@ class Cart with ChangeNotifier {
           (existingCartItem) => CartItem(
                 id: existingCartItem.id,
                 title: existingCartItem.title,
-                price: existingCartItem.price,
+                totalprice: existingCartItem.totalprice,
                 quantity: existingCartItem.quantity - 1,
               ));
     } else {

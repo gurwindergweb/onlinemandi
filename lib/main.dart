@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onlinemandi/providers/orderitem.dart';
 import 'package:onlinemandi/screens/Term_conditions.dart';
 import 'package:onlinemandi/screens/about_us.dart';
 import 'package:onlinemandi/screens/care_center.dart';
@@ -48,11 +49,23 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(
           value: Cart(),
         ),
+        ChangeNotifierProvider.value(
+          value: OrderItem(),
+        ),
         ChangeNotifierProxyProvider<Auth, Orders>(
           builder: (ctx, auth, previousOrders) => Orders(
-            auth.token,
-            auth.userId,
-            previousOrders == null ? [] : previousOrders.orders,
+            authToken: auth.token,
+            userId: auth.userId,
+            orderslist: previousOrders == null ? [] : previousOrders.orders,
+
+          ),
+        ),
+        ChangeNotifierProxyProvider<Auth, Orders>(
+          builder: (ctx, auth, previousOrders) => Orders(
+            authToken: auth.token,
+            userId: auth.userId,
+            orderslist: previousOrders == null ? [] : previousOrders.orders,
+
           ),
         ),
       ],
