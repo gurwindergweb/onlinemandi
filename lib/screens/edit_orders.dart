@@ -4,71 +4,49 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:onlinemandi/providers/database.dart';
 import 'package:onlinemandi/providers/orderitem.dart';
+import 'package:onlinemandi/providers/orders.dart';
+import 'package:onlinemandi/providers/products.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/app_drawer.dart';
 //import 'confirm_order.dart';
 
 class EditOrder extends StatefulWidget {
-  var orderitem;
+  var orderid;
   var weight;
   var dbprovider = DBProvider();
-  EditOrder({order}){
-    this.orderitem = order;
+  EditOrder({orderid}){
+    this.orderid = orderid;
   }
 
   @override
-  EditOrderState createState() => EditOrderState(order:orderitem);
+  EditOrderState createState() => EditOrderState(orderid:orderid);
   static const routeName = '/editorder';
 }
 class EditOrderState extends State<EditOrder> {
   var weight;
-  var orderitem ;
+  var orderid ;
 
   var unit;
-  EditOrderState({order}){
-      this.orderitem = order;
-      print(this.orderitem);
+  EditOrderState({orderid}){
+      this.orderid = orderid;
   }
-
- Future<String> getweight(wid) async {
-    var dbprovider = DBProvider();
-    var dbclient = await dbprovider.database;
-    var weightdata = await dbprovider.getweight(wid);
-    setState(){
-      this.weight = weightdata[0]['name'];
-      print(this.weight);
-      this.unit = weightdata[0]['unitId'];
-      getunit(this.unit);
-    }
-
-    return weightdata[0]['name'];
-  }
-  getunit(uid) async {
-
-    var dbprovider = DBProvider();
-    var dbclient = await dbprovider.database;
-    var unitdata = await dbprovider.getUnit(uid);
-    setState(() {
-      this.unit = unitdata[0]['sname'];
-
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    // getweight(this.orderitem['item'][0]['q']);
-   // final orderitems = Provider.of<OrderItem>(context);
+    var ordersData = Provider.of<Orders>(context);
+    var orders = ordersData.findOrderbyid(widget.orderid);
+    var products = Provider.of<Products>(context);
 
+    var itemlist = orders.products;
+    var order = orders;
     Widget _showitemlist(){
       return IconTheme(
           data: new IconThemeData(color: Colors.green),
           child: ListView.builder(
-              itemCount: this.orderitem['items'].length,
+              itemCount: orders.products.length,
               itemBuilder: (BuildContext context,int index) {
-                getweight(this.orderitem['items'][index]['q']);
-                print('sdf');
-                print(this.weight);
+               var prod = products.findById(itemlist[index]);
+               var pweights = prod.weights;
                 return Slidable(
                   actionPane: SlidableDrawerActionPane(),
                   actionExtentRatio: 0.35,
@@ -90,7 +68,7 @@ class EditOrderState extends State<EditOrder> {
                           padding: EdgeInsets.all(2),
                           child:CircleAvatar(
                             backgroundImage: NetworkImage(
-                              GlobalConfiguration().getString("assetsURL")+this.orderitem['items'][index]['img'],
+                              GlobalConfiguration().getString("assetsURL")+itemlist[index].image,
                             ),
                             backgroundColor: Colors.white12,
                             radius: 25,
@@ -105,7 +83,7 @@ class EditOrderState extends State<EditOrder> {
                             padding: EdgeInsets.only(top: 0),
                             child: InkWell(
                               child: Icon(Icons.delete,size: 23,color: Colors.red),
-                              onTap: () => _displayDialog(context),
+                              onTap: () => _deleteDialog(context,itemlist[index].id),
                             ),
                           ),
                           Padding(
@@ -118,15 +96,11 @@ class EditOrderState extends State<EditOrder> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          Text('${this.orderitem['items'][index]['n']}',style: TextStyle(
+                          Text('${itemlist[index].title}',style: TextStyle(
                             //fontSize: 14,
                               fontSize: ScreenUtil.getInstance().setSp(40),
                               color: Colors.black,fontWeight: FontWeight.bold)),
                           Padding(padding: EdgeInsets.only(top: 4)),
-                          Text('Grade : ${this.orderitem['items'][index]['g']}',style: TextStyle(
-                            //fontSize: 13,
-                              fontSize: ScreenUtil.getInstance().setSp(40),
-                              color: Colors.black)),
                           Padding(padding: EdgeInsets.only(top: 3)),
                           Row(
                             children: <Widget>[
@@ -135,7 +109,7 @@ class EditOrderState extends State<EditOrder> {
                                   fontSize: ScreenUtil.getInstance().setSp(45),
                                   fontWeight: FontWeight.bold),
                               ),
-                              Text('${this.weight} ${this.orderitem['items'][index]['u']}',
+                              Text('${itemlist[index].quantity} ${itemlist[index].unit}',
                                 style: TextStyle(
                                   color: Colors.black,
                                   //fontSize: 13,
@@ -155,64 +129,7 @@ class EditOrderState extends State<EditOrder> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text('Grade :',style: TextStyle(fontWeight: FontWeight.bold,fontSize: ScreenUtil.getInstance().setSp(35))),
-                              SizedBox( height:15,
-                                child: DropdownButton<String>(
-                                  icon: Icon(
-                                    Icons.arrow_drop_down,
-                                    color: Color(0xFF609f38),
-                                    size: 22,
-                                  ),
-                                  items: [
-                                    DropdownMenuItem<String>(
-                                      value: "1",
-                                      child: Text(
-                                        "A",
-                                        style: TextStyle(color: Color(0xFF609f38),
-                                          //fontSize: 16
-                                          fontSize: ScreenUtil.getInstance().setSp(40),
-                                        ),
-                                      ),
-                                    ),
-                                    DropdownMenuItem<String>(
-                                      value: "2",
-                                      child: Text(
-                                        "B",style: TextStyle(color: Color(0xFF609f38),
-                                        //fontSize: 16
-                                        fontSize: ScreenUtil.getInstance().setSp(40),
-                                      ),
-                                      ),
-                                    ),
-                                  ],
-                                  onChanged: (value) {
-                                  },
-                                  underline: Container(
-                                    decoration: const BoxDecoration(
-                                        border: Border(bottom: BorderSide(color: Colors.transparent))
-                                    ),
-                                  ),
-                                  value: "1",
-                                  elevation: 16,
-                                  //style: TextStyle(color: Colors.black, fontSize: 20),
-                                  isDense: true,
-                                  isExpanded: false,
-                                  //iconSize: 38.0,
-                                  iconSize: 22.0,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 6,bottom: 6),
-                            child: Container(
-                              height: 0.6,
-                              color: Colors.black45,
-                            ),
-                          ),
+
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
@@ -224,27 +141,12 @@ class EditOrderState extends State<EditOrder> {
                                     color: Color(0xFF609f38),
                                     size: 22,
                                   ),
-                                  items: [
-                                    DropdownMenuItem<String>(
-                                      value: "1",
-                                      child: Text(
-                                        "900gm",
-                                        style: TextStyle(color: Color(0xFF609f38),
-                                          //fontSize: 16
-                                          fontSize: ScreenUtil.getInstance().setSp(40),
-                                        ),
-                                      ),
-                                    ),
-                                    DropdownMenuItem<String>(
-                                      value: "2",
-                                      child: Text(
-                                        "1 kg",style: TextStyle(color: Color(0xFF609f38),
-                                        //fontSize: 16
-                                        fontSize: ScreenUtil.getInstance().setSp(40),
-                                      ),
-                                      ),
-                                    ),
-                                  ],
+                                  items: prod.weights.map((value) {
+                                    return new DropdownMenuItem<String>(
+                                      value: value,
+                                      child: new Text(value),
+                                    );
+                                  }).toList(),
                                   onChanged: (value) {
                                   },
                                   underline: Container(
@@ -343,7 +245,7 @@ class EditOrderState extends State<EditOrder> {
                                 fontWeight: FontWeight.bold,color: Colors.grey[500]),
                           ),
                           Text(
-                            'Rs: ${widget.orderitem['pt']} ',
+                            'Rs:  ${order.orderAmount}',
                             style: TextStyle(
                                 //fontSize: 13,
                                 fontSize: ScreenUtil.getInstance().setSp(40),
@@ -363,7 +265,7 @@ class EditOrderState extends State<EditOrder> {
                                 fontWeight: FontWeight.bold,color: Colors.grey[500]),
                           ),
                           Text(
-                            'Rs: ${widget.orderitem['dc']}',
+                            'Rs: ${order.shippingcharge}',
                             style: TextStyle(
                                // fontSize: 13,
                                 fontSize: ScreenUtil.getInstance().setSp(40),
@@ -385,7 +287,7 @@ class EditOrderState extends State<EditOrder> {
                           //Spacer(),
                           Chip(
                             label: Text(
-                              'Rs: ${widget.orderitem['gt']} ',
+                              'Rs: ${order.grandtotal} ',
                               style: TextStyle(
                                 // color: Theme.of(context).primaryTextTheme.title.color,
                                 color: Colors.white,
@@ -420,7 +322,7 @@ class EditOrderState extends State<EditOrder> {
                                   Padding(padding: EdgeInsets.fromLTRB(5,9,6,9),
                                       child: Icon(Icons.delete,color: Colors.white,size: 20,),
                                     ),
-                                  Text("Active Orders",style: new TextStyle(
+                                  Text("Cancel",style: new TextStyle(
                                     //fontSize:12,
                                     fontSize: ScreenUtil.getInstance().setSp(40),
                                     color: Colors.white,
@@ -451,7 +353,7 @@ class EditOrderState extends State<EditOrder> {
                                   Padding(padding: EdgeInsets.fromLTRB(5,9,6,9),
                                     child: Icon(Icons.check_circle,color: Colors.white,size: 20,),
                                   ),
-                                  Text("Update Orders",style: new TextStyle(
+                                  Text("Update Order",style: new TextStyle(
                                     //fontSize:12,
                                     fontSize: ScreenUtil.getInstance().setSp(40),
                                     color: Colors.white,
@@ -477,7 +379,7 @@ class EditOrderState extends State<EditOrder> {
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
-  _displayDialog(BuildContext context) async {
+  _deleteDialog(BuildContext context,itemid) async {
     return showDialog(
         context: context,
         builder: (context) {

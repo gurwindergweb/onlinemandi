@@ -44,7 +44,7 @@ class DBProvider {
     var result = await dbClient.rawQuery("SELECT * FROM $dbTable");
     return result.toList();
   }
-  Future getweight(id) async {
+  getweight(id) async {
     var dbClient = await database;
     // var result = await dbClient.rawQuery("SELECT * FROM $dbTable");
     var result = await  dbClient.query("Weight", where: "id = ?", whereArgs: [id]);

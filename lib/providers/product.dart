@@ -28,7 +28,9 @@ class Product with ChangeNotifier {
     isFavorite = newValue;
     notifyListeners();
   }
+  getproductweights(pid){
 
+  }
   Future<void> toggleFavoriteStatus(String token, String userId) async {
     final oldStatus = isFavorite;
     isFavorite = !isFavorite;

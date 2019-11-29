@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart';
 
-class CartItem {
+import 'database.dart';
+
+class CartItem with ChangeNotifier{
   final String id;
   final String title;
-  final int quantity;
+  int quantity;
   final String grade;
   final double totalprice;
   final double discountrate;
@@ -21,7 +23,23 @@ class CartItem {
     @required this.rate,
     @required this.unit,
     @required this.image,
-  });
+  }){
+    this.getweight(this.quantity );
+  }
+  setquantity(q) {
+    quantity = int.parse(q);
+    notifyListeners();
+  }
+  getweight(w) async {
+    var dbprovider = DBProvider();
+    //var dbclient = await dbprovider.database;
+
+    var weightdata = await dbprovider.getweight(w);
+    setquantity(weightdata[0]['name']);
+
+
+
+  }
 }
 
 class Cart with ChangeNotifier {

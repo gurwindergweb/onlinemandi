@@ -6,6 +6,7 @@ import 'package:global_configuration/global_configuration.dart';
 import 'package:http/http.dart' as http;
 
 import './cart.dart';
+import 'database.dart';
 import 'intercept.dart';
 import 'orderitem.dart';
 
@@ -22,7 +23,6 @@ final dio =Dio();
   List<OrderItem> get orders {
     return [...orderslist];
   }
-
   Future fetchAndSetOrders() async {
     final url = GlobalConfiguration().getString('baseURL')+'index/orders-detail';
     final response = await dio.get(url);
@@ -93,27 +93,30 @@ final dio =Dio();
     final response = await dio.get(url);
     final List<OrderItem> loadedOrders = [];
     response.data['o'].forEach((orderData) {
-print(orderData['items']);
       loadedOrders.add(
         OrderItem(
           id: orderData['id'],
-          orderAmount: double.parse(orderData['gt']),
+          orderAmount: double.parse(orderData['pt']),
+          shippingcharge: double.parse(orderData['dc']),
+          grandtotal: double.parse(orderData['gt']),
           date: orderData['date'].toString(),
           products: (orderData['items'] as List<dynamic>)
               .map(
-                (item) => CartItem(
-                  id: item['pid'].toString(),
-                  title: item['n'].toString(),
-                  quantity: item['q'],
-                  grade: item['g'],
-                  totalprice: double.parse(item['tp']),
-                  discountrate: double.parse(item['dr']),
+                (item)  {
+                  return CartItem(
+                      id: item['pid'].toString(),
+                      title: item['n'].toString(),
+                      quantity:  item['q'],
+                      grade: item['g'],
+                      totalprice: double.parse(item['tp']),
+                      discountrate: double.parse(item['dr']),
 
-                  rate: double.parse(item['r']),
-                  unit: item['u'],
-                  image: item['img']
+                      rate: double.parse(item['r']),
+                      unit: item['u'],
+                      image: item['img']
 
-            ),
+                  );
+                },
           ).toList(),
         ),
       );
@@ -126,6 +129,94 @@ print(orderData['items']);
     print(orderslist);
     notifyListeners();
     return response.data;
+  }
+  Future getCompletedOrders() async {
+    final url = GlobalConfiguration().getString('baseURL')+'index/completed-orders';
+    final response = await dio.get(url);
+    final List<OrderItem> loadedOrders = [];
+    response.data['o'].forEach((orderData) {
+      loadedOrders.add(
+        OrderItem(
+          id: orderData['id'],
+          orderAmount: double.parse(orderData['pt']),
+          shippingcharge: double.parse(orderData['dc']),
+          grandtotal: double.parse(orderData['gt']),
+          date: orderData['date'].toString(),
+          products: (orderData['items'] as List<dynamic>)
+              .map(
+                (item)  {
+              return CartItem(
+                  id: item['pid'].toString(),
+                  title: item['n'].toString(),
+                  quantity:  item['q'],
+                  grade: item['g'],
+                  totalprice: double.parse(item['tp']),
+                  discountrate: double.parse(item['dr']),
+
+                  rate: double.parse(item['r']),
+                  unit: item['u'],
+                  image: item['img']
+
+              );
+            },
+          ).toList(),
+        ),
+      );
+    });
+    var od = Orders(authToken: authToken,userId: userId,orderslist: loadedOrders);
+    od.orderslist = loadedOrders.reversed.toList();
+
+    orderslist = loadedOrders.reversed.toList();
+    notifyListeners();
+    return response.data;
+  }
+  Future getCanceledOrders() async {
+    final url = GlobalConfiguration().getString('baseURL')+'index/cancelled-orders';
+    final response = await dio.get(url);
+    final List<OrderItem> loadedOrders = [];
+    response.data['o'].forEach((orderData) {
+      loadedOrders.add(
+        OrderItem(
+          id: orderData['id'],
+          orderAmount: double.parse(orderData['pt']),
+          shippingcharge: double.parse(orderData['dc']),
+          grandtotal: double.parse(orderData['gt']),
+          date: orderData['date'].toString(),
+          products: (orderData['items'] as List<dynamic>)
+              .map(
+                (item)  {
+              return CartItem(
+                  id: item['pid'].toString(),
+                  title: item['n'].toString(),
+                  quantity:  item['q'],
+                  grade: item['g'],
+                  totalprice: double.parse(item['tp']),
+                  discountrate: double.parse(item['dr']),
+
+                  rate: double.parse(item['r']),
+                  unit: item['u'],
+                  image: item['img']
+
+              );
+            },
+          ).toList(),
+        ),
+      );
+    });
+    var od = Orders(authToken: authToken,userId: userId,orderslist: loadedOrders);
+    od.orderslist = loadedOrders.reversed.toList();
+
+    orderslist = loadedOrders.reversed.toList();
+    notifyListeners();
+    return response.data;
+  }
+  Future cancelOrder(id) async {
+    final url = GlobalConfiguration().getString('baseURL')+'cart/cancel-order';
+    final response = await dio.post(url,data:{"oid":"$id"});
+    return response.data;
+  }
+  findOrderbyid(oid){
+    return orders.firstWhere((order) =>order.id == oid);
   }
 }
 class GetOrder extends Intercept with ChangeNotifier{

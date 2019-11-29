@@ -7,10 +7,13 @@ import 'package:global_configuration/global_configuration.dart';
 import 'package:http/http.dart' as http;
 
 import './cart.dart';
+import 'database.dart';
 import 'intercept.dart';
 class OrderItem with ChangeNotifier{
   final  id;
   final double orderAmount;
+  final double shippingcharge;
+  final double grandtotal;
   final List<CartItem> products;
   final  date;
   get getid{
@@ -25,9 +28,12 @@ class OrderItem with ChangeNotifier{
   get getdate{
     return date;
   }
+
   OrderItem({
     @required this.id,
     @required this.orderAmount,
+    @required this.shippingcharge,
+    @required this.grandtotal,
     @required this.products,
     @required this.date,
   });

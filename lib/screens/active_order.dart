@@ -7,21 +7,19 @@ import 'package:provider/provider.dart';
 import 'order_details.dart';
 
 class ActiveOrder extends StatefulWidget {
-  var activeorders;
+
   var title;
-  ActiveOrder({orderdetail, String title}){
-    this.activeorders = orderdetail;
+  ActiveOrder({ String title}){
     this.title = title;
   }
   @override
-  ActiveOrderState createState() => ActiveOrderState(this.activeorders);
+  ActiveOrderState createState() => ActiveOrderState();
   static const routeName = '/activeorder';
 }
 class ActiveOrderState extends State<ActiveOrder> {
   var orders;
   var overview;
-  ActiveOrderState(activeorder){
-   // this.orders = activeorder;
+  ActiveOrderState(){
   }
   @override
   Widget build(BuildContext context) {
