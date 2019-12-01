@@ -100,7 +100,7 @@ MyOrderState( {order}){
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ActiveOrder(orderdetail: '',title:'Active Orders'),
+                        builder: (context) => ActiveOrder(title:'Active Orders'),
                       ),
                     );
 
@@ -127,16 +127,14 @@ MyOrderState( {order}){
                   var  prefs = await SharedPreferences.getInstance();
                   var resp =  prefs.get('userData');
                   var user = json.decode(resp);
-                  var orders = GetOrder(user['token'],user['userId']);
-                  orders.getCompletedOrders().then((data){
-                    print(data['o']);
+                  var orders = Orders();
+                  Provider.of<Orders>(context,listen: false).getCompletedOrders();
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ActiveOrder(orderdetail: data['o'],title:'Completed Orders'),
+                        builder: (context) => ActiveOrder(title:'Completed Orders'),
                       ),
                     );
-                  });
                 },
               )
             ),
@@ -159,16 +157,16 @@ MyOrderState( {order}){
                   var  prefs = await SharedPreferences.getInstance();
                   var resp =  prefs.get('userData');
                   var user = json.decode(resp);
-                  var orders = GetOrder(user['token'],user['userId']);
-                  orders.getCanceledOrders().then((data){
+                  var orders = Orders();
+                  Provider.of<Orders>(context,listen: false).getCanceledOrders();
 
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ActiveOrder(orderdetail: data['o'],title:'Cancelled Orders'),
+                        builder: (context) => ActiveOrder(title:'Cancelled Orders'),
                       ),
                     );
-                  });
+
                 },
               ),
             ),

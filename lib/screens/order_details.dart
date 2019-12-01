@@ -30,42 +30,16 @@ class OrderDetailsState extends State<OrderDetails> {
   var weight;
   var loadedweight = false;
   var orderDetails;
-
   var unit;
   OrderDetailsState({order}){
     this.orderDetails = order;
 
   }
-  Future<String> getweight(wid) async {
-    var dbprovider = DBProvider();
-    var dbclient = await dbprovider.database;
-    var weightdata = await dbprovider.getweight(wid);
-    setState(()  {
-      print(weightdata);
-      this.weight = weightdata[0]['name'];
-      this.unit = weightdata[0]['unitId'];
-      getunit(this.unit);
-      loadedweight = true;
-    });
-    return this.weight;
-  }
-  getunit(uid) async {
-
-    var dbprovider = DBProvider();
-    var dbclient = await dbprovider.database;
-    var unitdata = await dbprovider.getUnit(uid);
-    setState(() {
-      print('asdf');
-      print(unitdata);
-      this.unit = unitdata[0]['sname'];
-
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    final ordersData = Provider.of<Orders>(context, listen: false);
-    var orders = ordersData.orders.firstWhere((order) =>order.id == widget.orderid);
+    var ordersData = Provider.of<Orders>(context);
+    var orders = ordersData.findOrderbyid(widget.orderid);
     ScreenUtil.instance = ScreenUtil()..init(context);
     return Scaffold(
       appBar: AppBar(
@@ -145,7 +119,7 @@ class OrderDetailsState extends State<OrderDetails> {
                             //fontSize: 14
                             fontSize: ScreenUtil.getInstance().setSp(40),
                           )),
-                          Text('',style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(40))),
+                          Text('${orders.shippingcharge}',style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(40))),
                         ],
                       ),
                       Padding(padding: EdgeInsets.fromLTRB(0,10,0,0)),
@@ -156,7 +130,7 @@ class OrderDetailsState extends State<OrderDetails> {
                             //fontSize: 14
                             fontSize: ScreenUtil.getInstance().setSp(40),
                           )),
-                          Text('',style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(40))),
+                          Text('${orders.grandtotal}',style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(40))),
                         ],
                       ),
                       Padding(padding: EdgeInsets.fromLTRB(0,10,0,0)),
@@ -226,7 +200,7 @@ class OrderDetailsState extends State<OrderDetails> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => EditOrder(order:''),
+                                  builder: (context) => EditOrder(orderid: widget.orderid),
                                 ),
                               );
                             },
@@ -249,20 +223,14 @@ class OrderDetailsState extends State<OrderDetails> {
     );
   }
   Widget _displayitems(orders){
-    final ordersData = Provider.of<Orders>(context,listen: false);
-     orders = ordersData.orders.firstWhere((order) =>order.id == widget.orderid);
+   // final ordersData = Provider.of<Orders>(context,listen: false);
+    // orders = ordersData.orders.firstWhere((order) =>order.id == widget.orderid);
     return IconTheme(
         data: new IconThemeData(color: Colors.green),
         child: ListView.builder(
             itemCount: orders.products.length,
             itemBuilder: (BuildContext context, int index){
-              var weightd;
-              getweight(orders.products[index].quantity).then((data){
 
-                orders.products[index].quantity = data;
-                  print(orders.products[index].quantity);
-
-              });
               return Card(
                 elevation:6,
                 //color: Colors.red,
@@ -327,7 +295,7 @@ class OrderDetailsState extends State<OrderDetails> {
                                   fontSize: ScreenUtil.getInstance().setSp(40),
                                   fontWeight: FontWeight.bold),
                               ),
-                              Text('${orders.products[index].quantity}',
+                              Text('${ orders.products[index].quantity} ${orders.products[index].unit}',
                                 style: TextStyle(
                                   color: Colors.black,
                                   //fontSize: 13,
