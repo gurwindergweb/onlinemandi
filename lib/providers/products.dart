@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:http/http.dart' as http;
+import 'package:onlinemandi/providers/weights.dart';
 
 import '../models/http_exception.dart';
 import './product.dart';
@@ -54,6 +55,7 @@ class Products extends Intercept with ChangeNotifier {
     this.authToken = authToken;
     this.userId = userId;
     this._items = items;
+    print("productsssssssss");
 
   }
   var dbprovider = DBProvider();
@@ -82,7 +84,7 @@ class Products extends Intercept with ChangeNotifier {
   //   _showFavoritesOnly = false;
   //   notifyListeners();
   // }
-  Future<void> fetchAndSetProducts(int type, [bool filterByUser = false]) async {
+  Future<void> fetchAndSetProducts(int type, Weights weightModel, [bool filterByUser = false]) async {
     //final filterString = filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
     var url = GlobalConfiguration().getString("baseURL") + 'fruits/index2?status=22';
     final response = await dio.get(url);//await http.get(url);
@@ -101,7 +103,6 @@ class Products extends Intercept with ChangeNotifier {
       final List<Product> loadedProducts = [];
 
       extractedData.forEach((prodData) async {
-       // List<ProductWeight> weightlist = await createWeightList(prodData['weights']);
         loadedProducts.add(Product(
           id: prodData['id'].toString(),
           title: prodData['name'],
@@ -110,7 +111,7 @@ class Products extends Intercept with ChangeNotifier {
           isFavorite:
           favData.contains(prodData['id']) ? true : false,
           imageUrl: prodData['img'],
-          weights: prodData['weights']
+          weights: await createWeightList(prodData['weights'],weightModel)
         ));
       });
       _items = loadedProducts;
@@ -119,24 +120,17 @@ class Products extends Intercept with ChangeNotifier {
       throw (error);
     }
   }
- Future<List<ProductWeight>> createWeightList(List weightList) async {
-  var weightdata;
-  List<ProductWeight> weights;
-  dynamic data = await dbprovider.getAllRecords('Weight');
+ Future<List> createWeightList(List weightList, Weights weightModel) async {
+    List<ProductWeight> weights = [];
+    List ww = weightModel.items;
+    weightList.forEach((value){
+     var weight = ww.firstWhere((wd) => wd.id == int.parse(value));
 
-   weightdata =  data.map((m) => Weight.weightFromMap(m));
-   weightdata = data;
-   weightList.forEach((value){
-     var name = weightdata.firstWhere((wd) => wd == value);
-     print('weightdata');
-     print(name);
-      /*weights.add(
-          new ProductWeight(id: value, name: '')
-      );*/
+      weights.add(
+          ProductWeight(id: value, name: weight.name)
+      );
     });
-
-  return weights;
-
+  return await weights;
 }
   Future<void> addProduct(Product product) async {
     final url =
@@ -160,7 +154,6 @@ class Products extends Intercept with ChangeNotifier {
         id: json.decode(response.body)['name'],
       );
       _items.add(newProduct);
-      // _items.insert(0, newProduct); // at the start of the list
       notifyListeners();
     } catch (error) {
       print(error);
@@ -183,7 +176,7 @@ class Products extends Intercept with ChangeNotifier {
       _items[prodIndex] = newProduct;
       notifyListeners();
     } else {
-      print('...');
+      print('Product not found');
     }
   }
 

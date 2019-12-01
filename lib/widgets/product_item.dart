@@ -244,13 +244,7 @@ class ProductItemState extends State<ProductItem> {
 
                             ));
                           }).toList(),*/
-                            items: [
-                            DropdownMenuItem<String>(
-                            value:'tr',
-                              child: new Text('ccc',style: TextStyle(color: Color(0xFF609f38),fontSize: 16),
-
-                              ))
-                            ],
+                            items: product.getWeightList(),
 
                               onChanged: (val) {
                                 setState(() {

@@ -41,7 +41,6 @@ class Weight with ChangeNotifier {
      weight.unitId = obj["unitId"];
      weight.depends = obj["depends"];
      weight.multiplier = obj["multiplier"];
-
      return weight;
    }
 }

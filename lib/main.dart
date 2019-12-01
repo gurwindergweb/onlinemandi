@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onlinemandi/providers/orderitem.dart';
+import 'package:onlinemandi/providers/weights.dart';
 import 'package:onlinemandi/screens/Term_conditions.dart';
 import 'package:onlinemandi/screens/about_us.dart';
 import 'package:onlinemandi/screens/care_center.dart';
@@ -39,6 +40,12 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(
           value: Auth(),
         ),
+        ChangeNotifierProxyProvider<Auth, Weights>(
+          builder: (ctx, auth, previousProducts) => Weights(
+            auth.token,
+            auth.userId
+          ),
+        ),
         ChangeNotifierProxyProvider<Auth, Products>(
           builder: (ctx, auth, previousProducts) => Products(
             auth.token,
@@ -60,17 +67,10 @@ class MyApp extends StatelessWidget {
 
           ),
         ),
-        ChangeNotifierProxyProvider<Auth, Orders>(
-          builder: (ctx, auth, previousOrders) => Orders(
-            authToken: auth.token,
-            userId: auth.userId,
-            orderslist: previousOrders == null ? [] : previousOrders.orders,
-
-          ),
-        ),
       ],
       child: Consumer<Auth>(
         builder: (ctx, auth, _) => MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'MyShop',
           theme: ThemeData(
             primarySwatch: Colors.lightGreen,

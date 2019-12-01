@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class Product with ChangeNotifier {
@@ -27,6 +28,19 @@ class Product with ChangeNotifier {
   void _setFavValue(bool newValue) {
     isFavorite = newValue;
     notifyListeners();
+  }
+
+  List<DropdownMenuItem> getWeightList(){
+    List<DropdownMenuItem<String>> wList = [];
+    this.weights.forEach((t) => {
+    wList.add(
+    DropdownMenuItem(
+    value: t.id.toString(),
+    child: new Text(t.name,style: TextStyle(color: Color(0xFF609f38),fontSize: 16),)
+    )
+    )
+    });
+    return wList;
   }
 
   Future<void> toggleFavoriteStatus(String token, String userId) async {

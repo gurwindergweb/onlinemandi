@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onlinemandi/providers/weights.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/products.dart';
@@ -10,8 +11,9 @@ class UserProductsScreen extends StatelessWidget {
   static const routeName = '/user-products';
 
   Future<void> _refreshProducts(BuildContext context) async {
+    final weightModel = Provider.of<Weights>(context);
     await Provider.of<Products>(context, listen: false)
-        .fetchAndSetProducts(1,true);
+        .fetchAndSetProducts(1, weightModel,true);
   }
 
   @override

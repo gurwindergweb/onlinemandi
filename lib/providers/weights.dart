@@ -21,6 +21,8 @@ class Weights extends Intercept with ChangeNotifier {
       : super(authToken, userId) {
     this.authToken = authToken;
     this.userId = userId;
+    this.fetchAndSetWeights();
+    print("hellooooooooo");
   }
 
 
@@ -59,65 +61,77 @@ class Weights extends Intercept with ChangeNotifier {
       throw (error);
     }
   }*/
-  Future<bool> fetchAndSetWeights() async {
-    //final filterString = filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
-    var weightsurl = GlobalConfiguration().getString("baseURL") + 'index/weights';
-    var unitsurl = GlobalConfiguration().getString("baseURL") + 'index/units';
-    var weight;
-    try {
-      final response = await dio.get(weightsurl);//await http.get(url);
-      //print(response);
-      final extractedData = response.data;
+  Future<void> fetchAndSetWeights() async {
 
-      List loadedWeights = List();
-      List loadedUnits = List();
-
-      extractedData.forEach((prodData) {
-        loadedWeights.add({
-          "id": prodData['id'],
-          "name": prodData['name'].toString(),
-          "unitId": prodData['unitId'],
-          "depends": prodData['depends'],
-          "multiplier": prodData['multiplier'].toDouble(),
+    dbprovider.getAllRecords('Weight').then((data) async{
+      print("in fetchandset weights");
+      if(data.length > 0){
+        data.forEach((prodData) {
+          _items.add(Weight(
+            id: prodData['id'],
+            name: prodData['name'].toString(),
+            unitId: prodData['unitId'],
+            depends: prodData['depends'],
+            multiplier: prodData['multiplier'].toDouble(),
+          ));
         });
-        /*_items.add(Weight(
-          id: prodData['id'],
-          name: prodData['name'].toString(),
-          unitId: prodData['unitId'],
-          depends: prodData['depends'],
-          multiplier: prodData['multiplier'].toDouble(),
-        ));*/
-      });
-      final unitresponse = await dio.get(unitsurl);
-      print(unitresponse);
-      final extractedunit = unitresponse.data;
-      extractedunit.forEach((unitdata){
-        loadedUnits.add({
-          "id": unitdata['id'],
-          "name": unitdata['name'],
-          "sname": unitdata['sname'],
-          "status": unitdata['status'],
-        });
-      });
-      //final prefs = await SharedPreferences.getInstance();
-      //prefs.setString('weightData', );
-     // prefs.clear();
-      var dbclient = await dbprovider.database;
-       await DeleteTable("Weight");
-       await loadedWeights.forEach((data) async {
-         var res = await dbclient.insert("Weight",data);
+      } else {
+        var weightsurl = GlobalConfiguration().getString("baseURL") + 'index/weights';
+        var unitsurl = GlobalConfiguration().getString("baseURL") + 'index/units';
+        var weight;
+        try {
+          final response = await dio.get(weightsurl);//await http.get(url);
+          //print(response);
+          final extractedData = response.data;
 
-       });
-       await DeleteTable("Unit");
-      loadedUnits.forEach((udata) async{
-        await dbclient.insert("Unit", udata);
-      });
-       //
+          List loadedWeights = List();
+          List loadedUnits = List();
 
-       return true;
-    } catch (error) {
-      throw (error);
-    }
+          extractedData.forEach((prodData) {
+            loadedWeights.add({
+              "id": prodData['id'],
+              "name": prodData['name'].toString(),
+              "unitId": prodData['unitId'],
+              "depends": prodData['depends'],
+              "multiplier": prodData['multiplier'].toDouble(),
+            });
+            _items.add(Weight(
+              id: prodData['id'],
+              name: prodData['name'].toString(),
+              unitId: prodData['unitId'],
+              depends: prodData['depends'],
+              multiplier: prodData['multiplier'].toDouble(),
+            ));
+          });
+          final unitresponse = await dio.get(unitsurl);
+          print(unitresponse);
+          final extractedunit = unitresponse.data;
+          extractedunit.forEach((unitdata){
+            loadedUnits.add({
+              "id": unitdata['id'],
+              "name": unitdata['name'],
+              "sname": unitdata['sname'],
+              "status": unitdata['status'],
+            });
+          });
+          //final prefs = await SharedPreferences.getInstance();
+          //prefs.setString('weightData', );
+          // prefs.clear();
+          var dbclient = await dbprovider.database;
+          await DeleteTable("Weight");
+          await loadedWeights.forEach((data) async {
+            var res = await dbclient.insert("Weight",data);
+
+          });
+          await DeleteTable("Unit");
+          loadedUnits.forEach((udata) async{
+            await dbclient.insert("Unit", udata);
+          });
+        } catch (error) {
+          throw (error);
+        }
+      }
+    });
   }
   Future<int> DeleteTable(table) async {
     var dbClient = await dbprovider.database;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onlinemandi/providers/weights.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/app_drawer.dart';
@@ -38,7 +39,8 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
       setState(() {
         _isLoading = true;
       });
-      Provider.of<Products>(context).fetchAndSetProducts(1).then((_) {
+      final weightModel = Provider.of<Weights>(context);
+      Provider.of<Products>(context).fetchAndSetProducts(1, weightModel).then((_) {
         setState(() {
           _isLoading = false;
         });
