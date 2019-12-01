@@ -13,6 +13,7 @@ import 'intercept.dart';
 
 class Weights extends Intercept with ChangeNotifier {
   List<Weight> _items = [];
+  List<Unit> _unitItems = [];
 
   String authToken;
   String userId;
@@ -61,71 +62,92 @@ class Weights extends Intercept with ChangeNotifier {
       throw (error);
     }
   }*/
-  Future<void> fetchAndSetWeights() async {
+  Future <void> fetchAndSetUnits() async {
+    var unitsurl = GlobalConfiguration().getString("baseURL") + 'index/units';
+    List loadedUnits = List();
+    var dbclient = await dbprovider.database;
+    dbprovider.getAllRecords('Unit').then((unitData) async{
+      if(unitData.length > 0){
+        unitData.forEach((unitModel){
+          _unitItems.add(
+              Unit(
+                id: unitModel['id'],
+                name: unitModel['name'],
+                sname: unitModel['sname'],
+              ));
+        });
+      } else {
+        final unitresponse = await dio.get(unitsurl);
+        final extractedunit = unitresponse.data;
+        await extractedunit.forEach((unitModel){
+          loadedUnits.add({
+            "id": unitModel['id'],
+            "name": unitModel['name'],
+            "sname": unitModel['sname'],
+            "status": unitModel['status'],
+          });
+          _unitItems.add(
+              Unit(
+                id: unitModel['id'],
+                name: unitModel['name'],
+                sname: unitModel['sname'],
+              ));
+        });
+        await DeleteTable("Unit");
+        loadedUnits.forEach((udata) async{
+          await dbclient.insert("Unit", udata);
+        });
+      }
+    });
+  }
 
+
+
+
+  Future<void> fetchAndSetWeights() async {
+    var weightsurl = GlobalConfiguration().getString("baseURL") + 'index/weights';
+    await fetchAndSetUnits();
+    List loadedWeights = List();
+    var dbclient = await dbprovider.database;
     dbprovider.getAllRecords('Weight').then((data) async{
       print("in fetchandset weights");
       if(data.length > 0){
-        data.forEach((prodData) {
-          _items.add(Weight(
-            id: prodData['id'],
-            name: prodData['name'].toString(),
-            unitId: prodData['unitId'],
-            depends: prodData['depends'],
-            multiplier: prodData['multiplier'].toDouble(),
-          ));
-        });
-      } else {
-        var weightsurl = GlobalConfiguration().getString("baseURL") + 'index/weights';
-        var unitsurl = GlobalConfiguration().getString("baseURL") + 'index/units';
-        var weight;
-        try {
-          final response = await dio.get(weightsurl);//await http.get(url);
-          //print(response);
-          final extractedData = response.data;
-
-          List loadedWeights = List();
-          List loadedUnits = List();
-
-          extractedData.forEach((prodData) {
-            loadedWeights.add({
-              "id": prodData['id'],
-              "name": prodData['name'].toString(),
-              "unitId": prodData['unitId'],
-              "depends": prodData['depends'],
-              "multiplier": prodData['multiplier'].toDouble(),
-            });
+          data.forEach((weightModel) {
             _items.add(Weight(
-              id: prodData['id'],
-              name: prodData['name'].toString(),
-              unitId: prodData['unitId'],
-              depends: prodData['depends'],
-              multiplier: prodData['multiplier'].toDouble(),
+              id: weightModel['id'],
+              name: weightModel['name'].toString(),
+              unitId: weightModel['unitId'],
+              depends: weightModel['depends'],
+              multiplier: weightModel['multiplier'].toDouble(),
+              unit: _unitItems.firstWhere((u) => u.id == weightModel['unitId']),
             ));
           });
-          final unitresponse = await dio.get(unitsurl);
-          print(unitresponse);
-          final extractedunit = unitresponse.data;
-          extractedunit.forEach((unitdata){
-            loadedUnits.add({
-              "id": unitdata['id'],
-              "name": unitdata['name'],
-              "sname": unitdata['sname'],
-              "status": unitdata['status'],
+      } else {
+        try {
+
+          final response = await dio.get(weightsurl);
+          final extractedData = response.data;
+
+          await extractedData.forEach((weightModel) {
+            loadedWeights.add({
+              "id": weightModel['id'],
+              "name": weightModel['name'].toString(),
+              "unitId": weightModel['unitId'],
+              "depends": weightModel['depends'],
+              "multiplier": weightModel['multiplier'].toDouble(),
             });
+            _items.add(Weight(
+              id: weightModel['id'],
+              name: weightModel['name'].toString(),
+              unitId: weightModel['unitId'],
+              depends: weightModel['depends'],
+              multiplier: weightModel['multiplier'].toDouble(),
+              unit: _unitItems.firstWhere((u) => u.id == weightModel['unitId'])
+            ));
           });
-          //final prefs = await SharedPreferences.getInstance();
-          //prefs.setString('weightData', );
-          // prefs.clear();
-          var dbclient = await dbprovider.database;
           await DeleteTable("Weight");
           await loadedWeights.forEach((data) async {
-            var res = await dbclient.insert("Weight",data);
-
-          });
-          await DeleteTable("Unit");
-          loadedUnits.forEach((udata) async{
-            await dbclient.insert("Unit", udata);
+            await dbclient.insert("Weight",data);
           });
         } catch (error) {
           throw (error);
@@ -141,11 +163,7 @@ class Weights extends Intercept with ChangeNotifier {
   Future<bool> createWeights() async {
     final prefs = await SharedPreferences.getInstance();
     json.decode(prefs.getString('weightData'));
-
   }
-
-
-
 
   List<Weight> get items {
     // if (_showFavoritesOnly) {

@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-
 import 'database.dart';
 
 class CartItem with ChangeNotifier{

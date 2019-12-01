@@ -9,6 +9,7 @@ class Weight with ChangeNotifier {
    int unitId;
    int depends;
    double multiplier;
+   Unit unit;
 
   Weight({
     @required this.id,
@@ -16,6 +17,7 @@ class Weight with ChangeNotifier {
     @required this.unitId,
     @required this.depends,
     @required this.multiplier,
+    this.unit,
   });
   Map<String, dynamic> toMap(){
     var map = new Map<String, dynamic>();
@@ -43,4 +45,14 @@ class Weight with ChangeNotifier {
      weight.multiplier = obj["multiplier"];
      return weight;
    }
+}
+class Unit{
+  int id;
+  String name;
+  String sname;
+  Unit({
+    @required this.id,
+    @required this.name,
+    @required this.sname,
+  });
 }

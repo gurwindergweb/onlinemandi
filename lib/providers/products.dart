@@ -127,7 +127,7 @@ class Products extends Intercept with ChangeNotifier {
      var weight = ww.firstWhere((wd) => wd.id == int.parse(value));
 
       weights.add(
-          ProductWeight(id: value, name: weight.name)
+          ProductWeight(id: value, name: weight.name + " " + weight.unit.sname)
       );
     });
   return await weights;
