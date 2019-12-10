@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:global_configuration/global_configuration.dart';
+import 'package:onlinemandi/providers/cart.dart';
 import 'package:onlinemandi/providers/database.dart';
 import 'package:onlinemandi/providers/orderitem.dart';
 import 'package:onlinemandi/providers/orders.dart';
@@ -9,6 +12,7 @@ import 'package:onlinemandi/providers/products.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/app_drawer.dart';
+import 'my_order.dart';
 //import 'confirm_order.dart';
 
 class EditOrder extends StatefulWidget {
@@ -26,27 +30,35 @@ class EditOrder extends StatefulWidget {
 class EditOrderState extends State<EditOrder> {
   var weight;
   var orderid ;
-
+  var orders;
+  var ordersData;
   var unit;
+
+  Cart cart;
+
+  Products products;
   EditOrderState({orderid}){
-      this.orderid = orderid;
+    this.orderid = orderid;
   }
   @override
   Widget build(BuildContext context) {
-    var ordersData = Provider.of<Orders>(context);
-    var orders = ordersData.findOrderbyid(widget.orderid);
-    var products = Provider.of<Products>(context);
-
-    var itemlist = orders.products;
+    ordersData = Provider.of<Orders>(context);
+    orders = ordersData.findOrderbyid(widget.orderid);
+     products = Provider.of<Products>(context);
+     cart = Provider.of<Cart>(context);
     var order = orders;
+    updateorder(){
+      print(orders.products[0].totalprice);
+    }
     Widget _showitemlist(){
       return IconTheme(
           data: new IconThemeData(color: Colors.green),
           child: ListView.builder(
               itemCount: orders.products.length,
               itemBuilder: (BuildContext context,int index) {
-               var prod = products.findById(itemlist[index]);
-               var pweights = prod.weights;
+                var prod = products.findById(orders.products[index].id);
+                print(prod.weights);
+                var pweights = prod.weights;
                 return Slidable(
                   actionPane: SlidableDrawerActionPane(),
                   actionExtentRatio: 0.35,
@@ -68,7 +80,7 @@ class EditOrderState extends State<EditOrder> {
                           padding: EdgeInsets.all(2),
                           child:CircleAvatar(
                             backgroundImage: NetworkImage(
-                              GlobalConfiguration().getString("assetsURL")+itemlist[index].image,
+                              GlobalConfiguration().getString("assetsURL")+orders.products[index].image,
                             ),
                             backgroundColor: Colors.white12,
                             radius: 25,
@@ -83,7 +95,7 @@ class EditOrderState extends State<EditOrder> {
                             padding: EdgeInsets.only(top: 0),
                             child: InkWell(
                               child: Icon(Icons.delete,size: 23,color: Colors.red),
-                              onTap: () => _deleteDialog(context,itemlist[index].id),
+                              onTap: () => _deleteDialog(context,orders.products[index].id),
                             ),
                           ),
                           Padding(
@@ -96,7 +108,7 @@ class EditOrderState extends State<EditOrder> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          Text('${itemlist[index].title}',style: TextStyle(
+                          Text('${orders.products[index].title}',style: TextStyle(
                             //fontSize: 14,
                               fontSize: ScreenUtil.getInstance().setSp(40),
                               color: Colors.black,fontWeight: FontWeight.bold)),
@@ -109,7 +121,7 @@ class EditOrderState extends State<EditOrder> {
                                   fontSize: ScreenUtil.getInstance().setSp(45),
                                   fontWeight: FontWeight.bold),
                               ),
-                              Text('${itemlist[index].quantity} ${itemlist[index].unit}',
+                              Text('${orders.products[index].quantity} ${orders.products[index].unit}',
                                 style: TextStyle(
                                   color: Colors.black,
                                   //fontSize: 13,
@@ -141,20 +153,40 @@ class EditOrderState extends State<EditOrder> {
                                     color: Color(0xFF609f38),
                                     size: 22,
                                   ),
-                                  items: prod.weights.map((value) {
-                                    return new DropdownMenuItem<String>(
-                                      value: value,
-                                      child: new Text(value),
-                                    );
-                                  }).toList(),
+                                  items: prod.getWeightList(),
                                   onChanged: (value) {
+                                    setState(() {
+
+                                      var wdata = prod.weights.firstWhere((w)=>w.id == value);
+                                      var weightdata = wdata.name.split(' ');
+                                      var newtotal = weightdata[0];
+                                      if(weightdata[1] == 'gm'){
+                                        newtotal = (1000/int.parse(weightdata[0]));
+                                        newtotal =  orders.products[index].rate/newtotal;
+                                        orders.products[index].settotalprice(newtotal);
+                                      }
+                                      else if(weightdata[1] == 'dz'){
+                                        newtotal = orders.products[index].rate * weightdata[0];
+                                        orders.products[index].settotalprice(newtotal);
+
+                                      }
+                                      else{
+                                        print(orders.products[index].rate);
+                                        newtotal = orders.products[index].rate * double.parse(weightdata[0]);
+                                        orders.products[index].settotalprice(newtotal);
+                                      }
+                                      orders.calculateorderAmout();
+                                      orders.products[index].quantity = weightdata[0];
+                                      orders.products[index].unit = weightdata[1];
+
+                                    });
                                   },
                                   underline: Container(
                                     decoration: const BoxDecoration(
                                         border: Border(bottom: BorderSide(color: Colors.transparent))
                                     ),
                                   ),
-                                  value: "1",
+
                                   elevation: 16,
                                   //style: TextStyle(color: Colors.black, fontSize: 20),
                                   isDense: true,
@@ -166,39 +198,6 @@ class EditOrderState extends State<EditOrder> {
                           ),
                           Padding(
                             padding: EdgeInsets.all(2),
-                          ),
-                          //Padding(padding: EdgeInsets.all(5)),
-                          MaterialButton(
-                            elevation: 15,
-                            colorBrightness: Brightness.dark,
-                            color: Colors.red,
-                            shape: RoundedRectangleBorder(side: BorderSide(
-                                color: Colors.white,
-                                width: 0.3,
-                                style: BorderStyle.solid
-                            ),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child:Container(
-                              child: Row(
-                                children: <Widget>[
-                                  Padding(padding: EdgeInsets.fromLTRB(5,0,5,0),
-                                    child: Icon(Icons.edit,color: Colors.white,size: 15),
-                                  ),
-                                  Center(
-                                    child: Text("Update",style: new TextStyle(
-                                      //fontSize:12,
-                                      fontSize: ScreenUtil.getInstance().setSp(35),
-                                      color: Colors.white,
-                                      fontFamily: 'Montserrat-Regular',
-                                    )),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
                           ),
                         ],
                       ),
@@ -227,7 +226,7 @@ class EditOrderState extends State<EditOrder> {
               Expanded(
                   child:_showitemlist()
               ),
-               Card(
+              Card(
                 margin: EdgeInsets.only(top: 10),
                 elevation: 6,
                 child: Padding(
@@ -240,14 +239,14 @@ class EditOrderState extends State<EditOrder> {
                           Text(
                             'Sub Total:',
                             style: TextStyle(
-                                //fontSize: 14,
+                              //fontSize: 14,
                                 fontSize: ScreenUtil.getInstance().setSp(45),
                                 fontWeight: FontWeight.bold,color: Colors.grey[500]),
                           ),
                           Text(
                             'Rs:  ${order.orderAmount}',
                             style: TextStyle(
-                                //fontSize: 13,
+                              //fontSize: 13,
                                 fontSize: ScreenUtil.getInstance().setSp(40),
                                 fontWeight: FontWeight.normal),
                           ),
@@ -260,14 +259,14 @@ class EditOrderState extends State<EditOrder> {
                           Text(
                             'Shipping Charges:',
                             style: TextStyle(
-                                //fontSize: 14,
+                              //fontSize: 14,
                                 fontSize: ScreenUtil.getInstance().setSp(45),
                                 fontWeight: FontWeight.bold,color: Colors.grey[500]),
                           ),
                           Text(
                             'Rs: ${order.shippingcharge}',
                             style: TextStyle(
-                               // fontSize: 13,
+                              // fontSize: 13,
                                 fontSize: ScreenUtil.getInstance().setSp(40),
                                 fontWeight: FontWeight.w600,color:Color(0xFF609f38)),
                           ),
@@ -280,7 +279,7 @@ class EditOrderState extends State<EditOrder> {
                           Text(
                             'Total:',
                             style: TextStyle(
-                                //fontSize: 16,
+                              //fontSize: 16,
                                 fontSize: ScreenUtil.getInstance().setSp(45),
                                 fontWeight: FontWeight.bold,color:Colors.black),
                           ),
@@ -320,8 +319,8 @@ class EditOrderState extends State<EditOrder> {
                               child: Row(
                                 children: <Widget>[
                                   Padding(padding: EdgeInsets.fromLTRB(5,9,6,9),
-                                      child: Icon(Icons.delete,color: Colors.white,size: 20,),
-                                    ),
+                                    child: Icon(Icons.delete,color: Colors.white,size: 20,),
+                                  ),
                                   Text("Cancel",style: new TextStyle(
                                     //fontSize:12,
                                     fontSize: ScreenUtil.getInstance().setSp(40),
@@ -332,8 +331,8 @@ class EditOrderState extends State<EditOrder> {
                                 ],
                               ),
                             ),
-                            onPressed: () {
-                              Navigator.of(context).pop();
+                            onPressed:  (){
+                              _cancelDialog(context,order.id);
                             },
                           ),
                           MaterialButton(
@@ -363,9 +362,7 @@ class EditOrderState extends State<EditOrder> {
                                 ],
                               ),
                             ),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
+                            onPressed: () { _updateDialog(context); },
                           ),
                         ],
                       ),
@@ -378,7 +375,9 @@ class EditOrderState extends State<EditOrder> {
         ), // This trailing comma makes auto-formatting nicer for build methods.
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+
   }
+
   _deleteDialog(BuildContext context,itemid) async {
     return showDialog(
         context: context,
@@ -386,7 +385,7 @@ class EditOrderState extends State<EditOrder> {
           return AlertDialog(
             backgroundColor: Colors.white70,
             title: Text("Confirm Delete",style: TextStyle(
-                //fontSize:17,
+              //fontSize:17,
                 fontSize: ScreenUtil.getInstance().setSp(60),
                 color: Colors.black,fontWeight: FontWeight.bold)),
             content: SingleChildScrollView(
@@ -399,7 +398,7 @@ class EditOrderState extends State<EditOrder> {
                       children: [
                         TextSpan(
                           text: 'Are you sure to ',style: TextStyle(color: Colors.black,
-                            //fontSize: 14
+                          //fontSize: 14
                           fontSize: ScreenUtil.getInstance().setSp(60),
                         ),
                         ),
@@ -481,9 +480,7 @@ class EditOrderState extends State<EditOrder> {
                         ],
                       ),
                     ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
+                    onPressed: removeItem(itemid),
                   ),
                 ],
               ),
@@ -491,5 +488,252 @@ class EditOrderState extends State<EditOrder> {
           );
         }
     );
+  }
+  removeItem(pId){
+  }
+  _cancelDialog(BuildContext context,itemid) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: Colors.white70,
+            title: Text("Confirmation",style: TextStyle(
+              //fontSize:17,
+                fontSize: ScreenUtil.getInstance().setSp(60),
+                color: Colors.black,fontWeight: FontWeight.bold)),
+            content: SingleChildScrollView(
+              //width: MediaQuery.of(context).size.width * 1.1,
+              //height: MediaQuery.of(context).size.height * 0.3,
+              child: ListBody(
+                children: <Widget>[
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'Are you sure to',style: TextStyle(color: Colors.black,
+                          //fontSize: 14
+                          fontSize: ScreenUtil.getInstance().setSp(60),
+                        ),
+                        ),
+                        TextSpan(
+                          text: 'Cancel Editing Order?',
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                            //fontSize: 15,
+                            fontSize: ScreenUtil.getInstance().setSp(60),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  MaterialButton(
+                    elevation: 9,
+                    colorBrightness: Brightness.dark,
+                    color: Colors.green,
+                    shape: RoundedRectangleBorder(side: BorderSide(
+                        color: Colors.white,
+                        width: 0.3,
+                        style: BorderStyle.solid
+                    ),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child:Container(
+                      child: Row(
+                        children: <Widget>[
+                          /*Padding(padding: EdgeInsets.fromLTRB(5,9,6,9),
+                       // child: Icon(Icons.cancel,color: Colors.white),
+                      ),*/
+                          Text("Cancel",style: new TextStyle(
+                            //fontSize:12,
+                            fontSize: ScreenUtil.getInstance().setSp(40),
+                            color: Colors.white,
+                            fontFamily: 'Montserrat-Regular',
+                          ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  Padding(padding: EdgeInsets.all(10)),
+                  MaterialButton(
+                    elevation: 9,
+                    colorBrightness: Brightness.dark,
+                    color: Colors.red,
+                    shape: RoundedRectangleBorder(side: BorderSide(
+                        color: Colors.white,
+                        width: 0.3,
+                        style: BorderStyle.solid
+                    ),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child:Container(
+                      child: Row(
+                        children: <Widget>[
+                          /*Padding(padding: EdgeInsets.fromLTRB(5,9,6,9),
+                       // child: Icon(Icons.cancel,color: Colors.white),
+                      ),*/
+                          Text("OK",style: new TextStyle(
+                            //fontSize:12,
+                            fontSize: ScreenUtil.getInstance().setSp(40),
+                            color: Colors.white,
+                            fontFamily: 'Montserrat-Regular',
+                          ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    onPressed: getorders,
+                  ),
+                ],
+              ),
+            ],
+          );
+        }
+    );
+  }
+  _updateDialog(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: Colors.white70,
+            title: Text("Confirm Order",style: TextStyle(
+              //fontSize:17,
+                fontSize: ScreenUtil.getInstance().setSp(60),
+                color: Colors.black,fontWeight: FontWeight.bold)),
+            content: SingleChildScrollView(
+              //width: MediaQuery.of(context).size.width * 1.1,
+              //height: MediaQuery.of(context).size.height * 0.3,
+              child: ListBody(
+                children: <Widget>[
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'Are you sure to ',style: TextStyle(color: Colors.black,
+                          //fontSize: 14
+                          fontSize: ScreenUtil.getInstance().setSp(60),
+                        ),
+                        ),
+                        TextSpan(
+                          text: 'update this Order?',
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                            //fontSize: 15,
+                            fontSize: ScreenUtil.getInstance().setSp(60),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  MaterialButton(
+                    elevation: 9,
+                    colorBrightness: Brightness.dark,
+                    color: Colors.green,
+                    shape: RoundedRectangleBorder(side: BorderSide(
+                        color: Colors.white,
+                        width: 0.3,
+                        style: BorderStyle.solid
+                    ),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child:Container(
+                      child: Row(
+                        children: <Widget>[
+                          /*Padding(padding: EdgeInsets.fromLTRB(5,9,6,9),
+                       // child: Icon(Icons.cancel,color: Colors.white),
+                      ),*/
+                          Text("Cancel",style: new TextStyle(
+                            //fontSize:12,
+                            fontSize: ScreenUtil.getInstance().setSp(40),
+                            color: Colors.white,
+                            fontFamily: 'Montserrat-Regular',
+                          ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    onPressed: (){
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  Padding(padding: EdgeInsets.all(10)),
+                  MaterialButton(
+                    elevation: 9,
+                    colorBrightness: Brightness.dark,
+                    color: Colors.red,
+                    shape: RoundedRectangleBorder(side: BorderSide(
+                        color: Colors.white,
+                        width: 0.3,
+                        style: BorderStyle.solid
+                    ),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child:Container(
+                      child: Row(
+                        children: <Widget>[
+                          /*Padding(padding: EdgeInsets.fromLTRB(5,9,6,9),
+                       // child: Icon(Icons.cancel,color: Colors.white),
+                      ),*/
+                          Text("OK",style: new TextStyle(
+                            //fontSize:12,
+                            fontSize: ScreenUtil.getInstance().setSp(40),
+                            color: Colors.white,
+                            fontFamily: 'Montserrat-Regular',
+                          ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    onPressed: (){
+                      updateOrder();
+                      },
+                  ),
+                ],
+              ),
+            ],
+          );
+        }
+    );
+
+  }
+  updateOrder(){
+    ordersData.updateOrder(orders.id);
+
+  }
+  getorders() async {
+    var  prefs = await SharedPreferences.getInstance();
+    var resp =  prefs.get('userData');
+    var user = json.decode(resp);
+
+    var orders = GetOrder(user['token'],user['userId']);
+    await orders.getOrders().then((orders){
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MyOrder(order: orders),
+        ),
+      );
+    });
+
   }
 }

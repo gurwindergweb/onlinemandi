@@ -86,9 +86,24 @@ final dio =Dio();
     );
     notifyListeners();
   }
+  Future updateOrder(oid) async {
+    var url = GlobalConfiguration().getString('baseURL')+'cart/update-order';
+    var order = orderslist.firstWhere((o) =>  o.id == oid);
+    var orderdata = {
+      'id': order.id,
+      'orderAmount': order.orderAmount,
+      'shippingcharge': order.shippingcharge,
+      'grandtotal': order.grandtotal,
+      'products': order.products,
+      'date': order.date,
 
+    };
+
+    var response = await dio.post(url, data: {'cart': json.encode(orderdata), 'pm': 1, 'oid': oid});
+    print(response);
+
+  }
   Future getActiveOrders() async {
-    print('active');
     final url = GlobalConfiguration().getString('baseURL')+'index/active-orders';
     final response = await dio.get(url);
     final List<OrderItem> loadedOrders = [];

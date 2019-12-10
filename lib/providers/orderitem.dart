@@ -11,10 +11,10 @@ import 'database.dart';
 import 'intercept.dart';
 class OrderItem with ChangeNotifier{
   final  id;
-  final double orderAmount;
-  final double shippingcharge;
-  final double grandtotal;
-  final List<CartItem> products;
+   double orderAmount;
+   double shippingcharge;
+   double grandtotal;
+   List<CartItem> products;
   final  date;
   get getid{
     return id;
@@ -28,7 +28,16 @@ class OrderItem with ChangeNotifier{
   get getdate{
     return date;
   }
-
+  calculateorderAmout(){
+    double newtotal = 0;
+    products.forEach((p){
+      newtotal += p.totalprice;
+    });
+     orderAmount = newtotal;
+     orderAmount < 200 ? shippingcharge = 20 : 0;
+     grandtotal = orderAmount + shippingcharge;
+    notifyListeners();
+  }
   OrderItem({
     @required this.id,
     @required this.orderAmount,

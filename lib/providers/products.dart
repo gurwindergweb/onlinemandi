@@ -103,14 +103,16 @@ class Products extends Intercept with ChangeNotifier {
       final List<Product> loadedProducts = [];
 
       extractedData.forEach((prodData) async {
+        print(prodData);
         loadedProducts.add(Product(
           id: prodData['id'].toString(),
           title: prodData['name'],
           description: prodData['hname'],
-          price: 10,//prodData['rate_a'],
+          price: prodData['rate_a']!=''? double.parse(prodData['rate_a']) : 0,
           isFavorite:
           favData.contains(prodData['id']) ? true : false,
           imageUrl: prodData['img'],
+          selectedweight: prodData['selectedweight'].toString(),
           weights: await createWeightList(prodData['weights'],weightModel)
         ));
       });
@@ -125,7 +127,6 @@ class Products extends Intercept with ChangeNotifier {
     List ww = weightModel.items;
     weightList.forEach((value){
      var weight = ww.firstWhere((wd) => wd.id == int.parse(value));
-
       weights.add(
           ProductWeight(id: value, name: weight.name + " " + weight.unit.sname)
       );

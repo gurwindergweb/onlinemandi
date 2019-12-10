@@ -201,58 +201,22 @@ class ProductItemState extends State<ProductItem> {
                             data: Theme.of(context).copyWith(
                               canvasColor: Colors.white,
                             ),
-                            child: /*DropdownButton<String>(
-                          icon: Icon(
-                            Icons.arrow_drop_down,
-                            color: Color(0xFF609f38),
-                            size: 35,
-                          ),
-                          items: [
-                            DropdownMenuItem<String>(
-                              value: "1",
-                              child: Text(
-                                "900gm",
-                                style: TextStyle(color: Color(0xFF609f38),fontSize: 16),
-                              ),
-                            ),
-                            DropdownMenuItem<String>(
-                              value: "2",
-                              child: Text(
-                                "1 kg",style: TextStyle(color: Color(0xFF609f38),fontSize: 16),
-                              ),
-                            ),
-                          ],
-                          onChanged: (value) {
-                          },
-                          value: "1",
-                          elevation: 16,
-                          //style: TextStyle(color: Colors.black, fontSize: 20),
-                          isDense: true,
-                          iconSize: 38.0,
-                        ),*/
-                            new DropdownButton<String>(
+                            child: new DropdownButton<String>(
                               icon: Icon(
                                 Icons.arrow_drop_down,
                                 color: Color(0xFF609f38),
                                 size: 35,
                               ),
-
-                              /* items: product.weights.map((value) {
-                            return new DropdownMenuItem<String>(
-                              value: value.id,
-                              child: new Text(value.name,style: TextStyle(color: Color(0xFF609f38),fontSize: 16),
-
-                            ));
-                          }).toList(),*/
                             items: product.getWeightList(),
 
                               onChanged: (val) {
                                 setState(() {
                                   selectedweight = val;
+
                                 });
 
                               },
-                              value: selectedweight,
+                              value: selectedweight!= null ? selectedweight : product.selectedweight,
                             ),
                           ),
                         ),
@@ -328,7 +292,8 @@ class ProductItemState extends State<ProductItem> {
                 ),
               ),
               onPressed: () {
-                cart.addItem(product.id, product.price, product.title);
+                if(product.price>0){
+                cart.addItem(productId: product.id, image: product.imageUrl, price: product.price, title: product.title, quantity: selectedweight != null ? int.parse(selectedweight) : int.parse(product.selectedweight));
                 Scaffold.of(context).hideCurrentSnackBar();
                 Scaffold.of(context).showSnackBar(
                   SnackBar(
@@ -345,6 +310,19 @@ class ProductItemState extends State<ProductItem> {
                     ),
                   ),
                 );
+                }
+                else{
+                  Scaffold.of(context).hideCurrentSnackBar();
+                  Scaffold.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        "Can't item to cart!",
+                      ),
+                      duration: Duration(seconds: 3),
+
+                    ),
+                  );
+                }
               },
             ),
           ),

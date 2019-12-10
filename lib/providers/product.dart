@@ -10,6 +10,7 @@ class Product with ChangeNotifier {
   final String description;
   final double price;
   final String imageUrl;
+  final String selectedweight;
   final bool quality;
   List weights;
   bool isFavorite;
@@ -20,6 +21,7 @@ class Product with ChangeNotifier {
     @required this.description,
     @required this.price,
     @required this.imageUrl,
+    @required this.selectedweight,
     this.quality = true,
     this.isFavorite = false,
     this.weights,

@@ -1,24 +1,50 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:global_configuration/global_configuration.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/cart.dart';
 
-class CartItem extends StatelessWidget {
-  final String id;
-  final String productId;
-  final double price;
-  final int quantity;
-  final String title;
-
+class CartItem extends StatefulWidget{
+  String id;
+  int productId;
+  double price;
+  String quantity;
+  String unit;
+  String title;
+  String image;
+  @override
+   _CartItemState createState() => _CartItemState(id,productId,price,quantity,unit,title,image);
   CartItem(
-    this.id,
-    this.productId,
-    this.price,
-    this.quantity,
-    this.title,
-  );
+      this.id,
+      this.productId,
+      this.price,
+      this.quantity,
+      this.unit,
+      this.title,
+      this.image,
+      );
+
+}
+class _CartItemState extends State<CartItem>{
+  String id;
+  int productId;
+  double price;
+  String quantity;
+  String unit;
+  String title;
+  String image;
+  _CartItemState(
+      this.id,
+      this.productId,
+      this.price,
+      this.quantity,
+      this.unit,
+      this.title,
+      this.image,
+      );
+
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +91,7 @@ class CartItem extends StatelessWidget {
         );
       },
       onDismissed: (direction) {
-        Provider.of<Cart>(context, listen: false).removeItem(productId);
+        Provider.of<Cart>(context, listen: false).removeItem(productId.toString());
       },
       child: Card(
         elevation:2,
@@ -94,9 +120,7 @@ class CartItem extends StatelessWidget {
                 child: Padding(
                   padding: EdgeInsets.all(2),
                   child:CircleAvatar(
-                    backgroundImage: AssetImage(
-                      'images/download (1).jpg',
-                    ),
+                    backgroundImage: NetworkImage(GlobalConfiguration().getString("assetsURL")+image),
                     backgroundColor: Colors.white12,
                     radius: 25,
                   ),
@@ -121,10 +145,10 @@ class CartItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Text(title,style: TextStyle(fontSize: 15,color: Colors.black,fontWeight: FontWeight.bold)),
-                  Text('Quantity \: ${(quantity)}',style: TextStyle(fontSize: 14,color: Colors.black)),
+                  Text('Quantity \: $quantity $unit',style: TextStyle(fontSize: 14,color: Colors.black)),
                   Padding(
                     padding: EdgeInsets.only(top: 4),
-                    child: Text('Total:  \$${(price * quantity)}',style: TextStyle(fontSize: 14,color: Colors.black,fontWeight: FontWeight.bold)),
+                    child: Text('Total:  Rs ${price }',style: TextStyle(fontSize: 14,color: Colors.black,fontWeight: FontWeight.bold)),
                   ),
                 ],
               ),
@@ -134,4 +158,5 @@ class CartItem extends StatelessWidget {
       ),
     );
   }
+
 }

@@ -53,6 +53,12 @@ class MyApp extends StatelessWidget {
             previousProducts == null ? [] : previousProducts.items,
           ),
         ),
+        ChangeNotifierProxyProvider<Auth, Weights>(
+          builder: (ctx, auth, previousProducts) => Weights(
+            auth.token,
+            auth.userId,
+          ),
+        ),
         ChangeNotifierProvider.value(
           value: Cart(),
         ),

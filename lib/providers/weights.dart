@@ -160,6 +160,9 @@ class Weights extends Intercept with ChangeNotifier {
     int res = await dbClient.delete(table);
     return res;
   }
+  getweightbyid(id){
+   return _items.firstWhere((item) =>item.id == id);
+  }
   Future<bool> createWeights() async {
     final prefs = await SharedPreferences.getInstance();
     json.decode(prefs.getString('weightData'));
