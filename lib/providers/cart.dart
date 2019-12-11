@@ -6,7 +6,7 @@ class CartItem with ChangeNotifier{
   final String pId;
   final String title;
   var quantity;
-  final String grade;
+  final int grade;
   double totalprice;
   final double discountrate;
   final double rate;

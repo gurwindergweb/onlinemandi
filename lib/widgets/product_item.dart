@@ -120,7 +120,7 @@ class ProductItemState extends State<ProductItem> {
                                 ),
                               ),
                               Text(
-                                product.quality ? 'Premium' : 'Regular',
+                                product.grade == 0  ? 'Premium' : 'Regular',
                                 style: TextStyle(
                                   fontWeight: FontWeight.normal,
                                   fontSize: 16,

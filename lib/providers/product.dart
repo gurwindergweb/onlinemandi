@@ -12,6 +12,7 @@ class Product with ChangeNotifier {
   final String imageUrl;
   final String selectedweight;
   final bool quality;
+  final int grade;
   List weights;
   bool isFavorite;
 
@@ -22,7 +23,9 @@ class Product with ChangeNotifier {
     @required this.price,
     @required this.imageUrl,
     @required this.selectedweight,
+    @required this.grade,
     this.quality = true,
+
     this.isFavorite = false,
     this.weights,
   });

@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import '../providers/cart.dart' show Cart;
 import '../widgets/cart_item.dart';
 import '../providers/orders.dart';
+import 'checkout.dart';
 
 class CartScreen extends StatefulWidget{
   static const routeName = '/cart';
@@ -38,10 +39,10 @@ class CartScreenState extends State<CartScreen> {
         //centerTitle: true,
         actions: <Widget>[
           Padding(padding: EdgeInsets.all(10),
-          child: InkWell(
+          child: cart.items.keys.length> 0 ? InkWell(
             child: Icon(Icons.delete_sweep, color: Colors.white),
             onTap: (){_clearDialog(context);},
-          ),
+          ): null
           ),
         ],
       ),
@@ -50,7 +51,7 @@ class CartScreenState extends State<CartScreen> {
           SizedBox(height: 10),
           Container(
             child: Expanded(
-              child:  ListView.builder(
+              child: cart.items.keys.length> 0 ? ListView.builder(
                   itemCount: cart.items.keys.length,
 
                   itemBuilder: (ctx, i){
@@ -177,7 +178,6 @@ class CartScreenState extends State<CartScreen> {
                                       onChanged: (value) {
                                         prod = products.findById(ct[i]);
                                         setState(() {
-
                                           var wdata = prod.weights.firstWhere((w)=>w.id == value);
                                           var weightdata = wdata.name.split(' ');
                                           var newtotal = weightdata[0];
@@ -225,7 +225,7 @@ class CartScreenState extends State<CartScreen> {
                       ],
                     );
                      }
-              ),
+              ) : Center(child: Text('Empty Cart!'),)
             ),
           ),
           Card(
@@ -545,7 +545,7 @@ class _OrderButtonState extends State<OrderButton> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialButton(
+    /*return MaterialButton(
       elevation: 8,
       //minWidth: 100.0,
       //height: 40.0,
@@ -558,7 +558,7 @@ class _OrderButtonState extends State<OrderButton> {
       ),
         borderRadius: BorderRadius.circular(40),
       ),
-      child: _isLoading ? CircularProgressIndicator() : Text('CHECKOUT',style: TextStyle(color: Colors.white,fontSize: 12)),
+      child: _isLoading ? CircularProgressIndicator() : Text('Checkout',style: TextStyle(color: Colors.white,fontSize: 12)),
       onPressed: (widget.cart.totalAmount <= 0 || _isLoading)
           ? null
           : () async {
@@ -573,6 +573,27 @@ class _OrderButtonState extends State<OrderButton> {
                 _isLoading = false;
               });
               widget.cart.clear();
+            },
+      textColor: Theme.of(context).primaryColor,
+    );*/
+    return MaterialButton(
+      elevation: 8,
+      //minWidth: 100.0,
+      //height: 40.0,
+      colorBrightness: Brightness.dark,
+      color: new Color(0xFF609f38),
+      shape: RoundedRectangleBorder(side: BorderSide(
+          color: Colors.white,
+          width: 1.3,
+          style: BorderStyle.solid
+      ),
+        borderRadius: BorderRadius.circular(40),
+      ),
+      child: _isLoading ? CircularProgressIndicator() : Text('Checkout',style: TextStyle(color: Colors.white,fontSize: 12)),
+      onPressed: (widget.cart.totalAmount <= 0 || _isLoading)
+          ? null
+          : () {
+              Navigator.of(context).pushNamed(Checkout.routeName);
             },
       textColor: Theme.of(context).primaryColor,
     );

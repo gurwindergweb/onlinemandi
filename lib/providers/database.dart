@@ -1,10 +1,11 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:path_provider/path_provider.dart';
 
-class DBProvider {
+class DBProvider{
   DBProvider._();
   static final DBProvider db = DBProvider._();
   static Database _database;

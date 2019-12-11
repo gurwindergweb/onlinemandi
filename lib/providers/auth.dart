@@ -19,6 +19,7 @@ class Auth with ChangeNotifier {
   String _userId;
   String _email;
   String _username;
+  String _location;
   int _cityId;
   String _city;
   String _joiningDate;
@@ -73,10 +74,12 @@ class Auth with ChangeNotifier {
       if (responseData['result'] != 1) {
         throw HttpException('Login failed, please try again.');
       }
+      print('responseData');
       print(responseData);
       _username = responseData['username'];
       _token = responseData['access_token'];
       _userId = responseData['details']['email'];
+      _location = responseData['details']['location'];
       _email = responseData['details']['email'];
       _cityId =  responseData['details']['cid'];
       _city = responseData['details']['city'];
@@ -109,6 +112,7 @@ class Auth with ChangeNotifier {
           'userId': _userId,
           'cityId': _cityId,
           'city': _city,
+          'location': _location,
           'contact1': _contact1,
           'contact2': _contact2,
           'sellerContact1': _sellerContact1,

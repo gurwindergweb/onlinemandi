@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
@@ -103,24 +104,37 @@ class Products extends Intercept with ChangeNotifier {
       final List<Product> loadedProducts = [];
 
       extractedData.forEach((prodData) async {
-        print(prodData);
-        loadedProducts.add(Product(
-          id: prodData['id'].toString(),
-          title: prodData['name'],
-          description: prodData['hname'],
-          price: prodData['rate_a']!=''? double.parse(prodData['rate_a']) : 0,
-          isFavorite:
-          favData.contains(prodData['id']) ? true : false,
-          imageUrl: prodData['img'],
-          selectedweight: prodData['selectedweight'].toString(),
-          weights: await createWeightList(prodData['weights'],weightModel)
-        ));
+        if(prodData['rate_a']!=''){
+          createProduct(prodData: prodData,grade: 0,favData: favData,weightModel: weightModel).then((data){
+            loadedProducts.add(data);
+          });
+
+        }
+        if(prodData['rate_b']!=''){
+          createProduct(prodData: prodData,grade: 1,favData: favData,weightModel: weightModel).then((data){
+            loadedProducts.add(data);
+          });
+
+        }
       });
       _items = loadedProducts;
       notifyListeners();
     } catch (error) {
       throw (error);
     }
+  }
+  Future<Product> createProduct({prodData,grade,favData,weightModel}) async {
+   return Product(
+        id: prodData['id'].toString(),
+        title: prodData['name'],
+        description: prodData['hname'],
+        price: grade == 0 ? double.parse(prodData['rate_a']): double.parse(prodData['rate_b']),
+        isFavorite: favData.contains(prodData['id']) ? true : false,
+        grade: grade,
+        imageUrl: prodData['img'],
+        selectedweight: prodData['selectedweight'].toString(),
+        weights: await createWeightList(prodData['weights'],weightModel)
+    );
   }
  Future<List> createWeightList(List weightList, Weights weightModel) async {
     List<ProductWeight> weights = [];

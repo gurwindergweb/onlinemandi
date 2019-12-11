@@ -58,9 +58,23 @@ final dio =Dio();
 
 
   Future<void> addOrder(List<CartItem> cartProducts, double total) async {
-    final url = 'https://flutter-update.firebaseio.com/orders/$userId.json?auth=$authToken';
+    final url = GlobalConfiguration().getString('baseURL')+'cart/place-order';
+    var order = [];
+    cartProducts.forEach((cp){
+      order.add(json.encode({
+        'id': cp.id,
+        'w': cp.quantity,
+        'g': '',
+      }));
+    });
     final timestamp = DateTime.now();
-    final response = await http.post(
+   var response = await dio.post(url,data: {'cart': order,'pm': 1});
+    print('response');
+    if(response.statusCode == 500){
+      print(response.data);
+    }
+
+    /*final response = await http.post(
       url,
       body: json.encode({
         'orderAmount': total,
@@ -74,8 +88,8 @@ final dio =Dio();
                 })
             .toList(),
       }),
-    );
-    orderslist.insert(
+    );*/
+    /*orderslist.insert(
       0,
       OrderItem(
         id: json.decode(response.body)['name'],
@@ -83,7 +97,7 @@ final dio =Dio();
         date: timestamp,
         products: cartProducts,
       ),
-    );
+    );*/
     notifyListeners();
   }
   Future updateOrder(oid) async {
