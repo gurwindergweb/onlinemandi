@@ -174,4 +174,10 @@ class Weights extends Intercept with ChangeNotifier {
     // }
     return [..._items];
   }
+  List<Unit> get unitItems {
+    // if (_showFavoritesOnly) {
+    //   return _items.where((prodItem) => prodItem.isFavorite).toList();
+    // }
+    return [..._unitItems];
+  }
 }

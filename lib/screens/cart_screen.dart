@@ -19,14 +19,14 @@ class CartScreen extends StatefulWidget{
 class CartScreenState extends State<CartScreen> {
   Product prod;
   var products;
-
   Cart cart;
 
-
+  var p_id;
 
   @override
   Widget build(BuildContext context) {
      cart = Provider.of<Cart>(context);
+     print(cart);
      products = Provider.of<Products>(context);
      ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
     return Scaffold(
@@ -56,9 +56,14 @@ class CartScreenState extends State<CartScreen> {
 
                   itemBuilder: (ctx, i){
                     var ct = cart.items.keys.toList();
-                    prod = products.findById(ct[i]);
-                    print('product ${prod.price}');
-
+                    if(ct[i].contains('_')){
+                       var data = ct[i].split('_');
+                       p_id = data[0];
+                    }
+                    else{
+                       p_id = ct[i];
+                    }
+                    prod = products.find(p_id,cart.items[ct[i]].grade);
                     final SlidableController slidableController = SlidableController();
                     return  Slidable(
                       actionPane: SlidableDrawerActionPane(),
@@ -99,7 +104,7 @@ class CartScreenState extends State<CartScreen> {
                                 child: InkWell(
                                   child: Icon(Icons.delete,size: 23,color: Colors.red),
                                   onTap: (){
-                                    _clearSingleItemDialog(context,int.parse(ct[i]));
+                                    _clearSingleItemDialog(context,ct[i]);
                                   },
                                 ),
                               ),
@@ -127,6 +132,22 @@ class CartScreenState extends State<CartScreen> {
                                       fontWeight: FontWeight.bold),
                                   ),
                                   Text('${cart.items['${ct[i]}'].quantity} ${cart.items['${ct[i]}'].unit}',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      //fontSize: 13,
+                                      fontSize: ScreenUtil.instance.setSp(40),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  Text( 'Quality:',style: TextStyle(color: Color(0xFF609f38),
+                                      // fontSize: 13,
+                                      fontSize: ScreenUtil.instance.setSp(45),
+                                      fontWeight: FontWeight.bold),
+                                  ),
+                                  Text('${cart.items['${ct[i]}'].grade == 0 ? 'Premium' : 'Regular' }',
                                     style: TextStyle(
                                       color: Colors.black,
                                       //fontSize: 13,
@@ -176,7 +197,7 @@ class CartScreenState extends State<CartScreen> {
                                       ),
                                       items: prod.getWeightList(),
                                       onChanged: (value) {
-                                        prod = products.findById(ct[i]);
+                                        //prod = products.findById(p_id);
                                         setState(() {
                                           var wdata = prod.weights.firstWhere((w)=>w.id == value);
                                           var weightdata = wdata.name.split(' ');

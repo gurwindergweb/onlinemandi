@@ -4,11 +4,14 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 import './cart.dart';
 import 'database.dart';
 import 'intercept.dart';
 import 'orderitem.dart';
+import 'weight.dart';
+import 'weights.dart';
 
 
 
@@ -57,48 +60,36 @@ final dio =Dio();
   }
 
 
-  Future<void> addOrder(List<CartItem> cartProducts, double total) async {
+  Future addOrder(List<CartItem> cartProducts, double total,context) async {
+    var weights = Provider.of<Weights>(context);
+    var units = Provider.of<Weights>(context);
+
+    //weights.items.firstWhere(test);
     final url = GlobalConfiguration().getString('baseURL')+'cart/place-order';
     var order = [];
     cartProducts.forEach((cp){
+      var udata =units.unitItems.firstWhere((ud) =>ud.sname == cp.unit);
+      var wdata = weights.items.firstWhere((wd) => wd.unitId == udata.id && wd.name == cp.quantity);
       order.add(json.encode({
-        'id': cp.id,
-        'w': cp.quantity,
-        'g': '',
+        'id': cp.pId,
+        'w': wdata.id,
+        'g': cp.grade,
       }));
     });
     final timestamp = DateTime.now();
    var response = await dio.post(url,data: {'cart': order,'pm': 1});
-    print('response');
-    if(response.statusCode == 500){
-      print(response.data);
-    }
-
-    /*final response = await http.post(
-      url,
-      body: json.encode({
-        'orderAmount': total,
-        'date': timestamp.toIso8601String(),
-        'products': cartProducts
-            .map((cp) => {
-                  'id': cp.id,
-                  'title': cp.title,
-                  'quantity': cp.quantity,
-                  'price': cp.totalprice,
-                })
-            .toList(),
-      }),
-    );*/
-    /*orderslist.insert(
+   print(response.data);
+    orderslist.insert(
       0,
       OrderItem(
-        id: json.decode(response.body)['name'],
+        id: response.data['orderId'],
         orderAmount: total,
         date: timestamp,
         products: cartProducts,
       ),
-    );*/
+    );
     notifyListeners();
+    return response.data;
   }
   Future updateOrder(oid) async {
     var url = GlobalConfiguration().getString('baseURL')+'cart/update-order';
@@ -136,7 +127,7 @@ final dio =Dio();
                       id: item['pid'].toString(),
                       title: item['n'].toString(),
                       quantity:  item['q'],
-                      grade: item['g'],
+                      grade: int.parse(item['g']),
                       totalprice: double.parse(item['tp']),
                       discountrate: double.parse(item['dr']),
 

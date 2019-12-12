@@ -75,6 +75,9 @@ class Products extends Intercept with ChangeNotifier {
   Product findById(String id) {
     return _items.firstWhere((prod) => prod.id == id);
   }
+  Product find(String id,grade) {
+    return _items.firstWhere((prod) => prod.id == id && prod.grade == grade);
+  }
 
   // void showFavoritesOnly() {
   //   _showFavoritesOnly = true;
@@ -104,6 +107,7 @@ class Products extends Intercept with ChangeNotifier {
       final List<Product> loadedProducts = [];
 
       extractedData.forEach((prodData) async {
+
         if(prodData['rate_a']!=''){
           createProduct(prodData: prodData,grade: 0,favData: favData,weightModel: weightModel).then((data){
             loadedProducts.add(data);

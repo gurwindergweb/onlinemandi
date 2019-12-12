@@ -293,7 +293,7 @@ class ProductItemState extends State<ProductItem> {
               ),
               onPressed: () {
                 if(product.price>0){
-                cart.addItem(productId: product.id, image: product.imageUrl, price: product.price, title: product.title, quantity: selectedweight != null ? int.parse(selectedweight) : int.parse(product.selectedweight));
+                cart.addItem(productId: product.id, image: product.imageUrl,grade: product.grade, price: product.price, title: product.title, quantity: selectedweight != null ? int.parse(selectedweight) : int.parse(product.selectedweight));
                 Scaffold.of(context).hideCurrentSnackBar();
                 Scaffold.of(context).showSnackBar(
                   SnackBar(

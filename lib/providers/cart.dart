@@ -111,6 +111,7 @@ calculteShippingCharge(){
     String image,
     double price,
     String title,
+    int grade,
     int quantity,
   }
   ) {
@@ -121,18 +122,35 @@ calculteShippingCharge(){
         (existingCartItem) => CartItem(
               id: existingCartItem.id,
               pId: existingCartItem.pId,
+              grade: existingCartItem.grade,
               image : existingCartItem.image,
               title: existingCartItem.title,
               totalprice: existingCartItem.totalprice,
-              quantity: existingCartItem.quantity ,
+              quantity: quantity ,
             ),
       );
-    } else {
+    }
+    else if(_items.containsKey(productId+'_'+grade.toString())){
+      _items.update(
+        productId+'_'+grade.toString(),
+            (existingCartItem) => CartItem(
+          id: existingCartItem.id,
+          pId: existingCartItem.pId,
+          grade: existingCartItem.grade,
+          image : existingCartItem.image,
+          title: existingCartItem.title,
+          totalprice: existingCartItem.totalprice,
+          quantity: quantity ,
+        ),
+      );
+    }
+    else {
       _items.putIfAbsent(
-        productId,
+        productId+'_'+grade.toString(),
         () => CartItem(
               id: DateTime.now().toString(),
               pId: productId,
+              grade: grade,
               image: image,
               title: title,
               totalprice: price,

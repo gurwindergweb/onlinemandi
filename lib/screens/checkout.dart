@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/app_drawer.dart';
 import 'cart_screen.dart';
+import 'thankyou.dart';
 
 class Checkout extends StatefulWidget {
   @override
@@ -33,301 +34,376 @@ class CheckoutState extends State<Checkout> {
   @override
   Widget build(BuildContext context) {
     var cart = Provider.of<Cart>(context);
-    print('userData');
-    print(userData);
-    ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
+    ScreenUtil.instance = ScreenUtil()..init(context);
     return Scaffold(
+      backgroundColor: Color(0xFFf5f5f0),
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-          title: Text('Checkout',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
+          title: Text('Checkout',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,
+            fontSize: ScreenUtil.getInstance().setSp(60),
+          )),
           backgroundColor: Color(0xFF609f38),
           iconTheme: IconThemeData(color: Colors.white),
           centerTitle: true
       ),
-      body: Container(
-        padding: const EdgeInsets.all(15.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              alignment: Alignment.centerLeft,
-              child: Text('Address Details',
-                style: TextStyle(
-                  fontSize: ScreenUtil.instance.setSp(50),
-                  fontWeight: FontWeight.bold,
-                )
-                ,
-              ),
+      body: SingleChildScrollView(
+        child:Container(
+          padding: const EdgeInsets.all(10.0),
+          /*decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromRGBO(204, 255, 255, 1).withOpacity(0.9),
+                Color.fromRGBO(153,153,102,1).withOpacity(0.9),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              stops: [0, 6],
             ),
-            Card(
-              margin: EdgeInsets.all(10),
-              child: Padding(
+          ),*/
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Card(
+                elevation: 6,
+                margin: EdgeInsets.only(top: 10),
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Color.fromRGBO(255, 255, 255, 1).withOpacity(0.5),
+                        Color.fromRGBO (153, 255, 153, 1).withOpacity(0.6),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      stops: [0, 6],
+                    ),
+                  ),
                   padding: EdgeInsets.all(10),
-                child: Column(
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text('Name',
-                          style: TextStyle(
-                           fontSize: ScreenUtil.instance.setSp(40),
-                           fontWeight: FontWeight.bold,
-                          ),
-                       ),
-                       Text('${userData['username']}',
-                        style: TextStyle(
-                          fontSize: ScreenUtil.instance.setSp(40),
-                          fontWeight: FontWeight.bold,
-                        ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text('Address Details',style: TextStyle(color: Color(0xFF609f38),fontWeight: FontWeight.bold,
+                        //fontSize: 17,
+                        fontSize: ScreenUtil.getInstance().setSp(45),
+                      )),
+                      Padding(padding: EdgeInsets.fromLTRB(0,10,0,10)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text('Name:',style: TextStyle(fontWeight: FontWeight.bold,
+                            //fontSize: 14
+                            fontSize: ScreenUtil.getInstance().setSp(40),
+                          )),
+                          Text('${userData['username']}',style: TextStyle(color: Colors.black,
+                            fontSize: ScreenUtil.getInstance().setSp(40),
+                          )),
+                        ],
                       ),
-
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text('Address',
-                          style: TextStyle(
-                            fontSize: ScreenUtil.instance.setSp(40),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text('${userData['location']}',
-                          style: TextStyle(
-                            fontSize: ScreenUtil.instance.setSp(40),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text('Area',
-                          style: TextStyle(
-                            fontSize: ScreenUtil.instance.setSp(40),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text('${userData['city']}',
-                          style: TextStyle(
-                            fontSize: ScreenUtil.instance.setSp(40),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text('City',
-                          style: TextStyle(
-                            fontSize: ScreenUtil.instance.setSp(40),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text('${userData['city']}',
-                          style: TextStyle(
-                            fontSize: ScreenUtil.instance.setSp(40),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text('Contact',
-                          style: TextStyle(
-                            fontSize: ScreenUtil.instance.setSp(40),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text('${userData['contact1']}, ${userData['contact2']}',
-                          style: TextStyle(
-                            fontSize: ScreenUtil.instance.setSp(40),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-
-                      ],
-                    ),
-                  ],
+                      Padding(padding: EdgeInsets.fromLTRB(0,10,0,0)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text('Address:',style: TextStyle(fontWeight: FontWeight.bold,
+                            //fontSize: 14
+                            fontSize: ScreenUtil.getInstance().setSp(40),
+                          )),
+                          Text('${userData['location']}',style: TextStyle(color: Colors.black,
+                            fontSize: ScreenUtil.getInstance().setSp(40),
+                          )),
+                        ],
+                      ),
+                      Padding(padding: EdgeInsets.fromLTRB(0,10,0,0)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text('Area:',style: TextStyle(fontWeight: FontWeight.bold,
+                            //fontSize: 14
+                            fontSize: ScreenUtil.getInstance().setSp(40),
+                          )),
+                          Text('${userData['city']}',style: TextStyle(color: Colors.black,
+                            fontSize: ScreenUtil.getInstance().setSp(40),
+                          )),
+                        ],
+                      ),
+                      Padding(padding: EdgeInsets.fromLTRB(0,10,0,0)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text('City:',style: TextStyle(fontWeight: FontWeight.bold,
+                            //fontSize: 14
+                            fontSize: ScreenUtil.getInstance().setSp(40),
+                          )),
+                          Text('${userData['city']}',style: TextStyle(color: Colors.black,
+                            fontSize: ScreenUtil.getInstance().setSp(40),
+                          )),
+                        ],
+                      ),
+                      Padding(padding: EdgeInsets.fromLTRB(0,10,0,0)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text('Contact No.(s)',style: TextStyle(fontWeight: FontWeight.bold,
+                            //fontSize: 14
+                            fontSize: ScreenUtil.getInstance().setSp(40),
+                          )),
+                          Text('${userData['contact1']} ${userData['contact2']!='' ? ', '+userData['contact2'] : ''}',style: TextStyle(color: Colors.black,
+                            fontSize: ScreenUtil.getInstance().setSp(40),
+                          )),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Padding(padding: EdgeInsets.all(10),),
-            Container(
-              alignment: Alignment.centerLeft,
-              child: Text('Order Details',
-                style: TextStyle(
-                  fontSize: ScreenUtil.instance.setSp(50),
-                  fontWeight: FontWeight.bold,
-                )
-                ,
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.all(10),
-              child: Padding(
-                padding: EdgeInsets.all(10),
-                child: Column(
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text('Sub Total',
-                          style: TextStyle(
-                            fontSize: ScreenUtil.instance.setSp(40),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text('Rs ${cart.totalAmount}',
-                          style: TextStyle(
-                            fontSize: ScreenUtil.instance.setSp(40),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-
+              Card(
+                elevation: 6,
+                margin: EdgeInsets.only(top: 10),
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Color.fromRGBO(255, 255, 255, 1).withOpacity(0.5),
+                        Color.fromRGBO (153, 255, 153, 1).withOpacity(0.6),
                       ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      stops: [0, 6],
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text('Shipping Charges',
-                          style: TextStyle(
-                            fontSize: ScreenUtil.instance.setSp(40),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text('Rs ${cart.shippingcharge}',
-                          style: TextStyle(
-                            fontSize: ScreenUtil.instance.setSp(40),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text('Grand Total',
-                          style: TextStyle(
-                            fontSize: ScreenUtil.instance.setSp(40),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text('Rs ${cart.grandTotal}',
-                          style: TextStyle(
-                            fontSize: ScreenUtil.instance.setSp(40),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-
-                      ],
-                    ),
-                  ],
+                  ),
+                  padding: EdgeInsets.all(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text('Order Details',style: TextStyle(color: Color(0xFF609f38),fontWeight: FontWeight.bold,
+                        //fontSize: 17
+                        fontSize: ScreenUtil.getInstance().setSp(45),
+                      )),
+                      Padding(padding: EdgeInsets.fromLTRB(0,10,0,10)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text('Sub Total:',style: TextStyle(fontWeight: FontWeight.bold,
+                            //fontSize: 14
+                            fontSize: ScreenUtil.getInstance().setSp(40),
+                          )),
+                          Text('Rs: ${cart.totalAmount}',style: TextStyle(color: Colors.black,
+                            fontSize: ScreenUtil.getInstance().setSp(40),
+                          )),
+                        ],
+                      ),
+                      Padding(padding: EdgeInsets.fromLTRB(0,10,0,0)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text('Shipping Charges:',style: TextStyle(fontWeight: FontWeight.bold,
+                            //fontSize: 14
+                            fontSize: ScreenUtil.getInstance().setSp(40),
+                          )),
+                          Text('Rs: ${cart.shippingcharge}',style: TextStyle(color: Colors.black,
+                            fontSize: ScreenUtil.getInstance().setSp(40),
+                          )),
+                        ],
+                      ),
+                      Padding(padding: EdgeInsets.fromLTRB(0,10,0,0)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text('Grand Total:',style: TextStyle(fontWeight: FontWeight.bold,
+                            //fontSize: 14
+                            fontSize: ScreenUtil.getInstance().setSp(40),
+                          )),
+                          Text('Rs: ${cart.grandTotal}',style: TextStyle(color: Colors.black,
+                            fontSize: ScreenUtil.getInstance().setSp(40),
+                          )),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Padding(padding: EdgeInsets.all(10),),
-            Container(
-              alignment: Alignment.centerLeft,
-              child: Text('Payment Method',
-                style: TextStyle(
-                  fontSize: ScreenUtil.instance.setSp(50),
-                  fontWeight: FontWeight.bold,
-                )
-                ,
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.all(10),
-              child: Padding(
-                padding: EdgeInsets.all(10),
-                child: Column(
-                  children: <Widget>[
+              Card(
+                elevation: 6,
+                margin: EdgeInsets.only(top: 10),
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Color.fromRGBO(255, 255, 255, 1).withOpacity(0.5),
+                        Color.fromRGBO (153, 255, 153, 1).withOpacity(0.6),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      stops: [0, 6],
+                    ),
+                  ),
+                  padding: EdgeInsets.all(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text('Payment Method',style: TextStyle(color: Color(0xFF609f38),fontWeight: FontWeight.bold,
+                        //fontSize: 17
+                        fontSize: ScreenUtil.getInstance().setSp(45),
+                      )),
+                      Padding(padding: EdgeInsets.fromLTRB(0,10,0,10)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text('Cash on Delivery:',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
+                            //fontSize: 16
+                            fontSize: ScreenUtil.getInstance().setSp(40),
+                          )),
+                          Icon(Icons.check_circle,
+                            //color: Color(0xFF609f38),
+                            color: Color(0xFF609f38),
+                            size: 18,
+                          ),
+                        ],
+                      ),
+                      /*Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Padding(padding: EdgeInsets.fromLTRB(0,10,0,0),
+                          child: Text('Handling Charges:',style: TextStyle(fontWeight: FontWeight.bold)),
+                        ),
+                        Text('Rs: 0.00'),
+                      ],
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text('Cash on delivery',
-                          style: TextStyle(
-                            fontSize: ScreenUtil.instance.setSp(40),
-                            fontWeight: FontWeight.bold,
-                          ),
+                        Padding(padding: EdgeInsets.fromLTRB(0,10,0,0),
+                          child: Text('Grand Total:',style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
-                        Icon(
-                          Icons.check,
-                          size: 20,
-                        ),
-
+                        Text('Rs: 350.00'),
                       ],
-                    )
-                  ],
+                    ),*/
+                      /*ListTile(contentPadding: EdgeInsets.all(0),
+                      title: Text('Grand Total:'),
+                      trailing: Text('Rs: 350.00'),
+                      dense: true,
+                    ),*/
+                    ],
+                  ),
                 ),
               ),
-            ),
+              Card(
+                elevation: 6,
+                margin: EdgeInsets.only(top: 10),
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Color.fromRGBO(255, 255, 255, 1).withOpacity(0.5),
+                        Color.fromRGBO (153, 255, 153, 1).withOpacity(0.6),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      stops: [0, 6],
+                    ),
+                  ),
+                  padding: EdgeInsets.all(10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      MaterialButton(
+                        elevation: 9,
+                        //minWidth: 180.0,
+                        colorBrightness: Brightness.dark,
+                        color: Colors.red,
+                        shape: RoundedRectangleBorder(side: BorderSide(
+                            color: Colors.white,
+                            width: 0.3,
+                            style: BorderStyle.solid
+                        ),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child:Container(
+                          child: Row(
+                            children: <Widget>[
+                              Padding(padding: EdgeInsets.fromLTRB(5,10,6,10),
+                                child: Icon(Icons.shopping_cart,size:18),
+                              ),
+                              Text("Go To Cart",style: new TextStyle(
+                                //fontSize:13,
+                                fontSize: ScreenUtil.getInstance().setSp(40),
+                                color: Colors.white,
+                                fontFamily: 'Montserrat-Regular',
+                              ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(CartScreen.routeName);
+                        },
+                      ),
+                      MaterialButton(
+                        elevation: 9,
+                        //minWidth: 180.0,
+                        //height: 30.0,
+                        colorBrightness: Brightness.dark,
+                        color: new Color(0xFF609f38),
+                        shape: RoundedRectangleBorder(side: BorderSide(
+                            color: Colors.white,
+                            width: 0.3,
+                            style: BorderStyle.solid
+                        ),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child:Container(
+                          child: Row(
+                            children: <Widget>[
+                              Padding(padding: EdgeInsets.fromLTRB(5,10,6,10),
+                                child: Icon(Icons.check_circle,size:18),
+                              ),
+                              Text("Place Order",style: new TextStyle(
+                                //fontSize:14,
+                                fontSize: ScreenUtil.getInstance().setSp(40),
+                                color: Colors.white,
+                                fontFamily: 'Montserrat-Regular',
+                              ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        onPressed: () async {
+                          setState(() {
+                            _isLoading = true;
+                          });
+                          Provider.of<Orders>(context, listen: false).addOrder(
+                            cart.items.values.toList(),
+                            cart.totalAmount,
+                            context
+                          ).then((res){
+                            setState(() {
+                              _isLoading = false;
+                            });
+                            print('response');
+                            if(res['result'] == 1){
+                               cart.clear();
+                               Navigator.of(context).push(MaterialPageRoute<Null>(
+                                builder: (BuildContext context) {
+                                  return Thankyou(orderId: res['orderId'],sellerContact: res['contact']);
+                                }
+                            ));
+                            }
 
-          ],
-        ),
-      ),
-      persistentFooterButtons: <Widget>[
-          MaterialButton(
-          elevation: 8,
-          //minWidth: 100.0,
-          //height: 40.0,
-          colorBrightness: Brightness.dark,
-          color: new Color(0xFF609f38),
-          shape: RoundedRectangleBorder(side: BorderSide(
-              color: Colors.white,
-              width: 1.3,
-              style: BorderStyle.solid
-          ),
-            borderRadius: BorderRadius.circular(40),
-          ),
-          child: _isLoading ? CircularProgressIndicator() : Text('Go to Cart',style: TextStyle(color: Colors.white,fontSize: 12)),
-          onPressed:  () {
-              Navigator.of(context).pushNamed(CartScreen.routeName);
-          },
-          textColor: Theme.of(context).primaryColor,
-        ),
-        MaterialButton(
-          elevation: 8,
-          //minWidth: 100.0,
-          //height: 40.0,
-          colorBrightness: Brightness.dark,
-          color: new Color(0xFF609f38),
-          shape: RoundedRectangleBorder(side: BorderSide(
-              color: Colors.white,
-              width: 1.3,
-              style: BorderStyle.solid
-          ),
-            borderRadius: BorderRadius.circular(40),
-          ),
-          child: _isLoading ? CircularProgressIndicator() : Text('Place Order',style: TextStyle(color: Colors.white,fontSize: 12)),
-          onPressed:  (cart.totalAmount <= 0 || _isLoading)
-    ? null
-        : () async {
-    setState(() {
-    _isLoading = true;
-    });
-    await Provider.of<Orders>(context, listen: false).addOrder(
-    cart.items.values.toList(),
-    cart.totalAmount,
-    );
-    setState(() {
-    _isLoading = false;
-    });
-    cart.clear();
-    },    textColor: Theme.of(context).primaryColor,
-        ),
+                          });
 
-      ],
-      // This trailing comma makes auto-formatting nicer for build methods.
+
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ), // This trailing comma makes auto-formatting nicer for build methods.
+      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
-
 }
