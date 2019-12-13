@@ -46,7 +46,7 @@ class CheckoutState extends State<Checkout> {
           iconTheme: IconThemeData(color: Colors.white),
           centerTitle: true
       ),
-      body: SingleChildScrollView(
+      body: _isLoading != true ? SingleChildScrollView(
         child:Container(
           padding: const EdgeInsets.all(10.0),
           /*decoration: BoxDecoration(
@@ -370,6 +370,7 @@ class CheckoutState extends State<Checkout> {
                           ),
                         ),
                         onPressed: () async {
+                          _isLoading = true;
                           setState(() {
                             _isLoading = true;
                           });
@@ -384,6 +385,7 @@ class CheckoutState extends State<Checkout> {
                             print('response');
                             if(res['result'] == 1){
                                cart.clear();
+                               _isLoading = false;
                                Navigator.of(context).push(MaterialPageRoute<Null>(
                                 builder: (BuildContext context) {
                                   return Thankyou(orderId: res['orderId'],sellerContact: res['contact']);
@@ -403,7 +405,7 @@ class CheckoutState extends State<Checkout> {
             ],
           ),
         ), // This trailing comma makes auto-formatting nicer for build methods.
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ) : Center( child: CircularProgressIndicator(),), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

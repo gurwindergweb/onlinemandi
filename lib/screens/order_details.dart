@@ -273,12 +273,12 @@ class OrderDetailsState extends State<OrderDetails> {
                           Row(
                             children: <Widget>[
                               Text(
-                                'Grade: ',style: TextStyle(color: Color(0xFF609f38),
+                                'Quality: ',style: TextStyle(color: Color(0xFF609f38),
                                   //fontSize: 13,
                                   fontSize: ScreenUtil.getInstance().setSp(40),
                                   fontWeight: FontWeight.bold),
                               ),
-                              Text( '${orders.products[index].grade}',
+                              Text( '${orders.products[index].grade == 0 ? 'Premium' : 'Regular'}',
                                 style: TextStyle(
                                   color: Colors.black,
                                   //fontSize: 13,

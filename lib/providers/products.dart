@@ -108,17 +108,22 @@ class Products extends Intercept with ChangeNotifier {
 
       extractedData.forEach((prodData) async {
 
-        if(prodData['rate_a']!=''){
+        if(prodData['rate_a']!=null){
           createProduct(prodData: prodData,grade: 0,favData: favData,weightModel: weightModel).then((data){
             loadedProducts.add(data);
           });
 
         }
-        if(prodData['rate_b']!=''){
+        if(prodData['rate_b']!=null){
           createProduct(prodData: prodData,grade: 1,favData: favData,weightModel: weightModel).then((data){
             loadedProducts.add(data);
           });
 
+        }
+        if(prodData['rate_a']==null && prodData['rate_b']==null){
+          createProduct(prodData: prodData,grade: -1,favData: favData,weightModel: weightModel).then((data){
+            loadedProducts.add(data);
+          });
         }
       });
       _items = loadedProducts;
@@ -128,11 +133,14 @@ class Products extends Intercept with ChangeNotifier {
     }
   }
   Future<Product> createProduct({prodData,grade,favData,weightModel}) async {
+    print('rate');
+    print(prodData['rate_a']);
+    print(prodData['rate_b']);
    return Product(
         id: prodData['id'].toString(),
         title: prodData['name'],
         description: prodData['hname'],
-        price: grade == 0 ? double.parse(prodData['rate_a']): double.parse(prodData['rate_b']),
+        price: grade == 0 ? double.parse(prodData['rate_a']): grade == 1 ? double.parse(prodData['rate_b']) : 0,
         isFavorite: favData.contains(prodData['id']) ? true : false,
         grade: grade,
         imageUrl: prodData['img'],

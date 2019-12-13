@@ -1,16 +1,23 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';
+import 'package:onlinemandi/providers/cart.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/products.dart';
-
-class ProductDetailScreen extends StatelessWidget {
+class ProductDetailScreen extends StatefulWidget{
+  static const routeName = '/product-detail';
+  @override
+  ProductDetailScreenState createState()  => ProductDetailScreenState();
+}
+class ProductDetailScreenState extends State<ProductDetailScreen> {
   // final String title;
   // final double price;
 
   // ProductDetailScreen(this.title, this.price);
-  static const routeName = '/product-detail';
+
+
+  String selectedweight;
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +27,7 @@ class ProductDetailScreen extends StatelessWidget {
       context,
       listen: false,
     ).findById(productId);
+    final cart = Provider.of<Cart>(context, listen: false);
     return Scaffold(
       backgroundColor: Color(0xFFf5f5f0),
       appBar: AppBar(
@@ -52,19 +60,12 @@ class ProductDetailScreen extends StatelessWidget {
                     children: <Widget>[
                       Padding(padding: EdgeInsets.only(right: 10,top: 2),
                         child: Text(
-                          'Rs:',
+                          'Rs: ${loadedProduct.price}',
                           style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),
-                        ),
-                      ),
-                      Text(
-                        '${loadedProduct.price}',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
                         ),
                       ),
                     ],
@@ -73,7 +74,7 @@ class ProductDetailScreen extends StatelessWidget {
                     children: <Widget>[
                       Padding(padding: EdgeInsets.only(right: 10,top: 2),
                         child: Text(
-                          'itme:',
+                          'item:',
                           style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
@@ -82,7 +83,7 @@ class ProductDetailScreen extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'Green Apple',
+                        '${loadedProduct.title} (${loadedProduct.description}) ',
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 16,
@@ -103,7 +104,7 @@ class ProductDetailScreen extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'Normal',
+                        loadedProduct.grade == 0 ? 'Premium' :  'Regular',
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 16,
@@ -137,40 +138,28 @@ class ProductDetailScreen extends StatelessWidget {
                                 ),
                                 Container(
                                   color: Colors.white,
-                                  padding: EdgeInsets.only(left: 10),
+                                  padding: EdgeInsets.only(left: 8),
                                   child: new Theme(
                                     data: Theme.of(context).copyWith(
                                       canvasColor: Colors.white,
-                                  ),
-                                  child: DropdownButton<String>(
-                                    icon: Icon(
-                                      Icons.arrow_drop_down,
-                                      color: Color(0xFF609f38),
-                                      size: 35,
                                     ),
-                                    items: [
-                                      DropdownMenuItem<String>(
-                                        value: "1",
-                                        child: Text(
-                                          "900gm",
-                                          style: TextStyle(color: Color(0xFF609f38),fontSize: 16,fontFamily: 'Lato',fontWeight: FontWeight.normal),
-                                        ),
+                                    child: new DropdownButton<String>(
+                                      icon: Icon(
+                                        Icons.arrow_drop_down,
+                                        color: Color(0xFF609f38),
+                                        size: 35,
                                       ),
-                                      DropdownMenuItem<String>(
-                                        value: "2",
-                                        child: Text(
-                                          "1 kg",style: TextStyle(color: Color(0xFF609f38),fontSize: 16,fontWeight: FontWeight.normal),
-                                        ),
-                                      ),
-                                    ],
-                                    onChanged: (value) {
-                                    },
-                                    value: "1",
-                                    elevation: 9,
-                                    //style: TextStyle(color: Colors.black, fontSize: 20),
-                                    isDense: true,
-                                    iconSize: 40.0,
-                                  ),
+                                      items: loadedProduct.getWeightList(),
+
+                                      onChanged: (val) {
+                                        setState(() {
+                                          selectedweight = val;
+
+                                        });
+
+                                      },
+                                      value: selectedweight!= null ? selectedweight : loadedProduct.selectedweight,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -216,25 +205,39 @@ class ProductDetailScreen extends StatelessWidget {
                             ],
                           ),
                         ),
-                        onPressed: () {
-                          //cart.addItem(product.id, product.price, product.title);
-                          Scaffold.of(context).hideCurrentSnackBar();
-                          Scaffold.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Added item to cart!',
+                        onPressed: loadedProduct.grade != -1 ? () {
+                          if(loadedProduct.price>0){
+                            cart.addItem(productId: loadedProduct.id, image: loadedProduct.imageUrl,grade: loadedProduct.grade, price: loadedProduct.price, title: loadedProduct.title, quantity: selectedweight != null ? int.parse(selectedweight) : int.parse(loadedProduct.selectedweight));
+                            Scaffold.of(context).hideCurrentSnackBar();
+                            Scaffold.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Added item to cart!',
+                                ),
+                                duration: Duration(seconds: 3),
+                                action: SnackBarAction(
+                                  label: 'UNDO',
+                                  textColor: Color(0xFF609f38),
+                                  onPressed: () {
+                                    cart.removeSingleItem(loadedProduct.id);
+                                  },
+                                ),
                               ),
-                              duration: Duration(seconds: 3),
-                              action: SnackBarAction(
-                                label: 'UNDO',
-                                textColor: Color(0xFF609f38),
-                                onPressed: () {
-                                  //cart.removeSingleItem(product.id);
-                                },
+                            );
+                          }
+                          else{
+                            Scaffold.of(context).hideCurrentSnackBar();
+                            Scaffold.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  "Can't item to cart!",
+                                ),
+                                duration: Duration(seconds: 3),
+
                               ),
-                            ),
-                          );
-                        },
+                            );
+                          }
+                        } : null,
                       ),
                     ),
                   ),
@@ -298,7 +301,7 @@ class ProductDetailScreen extends StatelessWidget {
                  children: <Widget>[
                     SingleChildScrollView(
                       child: Text(
-                        'Tempt your taste buds with tart Granny Smith apples! Known for its delicious tart flavor and pleasing crunch,  Known for its delicious tart flavor and pleasing crunch, the Granny Smith apple’s popularity comes as no surprise. What’s more, it’s a go-to apple variety for snacking and is a favorite of pie bakers. Granny Smiths are great in all kinds of recipes, such as salads, sauces, baking, freezing, and more. Tempt your taste buds with tart Granny Smith apples! Known for its delicious tart flavor and pleasing crunch,  Known for its delicious tart flavor and pleasing crunch, the Granny Smith apple’s popularity comes as no surprise. What’s more, it’s a go-to apple variety for snacking and is a favorite of pie bakers.',
+                        loadedProduct.description,
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 15,

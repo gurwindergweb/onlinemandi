@@ -34,12 +34,12 @@ class ProductItemState extends State<ProductItem> {
       borderRadius: BorderRadius.circular(6),
       child: GridTile(
         child: GestureDetector(
-          onTap: () {
+          onTap: product.grade != -1 ? () {
             Navigator.of(context).pushNamed(
               ProductDetailScreen.routeName,
               arguments: product.id,
             );
-          },
+          } : (){},
           child: Container(
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
@@ -120,7 +120,7 @@ class ProductItemState extends State<ProductItem> {
                                 ),
                               ),
                               Text(
-                                product.grade == 0  ? 'Premium' : 'Regular',
+                                product.grade == 0  ? 'Premium' : 'Regular' ,
                                 style: TextStyle(
                                   fontWeight: FontWeight.normal,
                                   fontSize: 16,
@@ -133,11 +133,11 @@ class ProductItemState extends State<ProductItem> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Text(
-                                'Rs ' + product.price.toString() + "/Kg",
+                          product.grade != -1 ? 'Rs ' + product.price.toString() + "/Kg" : 'Out of stock',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15,
-                                  color: Color(0xFF609f38),
+                                  color: product.grade != -1 ? Color(0xFF609f38) : Colors.red,
                                 ),
                               ),
                               Padding(padding: EdgeInsets.all(10)),
@@ -167,7 +167,7 @@ class ProductItemState extends State<ProductItem> {
             ),
           ),
         ),
-        footer: Container(
+        footer: product.grade != -1 ?Container(
           padding: EdgeInsets.fromLTRB(0,10,0,10),
           child: GridTileBar(
             leading: Consumer<Product>(
@@ -291,7 +291,7 @@ class ProductItemState extends State<ProductItem> {
                   ],
                 ),
               ),
-              onPressed: () {
+              onPressed: product.grade != -1 ? () {
                 if(product.price>0){
                 cart.addItem(productId: product.id, image: product.imageUrl,grade: product.grade, price: product.price, title: product.title, quantity: selectedweight != null ? int.parse(selectedweight) : int.parse(product.selectedweight));
                 Scaffold.of(context).hideCurrentSnackBar();
@@ -323,10 +323,10 @@ class ProductItemState extends State<ProductItem> {
                     ),
                   );
                 }
-              },
+              } : null,
             ),
           ),
-        ),
+        ) : null,
       ),
     );
 

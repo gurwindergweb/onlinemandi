@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:onlinemandi/providers/cart.dart';
 import 'package:onlinemandi/providers/database.dart';
@@ -37,6 +38,8 @@ class EditOrderState extends State<EditOrder> {
   Cart cart;
 
   Products products;
+
+  bool loading = false;
   EditOrderState({orderid}){
     this.orderid = orderid;
   }
@@ -47,9 +50,7 @@ class EditOrderState extends State<EditOrder> {
      products = Provider.of<Products>(context);
      cart = Provider.of<Cart>(context);
     var order = orders;
-    updateorder(){
-      print(orders.products[0].totalprice);
-    }
+
     Widget _showitemlist(){
       return IconTheme(
           data: new IconThemeData(color: Colors.green),
@@ -114,6 +115,22 @@ class EditOrderState extends State<EditOrder> {
                               color: Colors.black,fontWeight: FontWeight.bold)),
                           Padding(padding: EdgeInsets.only(top: 4)),
                           Padding(padding: EdgeInsets.only(top: 3)),
+                          Row(
+                            children: <Widget>[
+                              Text( 'Quality:',style: TextStyle(color: Color(0xFF609f38),
+                                  //fontSize: 13,
+                                  fontSize: ScreenUtil.getInstance().setSp(45),
+                                  fontWeight: FontWeight.bold),
+                              ),
+                              Text('${orders.products[index].grade == 0 ? 'Premium': 'Regular'}',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  //fontSize: 13,
+                                  fontSize: ScreenUtil.getInstance().setSp(40),
+                                ),
+                              ),
+                            ],
+                          ),
                           Row(
                             children: <Widget>[
                               Text( 'Quantity:',style: TextStyle(color: Color(0xFF609f38),
@@ -612,7 +629,7 @@ class EditOrderState extends State<EditOrder> {
               //fontSize:17,
                 fontSize: ScreenUtil.getInstance().setSp(60),
                 color: Colors.black,fontWeight: FontWeight.bold)),
-            content: SingleChildScrollView(
+            content: loading == true ? Center(child: CircularProgressIndicator(),) :SingleChildScrollView(
               //width: MediaQuery.of(context).size.width * 1.1,
               //height: MediaQuery.of(context).size.height * 0.3,
               child: ListBody(
@@ -704,8 +721,41 @@ class EditOrderState extends State<EditOrder> {
                         ],
                       ),
                     ),
-                    onPressed: (){
-                      updateOrder();
+                    onPressed: ()  async {
+                      setState(() {
+                        loading = true;
+                      });
+                       var response = await ordersData.updateOrder(orders.id,context);
+                      setState(() {
+                        loading = false;
+                      });
+                      if(response['result'] == 1){
+                        Fluttertoast.showToast(
+                            msg: "Order updated successfully",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIos: 1,
+                            backgroundColor: Colors.black,
+                            textColor: Colors.white,
+                            fontSize: 14.0
+                        ).then((val){
+
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pushReplacementNamed('/');
+                        });
+                        Navigator.of(context).pushReplacementNamed('/');
+                      }
+                      else{
+                        Fluttertoast.showToast(
+                            msg: response['msg'],
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIos: 1,
+                            backgroundColor: Colors.black,
+                            textColor: Colors.white,
+                            fontSize: 14.0
+                        );
+                      }
                       },
                   ),
                 ],
@@ -716,10 +766,7 @@ class EditOrderState extends State<EditOrder> {
     );
 
   }
-  updateOrder(){
-    ordersData.updateOrder(orders.id);
 
-  }
   getorders() async {
     var  prefs = await SharedPreferences.getInstance();
     var resp =  prefs.get('userData');

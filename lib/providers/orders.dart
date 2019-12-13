@@ -91,21 +91,25 @@ final dio =Dio();
     notifyListeners();
     return response.data;
   }
-  Future updateOrder(oid) async {
+  Future updateOrder(oid,context) async {
     var url = GlobalConfiguration().getString('baseURL')+'cart/update-order';
     var order = orderslist.firstWhere((o) =>  o.id == oid);
-    var orderdata = {
-      'id': order.id,
-      'orderAmount': order.orderAmount,
-      'shippingcharge': order.shippingcharge,
-      'grandtotal': order.grandtotal,
-      'products': order.products,
-      'date': order.date,
+    var weights = Provider.of<Weights>(context);
+    var units = Provider.of<Weights>(context);
+    var productarr = [];
+    order.products.forEach((op){
+      var udata =units.unitItems.firstWhere((ud) =>ud.sname == op.unit);
+      var wdata = weights.items.firstWhere((wd) => wd.unitId == udata.id && wd.name == op.quantity);
+      productarr.add(json.encode({
+        'id': op.id,
+        'w': wdata.id,
+        'g': op.grade,
+      }));
+    });
 
-    };
 
-    var response = await dio.post(url, data: {'cart': json.encode(orderdata), 'pm': 1, 'oid': oid});
-    print(response);
+    var response = await dio.post(url, data: {'cart': productarr, 'pm': 1, 'oid': oid});
+    return response.data;
 
   }
   Future getActiveOrders() async {
@@ -127,7 +131,7 @@ final dio =Dio();
                       id: item['pid'].toString(),
                       title: item['n'].toString(),
                       quantity:  item['q'],
-                      grade: int.parse(item['g']),
+                      grade: item['g'] == 'A' ? 0: 1,
                       totalprice: double.parse(item['tp']),
                       discountrate: double.parse(item['dr']),
 
