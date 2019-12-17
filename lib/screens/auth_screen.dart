@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import '../providers/auth.dart';
 import '../models/http_exception.dart';
+import 'forgot_password.dart';
 
 enum AuthMode { Signup, Login }
 
@@ -598,15 +599,33 @@ class _AuthCardState extends State<AuthCard> {
                   elevation: 0.9,
                 ),
               ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+               /* FlatButton(
+                  child: Text(
+                      '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
+                  onPressed:_switchAuthMode,
+                  padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  textColor: Color(0xff006600),
+                ),*/
+                InkWell(
+                  child: Text(
+                      '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD', style: TextStyle(color: Color(0xff006600), fontWeight: FontWeight.bold)),
+                  onTap: _switchAuthMode,
+                ),
+                InkWell(
+                  child: Text(
+                      'Forgot Password',style: TextStyle(color: Color(0xff006600), fontWeight: FontWeight.bold)),
+                  onTap: (){
+                    Navigator.of(context).pushNamed(ForgotPassword.routeName);
+                  },
+                ),
 
-            FlatButton(
-              child: Text(
-                  '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
-              onPressed:_switchAuthMode,
-              padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              textColor: Color(0xff006600),
+              ],
             ),
+
           ],
         ),
       ),

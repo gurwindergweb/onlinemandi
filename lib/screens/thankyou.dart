@@ -6,7 +6,13 @@ import '../widgets/app_drawer.dart';
 class Thankyou extends StatefulWidget {
   int orderId;
   String sellerContact;
-  Thankyou({orderId,sellerContact});
+  Thankyou({orderId,sellerContact}){
+    this.orderId = orderId;
+    this.sellerContact = sellerContact;
+    print('thankyou page value');
+    print(orderId);
+    print(sellerContact);
+  }
   @override
   ThankyouState createState() => ThankyouState(orderId,sellerContact);
   static const routeName = '/confirmorder';
@@ -15,8 +21,7 @@ class Thankyou extends StatefulWidget {
 class ThankyouState extends State<Thankyou> {
   int orderId;
   String sellerContact;
-  ThankyouState(this.orderId,sellerContact){
-
+  ThankyouState(this.orderId,this.sellerContact){
   }
   @override
   Widget build(BuildContext context) {
@@ -49,13 +54,13 @@ class ThankyouState extends State<Thankyou> {
             ),
           ),
           padding: const EdgeInsets.only(top: 2),
-          child: _contentcol(sellerContact),
+          child: _contentcol(orderId,sellerContact),
       ),
     );
   }
 
 }
-Widget _contentcol (sellerContact) {
+Widget _contentcol (orderId,sellerContact) {
   return IconTheme(
     data: new IconThemeData(color: Colors.blue),
     child: ListView(
@@ -95,7 +100,7 @@ Widget _contentcol (sellerContact) {
                         text: 'You have Successfully placed your order. Your order number is ',style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(50),fontWeight: FontWeight.normal),
                       ),
                       TextSpan(
-                        text: '${sellerContact}',
+                        text: '${orderId}',
                         style: TextStyle(
                           color: Color(0xFF609f38),
                           fontWeight: FontWeight.bold,

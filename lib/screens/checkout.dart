@@ -39,6 +39,7 @@ class CheckoutState extends State<Checkout> {
       backgroundColor: Color(0xFFf5f5f0),
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+          leading: new Container(),
           title: Text('Checkout',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,
             fontSize: ScreenUtil.getInstance().setSp(60),
           )),
@@ -383,6 +384,7 @@ class CheckoutState extends State<Checkout> {
                               _isLoading = false;
                             });
                             print('response');
+                            print(res['orderId']);
                             if(res['result'] == 1){
                                cart.clear();
                                _isLoading = false;

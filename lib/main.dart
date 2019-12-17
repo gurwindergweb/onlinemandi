@@ -25,6 +25,7 @@ import './screens/auth_screen.dart';
 import './screens/change_password.dart';
 import 'screens/checkout.dart';
 import 'screens/edit_orders.dart';
+import 'screens/forgot_password.dart';
 import 'screens/my_wallet.dart';
 
 void main(){
@@ -111,6 +112,7 @@ class MyApp extends StatelessWidget {
             MyWallet.routeName: (ctx) => MyWallet(),
             Checkout.routeName: (ctx) => Checkout(),
             EditOrder.routeName: (ctx) => EditOrder(),
+            ForgotPassword.routeName: (ctx) => ForgotPassword(),
           },
         ),
       ),
