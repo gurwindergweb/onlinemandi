@@ -22,6 +22,9 @@ class ForgotPasswordState extends State<ForgotPassword>{
           centerTitle: true,
           leading: InkWell(
             child: Icon(Icons.arrow_back,color: Colors.white,),
+            onTap: (){
+              Navigator.of(context).pop();
+            },
           ),
           title: Text('Forgot Password',style: TextStyle(color: Colors.white),),
         ),
@@ -43,13 +46,13 @@ class ForgotPasswordState extends State<ForgotPassword>{
                         style: BorderStyle.solid,
                       ),
                     ),
-                    child: Icon(Icons.mail,color: Color.fromRGBO(76,165,13 ,1),size:62),
+                    child: Icon(Icons.perm_phone_msg,color: Color.fromRGBO(76,165,13 ,1),size:62),
                   ),
                   Padding(padding: EdgeInsets.fromLTRB(0,2,0,2)),
-                  Text('Forgot your Password',style: TextStyle(color:Color.fromRGBO(76,165,13 ,1),fontWeight: FontWeight.bold,fontSize: 18)),
+                  Text('Recover Password with',style: TextStyle(color:Color.fromRGBO(76,165,13 ,1),fontWeight: FontWeight.bold,fontSize: 18)),
                   Padding(padding: EdgeInsets.fromLTRB(0,5,0,5)),
-                  Text('Please enter your vaild email',style: TextStyle(color:Colors.black,fontWeight: FontWeight.normal,fontSize: 14)),
-                  TextFormField(
+
+                  /*TextFormField(
                     decoration: InputDecoration(labelText: 'Email', hintText:'',
                       labelStyle: new TextStyle(color: Colors.black),
                       enabledBorder: UnderlineInputBorder(
@@ -87,7 +90,7 @@ class ForgotPasswordState extends State<ForgotPassword>{
                       ),
                         borderRadius: BorderRadius.circular(50),
                       ),
-                      child: Text("Submit",style: new TextStyle(
+                      child: Text("Mobile",style: new TextStyle(
                         fontSize:20,
                         fontFamily: 'Montserrat-Regular',
                       ),
@@ -96,6 +99,72 @@ class ForgotPasswordState extends State<ForgotPassword>{
                       },
                     ),
                   ),
+                  Padding(padding: EdgeInsets.fromLTRB(0,5,0,5)),
+                  Text('Or',style: TextStyle(color:Color.fromRGBO(76,165,13 ,1),fontSize: 18)),
+                  Container(
+                    padding: const EdgeInsets.only(top: 20,bottom: 20),
+                    child: MaterialButton(
+                      elevation: 10,
+                      minWidth: 400.0,
+                      height: 50.0,
+                      colorBrightness: Brightness.dark,
+                      color: Color(0xFF609f38),
+                      shape: RoundedRectangleBorder(side: BorderSide(
+                          color: Colors.white,
+                          width: 1.3,
+                          style: BorderStyle.solid
+                      ),
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      child: Text("Email",style: new TextStyle(
+                        fontSize:20,
+                        fontFamily: 'Montserrat-Regular',
+                      ),
+                      ),
+                      onPressed:  (){
+                      },
+                    ),
+                  ),*/
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        InkWell(
+                          child: Container(
+                            padding: EdgeInsets.all(1),
+                            height:80,
+                            width:80,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                              color: Color.fromRGBO(76,165,13 ,1),
+                            ),
+                            child: Icon(Icons.sms,color: Colors.white,size: 30),
+                          ),
+                          onTap: (){
+
+                          },
+                        ),
+                        Padding(padding: EdgeInsets.all(10)),
+                        Text('Or'),
+                        Padding(padding: EdgeInsets.all(10)),
+                        InkWell(
+                          child: Container(
+                            padding: EdgeInsets.all(1),
+                            height:80,
+                            width:80,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                              color: Color.fromRGBO(76,165,13 ,1),
+                            ),
+                            child: Icon(Icons.email,color: Colors.white,size: 30),
+                          ),
+                          onTap: (){
+
+                          },
+                        ),
+                      ],
+                    ),
+
+
                 ],
               ),
             ),

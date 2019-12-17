@@ -33,7 +33,7 @@ class AppDrawerState extends State<AppDrawer> {
   }
   @override
   Widget build(BuildContext context) {
-    print(userData);
+    getuserdetail();
     return Drawer(
       child: Column(
         children: <Widget>[
@@ -63,7 +63,7 @@ class AppDrawerState extends State<AppDrawer> {
               ),
             ),
             //leading: Icon(Icons.person,color: Colors.white),
-            title: Text(userData['username'],style: TextStyle(color: Color(0xFFededdf),fontWeight: FontWeight.bold)),
+            title: Text(userData['username'] !=null ? userData['username'] : '' ,style: TextStyle(color: Color(0xFFededdf),fontWeight: FontWeight.bold)),
             automaticallyImplyLeading: false,
             backgroundColor: Color(0xFF609f38),
           ),
