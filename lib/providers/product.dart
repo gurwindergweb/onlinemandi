@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 
 class Product with ChangeNotifier {
@@ -40,9 +41,11 @@ class Product with ChangeNotifier {
     this.weights.forEach((t) => {
     wList.add(
     DropdownMenuItem(
-    value: t.id.toString(),
-    child: new Text(t.name,style: TextStyle(color: Color(0xFF609f38),fontSize: 16),)
-    )
+      value: t.id.toString(),
+        child:  Container(
+          child: new Text(t.name,style: TextStyle(color: Color(0xFF609f38),fontSize: ScreenUtil.getInstance().setSp(45)),),
+        ),
+      )
     )
     });
     return wList;

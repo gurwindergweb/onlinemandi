@@ -319,7 +319,7 @@ class CheckoutState extends State<Checkout> {
                             width: 0.3,
                             style: BorderStyle.solid
                         ),
-                          borderRadius: BorderRadius.circular(5),
+                          borderRadius: BorderRadius.circular(50),
                         ),
                         child:Container(
                           child: Row(
@@ -352,7 +352,7 @@ class CheckoutState extends State<Checkout> {
                             width: 0.3,
                             style: BorderStyle.solid
                         ),
-                          borderRadius: BorderRadius.circular(5),
+                          borderRadius: BorderRadius.circular(50),
                         ),
                         child:Container(
                           child: Row(

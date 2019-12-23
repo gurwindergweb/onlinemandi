@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:provider/provider.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -14,6 +15,7 @@ class AuthScreen extends StatelessWidget {
   static const routeName = '/auth';
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.instance = ScreenUtil()..init(context);
     final deviceSize = MediaQuery.of(context).size;
     final authDataModel = Provider.of<Auth>(context);
     final states = authDataModel.states;
@@ -21,10 +23,13 @@ class AuthScreen extends StatelessWidget {
     // transformConfig.translate(-10.0);
     return Scaffold(
       // resizeToAvoidBottomInset: false,
-
-      body: Stack(
-        children: <Widget>[
-          Container(
+      body: SingleChildScrollView(
+        child: Container(
+          height: deviceSize.height,
+          width: deviceSize.width,
+          child: Container(
+            height: deviceSize.height,
+            width: deviceSize.width,
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
@@ -35,103 +40,58 @@ class AuthScreen extends StatelessWidget {
                 end: Alignment.bottomRight,
                 stops: [0, 6],
               ),
-            ),
-          ),
-          SingleChildScrollView(
-            child: Container(
-              height: deviceSize.height,
-              width: deviceSize.width,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    //margin: EdgeInsets.only(bottom: 20.0),
-                    padding: EdgeInsets.only(top: 25.0),
-                    child:Container(
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.all(5.0),
-                            decoration: new BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(
-                                width:5.2,
-                                color: Color(0xFF609f38),
-                              ),
-                              borderRadius: new BorderRadius.circular(100.0),
-                            ),
-                            //child: Icon(Icons.supervised_user_circle,size: 73,color: Colors.green),
-                            child: Image.asset(
-                              'images/online-logo.png',
-                              width: 90,
-                              height: 90,
-                              fit: BoxFit.cover,
-                            ),
+              ),
+
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                //margin: EdgeInsets.only(bottom: 20.0),
+                padding: EdgeInsets.only(top: 25.0),
+                child:Container(
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.all(5.0),
+                        decoration: new BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(
+                            width:5.2,
+                            color: Color(0xFF609f38),
                           ),
-                          Text(
-                            'OnlineMandi',
-                            style: TextStyle(
-                              //color: Color(0xff006600),
-                              color:Color(0xFF609f38),
-                              fontSize: 38,
-                              fontFamily: 'Anton',
-                              fontWeight: FontWeight.normal,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                 /* Flexible(
-                    child: Container(
-                      //margin: EdgeInsets.only(bottom: 20.0),
-                      padding: EdgeInsets.only(top: 25.0),
-                      child:Container(
-                        child: Column(
-                          children: <Widget>[
-                              Container(
-                                padding: EdgeInsets.all(5.0),
-                                decoration: new BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(
-                                    width:5.2,
-                                    color: Color(0xFF609f38),
-                                  ),
-                                  borderRadius: new BorderRadius.circular(100.0),
-                                ),
-                                //child: Icon(Icons.supervised_user_circle,size: 73,color: Colors.green),
-                                child: Image.asset(
-                                  'images/online-logo.png',
-                                  width: 90,
-                                  height: 90,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              Text(
-                                'OnlineMandi',
-                                style: TextStyle(
-                                  //color: Color(0xff006600),
-                                  color:Color(0xFF609f38),
-                                  fontSize: 38,
-                                  fontFamily: 'Anton',
-                                  fontWeight: FontWeight.normal,
-                                ),
-                              ),
-                          ],
+                          borderRadius: new BorderRadius.circular(100.0),
+                        ),
+                        //child: Icon(Icons.supervised_user_circle,size: 73,color: Colors.green),
+                        child: Image.asset(
+                          'images/online-logo.png',
+                          width: 90,
+                          height: 90,
+                          fit: BoxFit.cover,
                         ),
                       ),
-                    ),
-                  ),*/
-                  Flexible(
-                    //flex: deviceSize.width > 600 ? 0 : 3,
-                    child: AuthCard(),
+                      Text(
+                        'OnlineMandi',
+                        style: TextStyle(
+                          //color: Color(0xff006600),
+                          color:Color(0xFF609f38),
+                          fontSize: ScreenUtil.getInstance().setSp(120),
+                          fontFamily: 'Anton',
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
+              Flexible(
+                //flex: deviceSize.width > 600 ? 0 : 3,
+                child: AuthCard(),
+              ),
+            ],
           ),
-        ],
+        ),
+      ),
       ),
     );
   }
@@ -401,8 +361,7 @@ class _AuthCardState extends State<AuthCard> {
               },
               onSaved: (value) {
                 _authRegisterData['name'] = value;
-              },
-              style: new TextStyle(color: Colors.black),
+              }, style: TextStyle( fontSize: ScreenUtil.getInstance().setSp(50),),
             ),
             TextFormField(
               decoration: InputDecoration(labelText: 'E-Mail'),
@@ -420,7 +379,7 @@ class _AuthCardState extends State<AuthCard> {
               },
               onSaved: (value) {
                 _authRegisterData['email'] = value;
-              },
+              },style: TextStyle( fontSize: ScreenUtil.getInstance().setSp(50),),
             ),
             TextFormField(
               decoration: InputDecoration(labelText: 'Mobile number'),
@@ -434,12 +393,12 @@ class _AuthCardState extends State<AuthCard> {
               },
               onSaved: (value) {
                 _authRegisterData['phone'] = value;
-              },
+              },style: TextStyle( fontSize: ScreenUtil.getInstance().setSp(50),),
             ),
-            Padding(padding: EdgeInsets.all(5.0)),
+            Padding(padding: EdgeInsets.fromLTRB(0,10,0,0)),
             DropdownButton<String>(
               value: _authRegisterData['state'],
-              hint: new Text('Select state',style: TextStyle(fontSize: 16)),
+              hint: new Text('Select state',style: TextStyle( fontSize: ScreenUtil.getInstance().setSp(50),),),
               isExpanded: true,
               //style: TextStyle(color: Colors.black),
               underline: Container(
@@ -453,9 +412,9 @@ class _AuthCardState extends State<AuthCard> {
               },
               items: loadStateList(),
             ),
-            Padding(padding: EdgeInsets.fromLTRB(0,2,0,0)),
+            Padding(padding: EdgeInsets.fromLTRB(0,10,0,0)),
             DropdownButton<String>(
-              hint: Text('Select city'),
+              hint: Text('Select city',style: TextStyle( fontSize: ScreenUtil.getInstance().setSp(50),),),
               value: _authRegisterData['city'],
               isExpanded: true,
              // icon: Icons.arrow_drop_down_circle,
@@ -493,7 +452,7 @@ class _AuthCardState extends State<AuthCard> {
               },
               onSaved: (value) {
                 _authRegisterData['password'] = value;
-              },
+              },style: TextStyle( fontSize: ScreenUtil.getInstance().setSp(50),),
             ),
             TextFormField(
               enabled: true,
@@ -504,7 +463,7 @@ class _AuthCardState extends State<AuthCard> {
                 if (value != _passwordController.text) {
                   return 'Passwords do not match!';
                 }
-              },
+              },style: TextStyle( fontSize: ScreenUtil.getInstance().setSp(50),),
             ),
             SizedBox(
               height: 20,
@@ -514,9 +473,10 @@ class _AuthCardState extends State<AuthCard> {
             else
              Container(
                 width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.only(bottom: 10),
                 child: RaisedButton(
                   child:
-                  Text('SIGN UP',style: TextStyle(fontSize:18,color: Colors.white,fontWeight: FontWeight.bold)),
+                  Text('SIGN UP',style: TextStyle(fontSize: ScreenUtil.getInstance().setSp(50),color: Colors.white,fontWeight: FontWeight.bold)),
                   onPressed: _register,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
@@ -529,7 +489,10 @@ class _AuthCardState extends State<AuthCard> {
                 ),
               ),
              FlatButton(
-                child: Text('LOGIN INSTEAD'),
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: 10),
+                  child: Text('LOGIN INSTEAD',style: TextStyle(fontSize: ScreenUtil.getInstance().setSp(40))),
+                ),
                 onPressed:  _switchAuthMode,
                 padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -560,7 +523,7 @@ class _AuthCardState extends State<AuthCard> {
               },
               onSaved: (value) {
                 _authData['email'] = value;
-              },
+              },style: TextStyle( fontSize: ScreenUtil.getInstance().setSp(50),),
             ),
             TextFormField(
               decoration: InputDecoration(labelText: 'Password'),
@@ -573,7 +536,7 @@ class _AuthCardState extends State<AuthCard> {
               },
               onSaved: (value) {
                 _authData['password'] = value;
-              },
+              },style: TextStyle( fontSize: ScreenUtil.getInstance().setSp(50),),
             ),
             SizedBox(
               height: 20,
@@ -585,7 +548,7 @@ class _AuthCardState extends State<AuthCard> {
                 width: MediaQuery.of(context).size.width,
                 child: RaisedButton(
                   child:
-                  Text('LOGIN',style: TextStyle(fontSize:18,color: Colors.white,fontWeight: FontWeight.bold)),
+                  Text('LOGIN',style: TextStyle( fontSize: ScreenUtil.getInstance().setSp(50),color: Colors.white,fontWeight: FontWeight.bold)),
                   onPressed: _submit,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
@@ -599,36 +562,88 @@ class _AuthCardState extends State<AuthCard> {
                   elevation: 0.9,
                 ),
               ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-               /* FlatButton(
-                  child: Text(
-                      '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
-                  onPressed:_switchAuthMode,
-                  padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  textColor: Color(0xff006600),
-                ),*/
-                InkWell(
-                  child: Text(
-                      '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD', style: TextStyle(color: Color(0xff006600), fontWeight: FontWeight.bold)),
-                  onTap: _switchAuthMode,
-                ),
-                InkWell(
-                  child: Text(
-                      'Forgot Password',style: TextStyle(color: Color(0xff006600), fontWeight: FontWeight.bold)),
-                  onTap: (){
-                    Navigator.of(context).pushNamed(ForgotPassword.routeName);
-                  },
-                ),
-
-              ],
-            ),
-
+              Padding(padding: EdgeInsets.all(6),),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  InkWell(
+                    child: Text(
+                     '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD',style: TextStyle( fontSize: ScreenUtil.getInstance().setSp(40),)),
+                     onTap:_switchAuthMode,
+                  ),
+                  InkWell(
+                      child: Text('FORGET PASSWORD',style: TextStyle( fontSize: ScreenUtil.getInstance().setSp(40),)),
+                    onTap: (){
+                        Navigator.of(context).pushNamed(ForgotPassword.routeName);
+                    },
+                  ),
+                ],
+              ),
           ],
         ),
       ),
     );
   }
 }
+
+/*
+class TypewriterText extends StatelessWidget {
+  static const TEXT_STYLE =
+  TextStyle(letterSpacing: 5,color: Color(0xFF609f38), fontSize: 38, fontFamily: 'Anton', fontWeight: FontWeight.normal,);
+
+  final String text;
+  TypewriterText(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return ControlledAnimation(
+        duration: Duration(milliseconds: 800),
+        delay: Duration(milliseconds: 800),
+        tween: IntTween(begin: 0, end: text.length),
+        builder: (context, textLength) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(text.substring(0, textLength), style: TEXT_STYLE),
+              ControlledAnimation(
+                playback: Playback.START_OVER_REVERSE,
+                duration: Duration(milliseconds: 100),
+                tween: IntTween(begin: 0, end: 1),
+                builder: (context, oneOrZero) {
+                  return Opacity(
+                      opacity: oneOrZero == 1 ? 1.0 : 0.0,
+                      child: Text("_", style: TEXT_STYLE));
+                },
+              )
+            ],
+          );
+        });
+  }
+}
+
+Widget _contentcol () {
+  return ControlledAnimation(
+    duration: Duration(milliseconds: 100),
+    tween: Tween(begin: 0.0, end: 10.0),
+    builder: (context, height) {
+      return ControlledAnimation(
+        duration: Duration(milliseconds: 1200),
+        delay: Duration(milliseconds: 100),
+        tween: Tween(begin: 2.0, end: 300.0),
+        builder: (context, width) {
+          return Container(
+            //decoration: boxDecoration,
+            width: width,
+            //height: 100,
+            child: isEnoughRoomForTypewriter(width)
+                ? TypewriterText("OnlineMandi")
+                : Container(),
+          );
+        },
+      );
+    },
+  );
+}
+
+isEnoughRoomForTypewriter(width) => width > 20;
+*/

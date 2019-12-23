@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:onlinemandi/providers/Utilities.dart';
 import 'package:onlinemandi/providers/auth.dart';
@@ -23,16 +24,18 @@ class ChangePasswordState extends State<ChangePassword> {
 
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.instance = ScreenUtil()..init(context);
     return Scaffold(
       appBar: AppBar(
-          title: Text('Change Password',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
+          title: Text('Change Password',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: ScreenUtil.getInstance().setSp(60))),
           backgroundColor: Color(0xFF609f38),
           iconTheme: IconThemeData(color: Colors.white),
           centerTitle: true
       ),
-      body: Container(
+      body: SingleChildScrollView(
+        child: Container(
         padding: const EdgeInsets.all(10.0),
-        decoration: BoxDecoration(
+        /*decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
               Color.fromRGBO(204, 255, 255, 1).withOpacity(0.9),
@@ -42,11 +45,11 @@ class ChangePasswordState extends State<ChangePassword> {
             end: Alignment.bottomRight,
             stops: [0, 6],
           ),
-        ),
+        ),*/
         child: Column(
           children: <Widget>[
             Card(
-              elevation: 12,
+              elevation: 6,
               child: Container(
                 padding: EdgeInsets.all(10),
                 child: Column(
@@ -60,6 +63,7 @@ class ChangePasswordState extends State<ChangePassword> {
                             border: OutlineInputBorder()
                         ),
                         controller: opass,
+                        style: TextStyle(fontSize: ScreenUtil.getInstance().setSp(40)),
                       ),
                     ),
                     Padding(
@@ -72,7 +76,7 @@ class ChangePasswordState extends State<ChangePassword> {
                               border: OutlineInputBorder()
                           ),
                          controller: npass,
-
+                         style: TextStyle(fontSize: ScreenUtil.getInstance().setSp(40)),
                         ),
                     ),
                     Padding(
@@ -83,7 +87,7 @@ class ChangePasswordState extends State<ChangePassword> {
                             border: OutlineInputBorder()
                         ),
                         controller: cpass,
-
+                        style: TextStyle(fontSize: ScreenUtil.getInstance().setSp(40)),
                       ),
                     ),
                     Row(
@@ -99,7 +103,7 @@ class ChangePasswordState extends State<ChangePassword> {
                               width: 0.3,
                               style: BorderStyle.solid
                           ),
-                            borderRadius: BorderRadius.circular(5),
+                            borderRadius: BorderRadius.circular(50),
                           ),
                           child:Container(
                             child: Row(
@@ -131,7 +135,7 @@ class ChangePasswordState extends State<ChangePassword> {
                               width: 0.3,
                               style: BorderStyle.solid
                           ),
-                            borderRadius: BorderRadius.circular(5),
+                            borderRadius: BorderRadius.circular(50),
                           ),
                           child:Container(
                             child: Row(
@@ -158,6 +162,7 @@ class ChangePasswordState extends State<ChangePassword> {
             ),
           ],
         ),
+      ), // This trailing comma makes auto-formatting nicer for build methods.
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }

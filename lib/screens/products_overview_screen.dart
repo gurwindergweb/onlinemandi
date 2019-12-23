@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:onlinemandi/providers/weights.dart';
 import 'package:provider/provider.dart';
 
@@ -65,11 +66,12 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.instance = ScreenUtil()..init(context);
     return Scaffold(
       backgroundColor: Color(0xFFe8e3da),
     appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
-        title: Text('Fruits',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
+        title: Text('Fruits',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: ScreenUtil.getInstance().setSp(60))),
         backgroundColor:Color(0xFF609f38),
         centerTitle: true,
         actions: <Widget>[
@@ -88,11 +90,11 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
             ),
             itemBuilder: (_) => [
                   PopupMenuItem(
-                    child: Text('Only Favorites'),
+                    child: Text('Only Favorites',style: TextStyle(fontSize: ScreenUtil.getInstance().setSp(45))),
                     value: FilterOptions.Favorites,
                   ),
                   PopupMenuItem(
-                    child: Text('Show All'),
+                    child: Text('Show All',style: TextStyle(fontSize: ScreenUtil.getInstance().setSp(45))),
                     value: FilterOptions.All,
                   ),
                 ],

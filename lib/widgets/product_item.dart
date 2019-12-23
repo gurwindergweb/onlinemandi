@@ -1,4 +1,6 @@
+import 'package:animator/animator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:onlinemandi/providers/database.dart';
 import 'package:onlinemandi/providers/weights.dart';
@@ -27,6 +29,7 @@ class ProductItemState extends State<ProductItem> {
 
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.instance = ScreenUtil()..init(context);
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
     final authData = Provider.of<Auth>(context, listen: false);
@@ -66,7 +69,8 @@ class ProductItemState extends State<ProductItem> {
                           product.title + " (" + product.description + ")",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 19,
+                            //fontSize: 19,
+                            fontSize: ScreenUtil.getInstance().setSp(50),
                           ),
                         ),
                       ),
@@ -101,7 +105,6 @@ class ProductItemState extends State<ProductItem> {
                         fit: BoxFit.cover,
                       ),
                     ),
-
                     Expanded(
                       /*1*/
                       child: Column(
@@ -115,7 +118,8 @@ class ProductItemState extends State<ProductItem> {
                                 'Quality: ',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 17,
+                                  //fontSize: 17,
+                                  fontSize: ScreenUtil.getInstance().setSp(45),
                                   //fontFamily: 'Lato-Bold',
                                 ),
                               ),
@@ -123,7 +127,8 @@ class ProductItemState extends State<ProductItem> {
                                 product.grade == 0  ? 'Premium' : 'Regular' ,
                                 style: TextStyle(
                                   fontWeight: FontWeight.normal,
-                                  fontSize: 16,
+                                  //fontSize: 16,
+                                  fontSize: ScreenUtil.getInstance().setSp(45),
                                 ),
                               ),
                             ],
@@ -136,28 +141,42 @@ class ProductItemState extends State<ProductItem> {
                           product.grade != -1 ? 'Rs ' + product.price.toString(): 'Out of stock',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 15,
+                                  fontSize: ScreenUtil.getInstance().setSp(45),
                                   color: product.grade != -1 ? Color(0xFF609f38) : Colors.red,
                                 ),
                               ),
-                              Padding(padding: EdgeInsets.all(10)),
-                              /* Image.asset(
-                                'images/online-logo.png',
-                                width: 90,
-                                height: 90,
-                                fit: BoxFit.cover,
-                              ),*/
                             ],
                           ),
-                          /*Text(
-                            'Offers !',
-                            style: TextStyle(
-                              color: Colors.redAccent,
-                              fontSize: 16,
-                              fontFamily: 'Lato',
-                              fontWeight: FontWeight.bold,
+                          Padding( padding: EdgeInsets.only(top: 10,bottom: 10),
+                            child: MaterialButton(
+                              elevation: 8,
+                              child:Container(
+                                child:/* Text("Offers*",style: new TextStyle(
+                                       fontSize:13,
+                                       color: Colors.red,
+                                       fontFamily: 'Montserrat-Regular',
+                                      ),
+                                    ),*/
+                                //Icon(Icons.local_offer,color: Colors.red),
+                                Animator<double>(
+                                    tween: Tween<double>(begin: 0.5, end: 1.2),
+                                    //repeats: 0,
+                                    curve : Curves.fastOutSlowIn,
+                                    cycles: 0,
+                                    duration: Duration(seconds: 2),
+                                    builder: (anim) => Transform.scale(scale: anim.value,
+                                      child:Image.asset(
+                                        'images/special-offer-alarm-clock.png',
+                                        width: 40,
+                                        height: 40,
+                                        //fit: BoxFit.cover,
+                                      ),
+                                    )
+                                ),
+                              ),
+                              onPressed: () => _displayDialog(context),
                             ),
-                          ),*/
+                          ),
                         ],
                       ),
                     ),
@@ -173,7 +192,6 @@ class ProductItemState extends State<ProductItem> {
             leading: Consumer<Product>(
                 builder: (ctx, product, _){
                   return Container(
-
                     //color: Colors.lightGreen,
                     padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                     decoration: BoxDecoration(
@@ -190,7 +208,8 @@ class ProductItemState extends State<ProductItem> {
                           'Quantity: ',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 17,
+                            //fontSize: 17,
+                            fontSize: ScreenUtil.getInstance().setSp(50),
                             color: Colors.white,
                           ),
                         ),
@@ -201,22 +220,21 @@ class ProductItemState extends State<ProductItem> {
                             data: Theme.of(context).copyWith(
                               canvasColor: Colors.white,
                             ),
-                            child: new DropdownButton<String>(
+                            child: new DropdownButtonHideUnderline(
+                              child:DropdownButton<String>(
                               icon: Icon(
                                 Icons.arrow_drop_down,
                                 color: Color(0xFF609f38),
-                                size: 35,
+                                size: 30,
                               ),
                             items: product.getWeightList(),
-
                               onChanged: (val) {
                                 setState(() {
                                   selectedweight = val;
-
                                 });
-
                               },
                               value: selectedweight!= null ? selectedweight : product.selectedweight,
+                            ),
                             ),
                           ),
                         ),
@@ -225,45 +243,7 @@ class ProductItemState extends State<ProductItem> {
                   );
                 }
             ),
-            title: MaterialButton(
-               elevation: 8,
-              /*//minWidth: 90.0,
-              height: 40.0,
-              colorBrightness: Brightness.dark,
-              color:  Colors.red,
-              shape: RoundedRectangleBorder(side: BorderSide(
-                  color: Colors.red,
-                  width: 1.3,
-                  style: BorderStyle.solid
-              ),
-                //borderRadius: BorderRadius.circular(40),
-              ),*/
-              child:Container(
-                child:/* Text("Offers*",style: new TextStyle(
-                   fontSize:13,
-                   color: Colors.red,
-                   fontFamily: 'Montserrat-Regular',
-                  ),
-                ),*/
-                //Icon(Icons.local_offer,color: Colors.red),
-                Image.asset(
-                  'images/special.png',
-                  //width: 200,
-                  //height: 100,
-                  //fit: BoxFit.cover,
-                ),
-              ),
-              onPressed: () => _displayDialog(context),
-            ),
-            /*title: Text(
-              'Offers !',
-              style: TextStyle(
-                color: Colors.redAccent,
-                fontSize: 16,
-                fontFamily: 'Lato',
-                fontWeight: FontWeight.bold,
-              ),
-            ),*/
+            title: Text('hh'),
             trailing: MaterialButton(
               elevation: 8,
               //minWidth: 100.0,
@@ -284,7 +264,8 @@ class ProductItemState extends State<ProductItem> {
                       child: Icon(Icons.add_shopping_cart,color: Colors.white),
                     ),
                     Text("Add",style: new TextStyle(
-                      fontSize:15,
+                      //fontSize:15,
+                      fontSize: ScreenUtil.getInstance().setSp(45),
                       fontFamily: 'Montserrat-Regular',
                     ),
                     ),

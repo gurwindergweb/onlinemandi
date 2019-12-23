@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/app_drawer.dart';
 
@@ -26,12 +27,13 @@ class CareCenterState extends State<CareCenter> {
   }
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.instance = ScreenUtil()..init(context);
     //getuserdetail();
     print('userdata');
     print(userData);
     return Scaffold(
       appBar: AppBar(
-          title: Text('OnlineMandi Care',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
+          title: Text('OnlineMandi Care',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: ScreenUtil.getInstance().setSp(60))),
           backgroundColor: Color(0xFF609f38),
           iconTheme: IconThemeData(color: Colors.white),
           centerTitle: true
@@ -49,55 +51,59 @@ class CareCenterState extends State<CareCenter> {
             stops: [0, 6],
           ),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Card(
-              elevation: 12,
-              child: ListTile(
-                title: Text('${userData['city']} Office',style: TextStyle(color: Color(0xFF609f38),fontWeight: FontWeight.bold,fontSize: 17)),
-                subtitle: Padding(
-                  padding: EdgeInsets.fromLTRB(0,10,0,5),
-                  child: Text('Customer Support Numbers:',style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,fontSize: 14,)),
-                ),
-                trailing: Padding(
-                  padding: EdgeInsets.all(1),
-                  child: Column(
-                    children: <Widget>[
-                      Text(userData['sellerContact1'],style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16)),
-                      Padding(padding: EdgeInsets.all(5)),
-                      Text(userData['sellerContact2'],style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16)),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Card(
-              elevation: 12,
-              child: ListTile(
-                title: Text('Head Office',style: TextStyle(color: Color(0xFF609f38),fontWeight: FontWeight.bold,fontSize: 17)),
-                subtitle:  Padding(
-                  padding: EdgeInsets.fromLTRB(0,8,0,5),
-                  child: Text('Customer Support Numbers:',style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,fontSize: 14,)),
-                ),
-                trailing: Padding(
-                    padding: EdgeInsets.all(1),
-                    child: Column(
-                      children: <Widget>[
-                        Text('9781349506',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16)),
-                        Padding(padding: EdgeInsets.all(5)),
-                        Text('9478109281',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16)),
-                      ],
-                    ),
-                  ),
-                  //leading: ,
-              ),
-            ),
-          ],
-        ),
+        child: _care(),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
-
+  Widget _care () {
+    return IconTheme(
+      data: new IconThemeData(color: Colors.blue),
+      child: ListView(
+        children: <Widget>[
+          Card(
+            elevation: 6,
+            child: ListTile(
+              title: Text('${userData['city']} Office',style: TextStyle(color: Color(0xFF609f38),fontWeight: FontWeight.bold,fontSize: ScreenUtil.getInstance().setSp(50))),
+              subtitle: Padding(
+                padding: EdgeInsets.fromLTRB(0,5,0,5),
+                child: Text('Customer Support Numbers:',style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,fontSize: ScreenUtil.getInstance().setSp(45))),
+              ),
+              trailing: Padding(
+                padding: EdgeInsets.all(1),
+                child: Column(
+                  children: <Widget>[
+                    Text(userData['sellerContact1'],style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: ScreenUtil.getInstance().setSp(45))),
+                    Padding(padding: EdgeInsets.only(top: 10)),
+                    Text(userData['sellerContact2'],style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: ScreenUtil.getInstance().setSp(45))),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Card(
+            elevation: 6,
+            child: ListTile(
+              title: Text('Head Office',style: TextStyle(color: Color(0xFF609f38),fontWeight: FontWeight.bold,fontSize: ScreenUtil.getInstance().setSp(50))),
+              subtitle:  Padding(
+                padding: EdgeInsets.fromLTRB(0,5,0,5),
+                child: Text('Customer Support Numbers:',style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,fontSize: ScreenUtil.getInstance().setSp(45))),
+              ),
+              trailing: Padding(
+                padding: EdgeInsets.all(1),
+                child: Column(
+                  children: <Widget>[
+                    Text('9781349506',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: ScreenUtil.getInstance().setSp(45))),
+                    Padding(padding: EdgeInsets.only(top: 10)),
+                    Text('9478109281',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: ScreenUtil.getInstance().setSp(45))),
+                  ],
+                ),
+              ),
+              //leading: ,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 

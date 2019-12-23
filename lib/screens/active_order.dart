@@ -38,9 +38,10 @@ class ActiveOrderState extends State<ActiveOrder> {
           itemBuilder: (ctx, index) => ChangeNotifierProvider.value(
             value: orders[index],
             child: Container(
+              padding: EdgeInsets.fromLTRB(0,8,0,0),
               child:Container(
-                padding: const EdgeInsets.all(10.0),
-                decoration: BoxDecoration(
+                padding: EdgeInsets.fromLTRB(5,2,5,0),
+                /*decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
                       Color.fromRGBO(204, 255, 255, 1).withOpacity(0.9),
@@ -50,14 +51,25 @@ class ActiveOrderState extends State<ActiveOrder> {
                     end: Alignment.bottomRight,
                     stops: [0, 6],
                   ),
-                ),
+                ),*/
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Card(
                       elevation: 6,
-                      margin: EdgeInsets.only(top: 10),
+                      //margin: EdgeInsets.only(top: 10),
                       child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Color.fromRGBO(255, 255, 255, 1).withOpacity(0.5),
+                              Color.fromRGBO (153, 255, 153, 1).withOpacity(0.6),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            stops: [0, 6],
+                          ),
+                        ),
                         padding: EdgeInsets.all(10),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,7 +120,7 @@ class ActiveOrderState extends State<ActiveOrder> {
                               children: <Widget>[
                                 Text('City:',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14,color:Colors.white)),
                                 MaterialButton(
-                                  elevation: 9,
+                                  elevation: 12,
                                   //minWidth: 180.0,
                                   colorBrightness: Brightness.dark,
                                   color: Colors.red,
@@ -117,7 +129,7 @@ class ActiveOrderState extends State<ActiveOrder> {
                                       width: 0.3,
                                       style: BorderStyle.solid
                                   ),
-                                    borderRadius: BorderRadius.circular(5),
+                                    borderRadius: BorderRadius.circular(50),
                                   ),
                                   child:Container(
                                     child: Row(

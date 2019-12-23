@@ -49,9 +49,8 @@ class OrderDetailsState extends State<OrderDetails> {
           centerTitle: true
       ),
       body: Container(
-        child:Container(
-          padding: const EdgeInsets.all(10.0),
-          decoration: BoxDecoration(
+        padding: const EdgeInsets.all(10.0),
+        /*decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
                 Color.fromRGBO(204, 255, 255, 1).withOpacity(0.9),
@@ -61,165 +60,193 @@ class OrderDetailsState extends State<OrderDetails> {
               end: Alignment.bottomRight,
               stops: [0, 6],
             ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Card(
-                elevation: 6,
-                margin: EdgeInsets.only(top: 10),
-                child: Container(
-                  padding: EdgeInsets.all(10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text('Order Date: ${orders.date}',style: TextStyle(color: Color(0xFF609f38),fontWeight: FontWeight.bold,
-                        //fontSize: 17
-                        fontSize: ScreenUtil.getInstance().setSp(50),
-                      )),
-                      Padding(padding: EdgeInsets.fromLTRB(0,10,0,10)),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text('Order Number: ',style: TextStyle(fontWeight: FontWeight.bold,
-                            //fontSize: 14
-                            fontSize: ScreenUtil.getInstance().setSp(40),
-                          )),
-                          Text('${orders.id}',style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(40))),
-                        ],
-                      ),
-                      Padding(padding: EdgeInsets.fromLTRB(0,10,0,0)),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text('Number of Items:',style: TextStyle(fontWeight: FontWeight.bold,
-                            //fontSize: 14
-                            fontSize: ScreenUtil.getInstance().setSp(40),
-                          )),
-                          Text('${orders.products.length}',style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(40))),
-                        ],
-                      ),
-                      Padding(padding: EdgeInsets.fromLTRB(0,10,0,0)),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text('Total Amount:',style: TextStyle(fontWeight: FontWeight.bold,
-                            //fontSize: 14
-                            fontSize: ScreenUtil.getInstance().setSp(40),
-                          )),
-                          Text('${orders.orderAmount}',style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(40))),
-                        ],
-                      ),
-                      Padding(padding: EdgeInsets.fromLTRB(0,10,0,0)),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text('Shipping Charges:',style: TextStyle(fontWeight: FontWeight.bold,
-                            //fontSize: 14
-                            fontSize: ScreenUtil.getInstance().setSp(40),
-                          )),
-                          Text('${orders.shippingcharge}',style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(40))),
-                        ],
-                      ),
-                      Padding(padding: EdgeInsets.fromLTRB(0,10,0,0)),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text('Grand Total:',style: TextStyle(fontWeight: FontWeight.bold,
-                            //fontSize: 14
-                            fontSize: ScreenUtil.getInstance().setSp(40),
-                          )),
-                          Text('${orders.grandtotal}',style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(40))),
-                        ],
-                      ),
-                      Padding(padding: EdgeInsets.fromLTRB(0,10,0,0)),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          //Text('City:',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14,color:Colors.white)),
-                          widget.title == 'Active Orders' ?  MaterialButton(
-                            elevation: 9,
-                            //minWidth: 180.0,
-                            colorBrightness: Brightness.dark,
-                            color: Colors.red,
-                            shape: RoundedRectangleBorder(side: BorderSide(
-                                color: Colors.white,
-                                width: 0.3,
-                                style: BorderStyle.solid
-                            ),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child:Container(
-                              child: Row(
-                                children: <Widget>[
-                                  Padding(padding: EdgeInsets.fromLTRB(5,10,6,10),
-                                    child: Icon(Icons.cancel,size: 20),
-                                  ),
-                                  Text("Cancel Order",style: new TextStyle(
-                                    //fontSize:13,
-                                    fontSize: ScreenUtil.getInstance().setSp(40),
-                                    color: Colors.white,
-                                    fontFamily: 'Montserrat-Regular',
-                                  ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            onPressed: () => _displayDialog(context,orders.orderAmount),
-                          ) : Text(''),
-                          widget.title == 'Active Orders' ?  MaterialButton(
-                            elevation: 9,
-                            //minWidth: 180.0,
-                            colorBrightness: Brightness.dark,
-                            color: Colors.green,
-                            shape: RoundedRectangleBorder(side: BorderSide(
-                                color: Colors.white,
-                                width: 0.3,
-                                style: BorderStyle.solid
-                            ),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child:Container(
-                              child: Row(
-                                children: <Widget>[
-                                  Padding(padding: EdgeInsets.fromLTRB(5,10,6,10),
-                                    child: Icon(Icons.edit,size: 20),
-                                  ),
-                                  Text("Edit Order",style: new TextStyle(
-                                    //fontSize:13,
-                                    fontSize: ScreenUtil.getInstance().setSp(40),
-                                    color: Colors.white,
-                                    fontFamily: 'Montserrat-Regular',
-                                  ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => EditOrder(orderid: widget.orderid),
-                                ),
-                              );
-                            },
-                          ) : Text(''),
-                        ],
-                      ),
-                      Padding(padding: EdgeInsets.fromLTRB(0,10,0,0)),
-                    ],
-                  ),
-                ),
-              ),
-              Expanded(
-                  child: _displayitems(orders)
-              )
-
-            ],
-          ),
+          ),*/
+        child:Column(
+          children: <Widget>[
+            /* Padding(
+            padding: EdgeInsets.all(1),
+            child: _displayhead(orders),
+          ),*/
+            Expanded(
+              child: _displayhead(orders),
+            ),
+            Padding(padding: EdgeInsets.all(10),),
+            Expanded(
+              child: _displayitems(orders),
+            ),
+          ],
+          //child: _displayitems(orders),
         ), // This trailing comma makes auto-formatting nicer for build methods.
       ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+  Widget _displayhead(orders) {
+    // final ordersData = Provider.of<Orders>(context,listen: false);
+    // orders = ordersData.orders.firstWhere((order) =>order.id == widget.orderid);
+    return IconTheme(
+        data: new IconThemeData(color: Colors.green),
+        child: ListView(
+          children: <Widget>[
+            Card(
+              elevation: 6,
+              margin: EdgeInsets.only(top: 10),
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Color.fromRGBO(255, 255, 255, 1).withOpacity(0.5),
+                      Color.fromRGBO (153, 255, 153, 1).withOpacity(0.6),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    stops: [0, 6],
+                  ),
+                ),
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Text('Order Date: ${orders.date}',style: TextStyle(color: Color(0xFF609f38),fontWeight: FontWeight.bold,
+                      //fontSize: 17
+                      fontSize: ScreenUtil.getInstance().setSp(50),
+                    )),
+                    Padding(padding: EdgeInsets.fromLTRB(0,10,0,10)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text('Order Number: ',style: TextStyle(fontWeight: FontWeight.bold,
+                          //fontSize: 14
+                          fontSize: ScreenUtil.getInstance().setSp(40),
+                        )),
+                        Text('${orders.id}',style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(40))),
+                      ],
+                    ),
+                    Padding(padding: EdgeInsets.fromLTRB(0,10,0,0)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text('Number of Items:',style: TextStyle(fontWeight: FontWeight.bold,
+                          //fontSize: 14
+                          fontSize: ScreenUtil.getInstance().setSp(40),
+                        )),
+                        Text('${orders.products.length}',style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(40))),
+                      ],
+                    ),
+                    Padding(padding: EdgeInsets.fromLTRB(0,10,0,0)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text('Total Amount:',style: TextStyle(fontWeight: FontWeight.bold,
+                          //fontSize: 14
+                          fontSize: ScreenUtil.getInstance().setSp(40),
+                        )),
+                        Text('${orders.orderAmount}',style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(40))),
+                      ],
+                    ),
+                    Padding(padding: EdgeInsets.fromLTRB(0,10,0,0)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text('Shipping Charges:',style: TextStyle(fontWeight: FontWeight.bold,
+                          //fontSize: 14
+                          fontSize: ScreenUtil.getInstance().setSp(40),
+                        )),
+                        Text('${orders.shippingcharge}',style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(40))),
+                      ],
+                    ),
+                    Padding(padding: EdgeInsets.fromLTRB(0,10,0,0)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text('Grand Total:',style: TextStyle(fontWeight: FontWeight.bold,
+                          //fontSize: 14
+                          fontSize: ScreenUtil.getInstance().setSp(40),
+                        )),
+                        Text('${orders.grandtotal}',style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(40))),
+                      ],
+                    ),
+                    Padding(padding: EdgeInsets.fromLTRB(0,10,0,0)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        //Text('City:',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14,color:Colors.white)),
+                        widget.title == 'Active Orders' ?  MaterialButton(
+                          elevation: 9,
+                          //minWidth: 180.0,
+                          colorBrightness: Brightness.dark,
+                          color: Colors.red,
+                          shape: RoundedRectangleBorder(side: BorderSide(
+                              color: Colors.white,
+                              width: 0.3,
+                              style: BorderStyle.solid
+                          ),
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child:Container(
+                            child: Row(
+                              children: <Widget>[
+                                Padding(padding: EdgeInsets.fromLTRB(5,10,6,10),
+                                  child: Icon(Icons.cancel,size: 20),
+                                ),
+                                Text("Cancel Order",style: new TextStyle(
+                                  //fontSize:13,
+                                  fontSize: ScreenUtil.getInstance().setSp(40),
+                                  color: Colors.white,
+                                  fontFamily: 'Montserrat-Regular',
+                                ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          onPressed: () => _displayDialog(context,orders.orderAmount),
+                        ) : Text(''),
+                        widget.title == 'Active Orders' ?  MaterialButton(
+                          elevation: 10,
+                          //minWidth: 180.0,
+                          colorBrightness: Brightness.dark,
+                          color: Colors.green,
+                          shape: RoundedRectangleBorder(side: BorderSide(
+                              color: Colors.white,
+                              width: 0.3,
+                              style: BorderStyle.solid
+                          ),
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child:Container(
+                            child: Row(
+                              children: <Widget>[
+                                Padding(padding: EdgeInsets.fromLTRB(5,10,6,10),
+                                  child: Icon(Icons.edit,size: 20),
+                                ),
+                                Text("Edit Order",style: new TextStyle(
+                                  //fontSize:13,
+                                  fontSize: ScreenUtil.getInstance().setSp(40),
+                                  color: Colors.white,
+                                  fontFamily: 'Montserrat-Regular',
+                                ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditOrder(orderid: widget.orderid),
+                              ),
+                            );
+                          },
+                        ) : Text(''),
+                      ],
+                    ),
+                    Padding(padding: EdgeInsets.fromLTRB(0,10,0,0)),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
     );
   }
   Widget _displayitems(orders){
@@ -230,12 +257,22 @@ class OrderDetailsState extends State<OrderDetails> {
         child: ListView.builder(
             itemCount: orders.products.length,
             itemBuilder: (BuildContext context, int index){
-
               return Card(
                 elevation:6,
                 //color: Colors.red,
                 margin: EdgeInsets.only(top: 12),
                 child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Color.fromRGBO(255, 255, 255, 9).withOpacity(0.1),
+                        Color.fromRGBO (153, 255, 153, 1).withOpacity(0.6),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      stops: [0, 6],
+                    ),
+                  ),
                   //height: 120,
                   //padding: EdgeInsets.all(10),
                   child: Padding(
@@ -347,7 +384,7 @@ class OrderDetailsState extends State<OrderDetails> {
                 ),
               );
             }
-        )
+        ),
     );
   }
   _displayDialog(BuildContext context,id) async {
@@ -404,7 +441,7 @@ class OrderDetailsState extends State<OrderDetails> {
                         width: 0.3,
                         style: BorderStyle.solid
                     ),
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(50),
                     ),
                     child:Container(
                       child: Row(
@@ -436,7 +473,7 @@ class OrderDetailsState extends State<OrderDetails> {
                         width: 0.3,
                         style: BorderStyle.solid
                     ),
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(50),
                     ),
                     child:Container(
                       child: Row(
@@ -475,6 +512,7 @@ class OrderDetailsState extends State<OrderDetails> {
         timeInSecForIos: 1,
         gravity: ToastGravity.BOTTOM,
         backgroundColor: Colors.black,
+        fontSize: ScreenUtil.getInstance().setSp(40)
       );
     }).then((data){
       Navigator.of(context)

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:onlinemandi/providers/cart.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +22,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.instance = ScreenUtil()..init(context);
     final productId =
         ModalRoute.of(context).settings.arguments as String; // is the id!
     final loadedProduct = Provider.of<Products>(
@@ -31,7 +33,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
     return Scaffold(
       backgroundColor: Color(0xFFf5f5f0),
       appBar: AppBar(
-        title: Text(loadedProduct.title,style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
+        title: Text(loadedProduct.title,style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: ScreenUtil.getInstance().setSp(60))),
         backgroundColor: Color(0xFF609f38),
         iconTheme: IconThemeData(color: Colors.white),
         centerTitle: true,
@@ -64,7 +66,8 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                           style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                            //fontSize: 16,
+                            fontSize: ScreenUtil.getInstance().setSp(45),
                           ),
                         ),
                       ),
@@ -74,11 +77,13 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                     children: <Widget>[
                       Padding(padding: EdgeInsets.only(right: 10,top: 2),
                         child: Text(
+
                           'item:',
                           style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                            //fontSize: 16,
+                            fontSize: ScreenUtil.getInstance().setSp(45),
                           ),
                         ),
                       ),
@@ -86,7 +91,8 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                         '${loadedProduct.title} (${loadedProduct.description}) ',
                         style: TextStyle(
                           color: Colors.black,
-                          fontSize: 16,
+                          //fontSize: 16,
+                          fontSize: ScreenUtil.getInstance().setSp(45),
                         ),
                       ),
                     ],
@@ -99,7 +105,8 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                           style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                            //fontSize: 16,
+                            fontSize: ScreenUtil.getInstance().setSp(45),
                           ),
                         ),
                       ),
@@ -107,7 +114,8 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                         loadedProduct.grade == 0 ? 'Premium' :  'Regular',
                         style: TextStyle(
                           color: Colors.black,
-                          fontSize: 16,
+                          //fontSize: 16,
+                          fontSize: ScreenUtil.getInstance().setSp(45),
                         ),
                       ),
                     ],
@@ -117,7 +125,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                     child: GridTileBar(
                       leading: Container(
                             //color: Colors.lightGreen,
-                            padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                            padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.all(Radius.circular(2.0)),
                               color: Color(0xFF609f38),
@@ -132,33 +140,35 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                                   'Quantity: ',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 18,
+                                    //fontSize: 18,
+                                    fontSize: ScreenUtil.getInstance().setSp(50),
                                     color: Colors.white,
                                   ),
                                 ),
                                 Container(
                                   color: Colors.white,
+                                  //width: 90,
                                   padding: EdgeInsets.only(left: 8),
                                   child: new Theme(
                                     data: Theme.of(context).copyWith(
                                       canvasColor: Colors.white,
                                     ),
-                                    child: new DropdownButton<String>(
+                                    child: DropdownButtonHideUnderline(
+                                      child: new DropdownButton<String>(
                                       icon: Icon(
                                         Icons.arrow_drop_down,
                                         color: Color(0xFF609f38),
-                                        size: 35,
+                                        size: 30,
                                       ),
                                       items: loadedProduct.getWeightList(),
 
                                       onChanged: (val) {
                                         setState(() {
                                           selectedweight = val;
-
                                         });
-
                                       },
                                       value: selectedweight!= null ? selectedweight : loadedProduct.selectedweight,
+                                    ),
                                     ),
                                   ),
                                 ),
@@ -198,7 +208,8 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                                 child: Icon(Icons.add_shopping_cart,color: Colors.white),
                               ),
                               Text("Add",style: new TextStyle(
-                                fontSize:15,
+                                //fontSize:15,
+                                fontSize: ScreenUtil.getInstance().setSp(45),
                                 fontFamily: 'Montserrat-Regular',
                               ),
                               ),
@@ -255,7 +266,8 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                       'Offers !',
                       style: TextStyle(
                         color: Colors.red,
-                        fontSize: 20,
+                        //fontSize: 20,
+                        fontSize: ScreenUtil.getInstance().setSp(50),
                         fontFamily: 'Lato',
                         fontWeight: FontWeight.bold,
                       ),
@@ -270,7 +282,8 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                        style: TextStyle(
                          color: Colors.black,
                          fontWeight: FontWeight.bold,
-                         fontSize: 16,
+                         //fontSize: 16,
+                         fontSize: ScreenUtil.getInstance().setSp(45),
                        ),
                      ),
                      ),
@@ -287,7 +300,8 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                   Text('Description:',style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
-                    fontSize: 17,
+                    //fontSize: 17,
+                    fontSize: ScreenUtil.getInstance().setSp(50),
                   )),
                 ],
                ),
@@ -304,7 +318,8 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                         loadedProduct.description,
                         style: TextStyle(
                           color: Colors.black,
-                          fontSize: 15,
+                          //fontSize: 15,
+                          fontSize: ScreenUtil.getInstance().setSp(45),
                           fontFamily: 'Lato',
                           fontWeight: FontWeight.normal,
                         ),

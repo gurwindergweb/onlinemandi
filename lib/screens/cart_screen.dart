@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -25,7 +26,8 @@ class CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
-     cart = Provider.of<Cart>(context);
+    ScreenUtil.instance = ScreenUtil()..init(context);
+    cart = Provider.of<Cart>(context);
      print(cart);
      products = Provider.of<Products>(context);
      ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
@@ -33,22 +35,23 @@ class CartScreenState extends State<CartScreen> {
       backgroundColor: Color(0xFFf5f5f0),
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
-        title: Text('Your Cart',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
+        title: Text('Your Cart',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: ScreenUtil.getInstance().setSp(60))),
         backgroundColor: Color(0xFF609f38),
         centerTitle: true,
         //centerTitle: true,
         actions: <Widget>[
           Padding(padding: EdgeInsets.all(10),
           child: cart.items.keys.length> 0 ? InkWell(
-            child: Icon(Icons.delete_sweep, color: Colors.white),
+            child: Icon(Icons.delete_sweep, color: Colors.white,size: 25,),
             onTap: (){_clearDialog(context);},
           ): null
           ),
+          //Text('Empty Cart',style: TextStyle(fontSize: ScreenUtil.getInstance().setSp(28),color: Colors.white)),
         ],
       ),
       body: Column(
         children: <Widget>[
-          SizedBox(height: 10),
+          SizedBox(height: 2),
           Container(
             child: Expanded(
               child: cart.items.keys.length> 0 ? ListView.builder(
@@ -68,11 +71,16 @@ class CartScreenState extends State<CartScreen> {
                     return  Slidable(
                       actionPane: SlidableDrawerActionPane(),
                       controller: slidableController,
-
                       actionExtentRatio: 0.35,
-                      child: Container(
-                        padding: EdgeInsets.fromLTRB(0,15,0,18),
-                        color: Colors.white,
+                      child: Card(
+                        elevation: 7,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                        margin: EdgeInsets.fromLTRB(10,10,10,0),
+                        child: Container(
+                        padding: EdgeInsets.fromLTRB(0,10,0,10),
+                        //color: Colors.white,
                         child: ListTile(
                           leading: Container(
                             margin: const EdgeInsets.only(left:0 ,right:0),
@@ -110,7 +118,7 @@ class CartScreenState extends State<CartScreen> {
                               ),
                               Padding(
                                 padding: EdgeInsets.only(top: 10),
-                                child: Icon(Icons.edit,size: 23,color: Colors.lightGreen),
+                                child: Icon(Icons.edit,size: 23,color: Color(0xFF609f38),),
                               ),
                             ],
                           ),
@@ -119,55 +127,56 @@ class CartScreenState extends State<CartScreen> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
                               Text('${cart.items['${ct[i]}'].title}',style: TextStyle(
-                                  //fontSize: 14,
-                                   fontSize: ScreenUtil.instance.setSp(40),
+                                //fontSize: 14,
+                                  fontSize: ScreenUtil.instance.setSp(45),
                                   color: Colors.black,fontWeight: FontWeight.bold)),
-                              Padding(padding: EdgeInsets.only(top: 4)),
-                              Padding(padding: EdgeInsets.only(top: 3)),
+                              Padding(padding: EdgeInsets.only(top: 1)),
                               Row(
                                 children: <Widget>[
-                                  Text( 'Quantity:',style: TextStyle(color: Color(0xFF609f38),
-                                     // fontSize: 13,
-                                      fontSize: ScreenUtil.instance.setSp(45),
-                                      fontWeight: FontWeight.bold),
+                                  Text( 'Quantity : ',style: TextStyle(color: Colors.black,
+                                      // fontSize: 13,
+                                      fontSize: ScreenUtil.instance.setSp(38),
+                                      fontWeight: FontWeight.w600),
                                   ),
                                   Text('${cart.items['${ct[i]}'].quantity} ${cart.items['${ct[i]}'].unit}',
                                     style: TextStyle(
-                                      color: Colors.black,
+                                      color: Color(0xFF609f38),
                                       //fontSize: 13,
-                                      fontSize: ScreenUtil.instance.setSp(40),
+                                      fontSize: ScreenUtil.instance.setSp(38),
                                     ),
                                   ),
                                 ],
                               ),
+                              Padding(padding: EdgeInsets.only(top: 1.5)),
                               Row(
                                 children: <Widget>[
-                                  Text( 'Quality:',style: TextStyle(color: Color(0xFF609f38),
+                                  Text( 'Quality : ',style: TextStyle(color: Colors.black,
                                       // fontSize: 13,
-                                      fontSize: ScreenUtil.instance.setSp(45),
-                                      fontWeight: FontWeight.bold),
+                                      fontSize: ScreenUtil.instance.setSp(40),
+                                      fontWeight: FontWeight.w600),
                                   ),
                                   Text('${cart.items['${ct[i]}'].grade == 0 ? 'Premium' : 'Regular' }',
                                     style: TextStyle(
-                                      color: Colors.black,
+                                      color: Color(0xFF609f38),
                                       //fontSize: 13,
-                                      fontSize: ScreenUtil.instance.setSp(40),
+                                      fontSize: ScreenUtil.instance.setSp(38),
                                     ),
                                   ),
                                 ],
                               ),
+                              Padding(padding: EdgeInsets.only(top: 1.5)),
                               Row(
                                 children: <Widget>[
-                                  Text( 'Total: ',style: TextStyle(color: Color(0xFF609f38),
+                                  Text( 'Total Rs : ',style: TextStyle(color: Colors.black,
                                       // fontSize: 13,
-                                      fontSize: ScreenUtil.instance.setSp(45),
-                                      fontWeight: FontWeight.bold),
-                                  ),
-                                  Text('Rs ${cart.items['${ct[i]}'].totalprice}',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      //fontSize: 13,
                                       fontSize: ScreenUtil.instance.setSp(40),
+                                      fontWeight: FontWeight.w600),
+                                  ),
+                                  Text(' ${cart.items['${ct[i]}'].totalprice}',
+                                    style: TextStyle(
+                                      color: Color(0xFF609f38),
+                                      //fontSize: 13,
+                                      fontSize: ScreenUtil.instance.setSp(38),
                                     ),
                                   ),
                                 ],
@@ -176,7 +185,7 @@ class CartScreenState extends State<CartScreen> {
                           ),
                         ),
                       ),
-
+                      ),
                       secondaryActions: <Widget>[
                         Container(
                           padding: EdgeInsets.fromLTRB(5,0,0,0),
@@ -251,21 +260,38 @@ class CartScreenState extends State<CartScreen> {
             ),
           ),
           Card(
+            elevation: 7,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5.0),
+            ),
             margin: EdgeInsets.all(10),
             child: Padding(
-              padding: EdgeInsets.all(10),
-              child: Column(
+              padding: EdgeInsets.all(0),
+              child: Container(
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Color.fromRGBO(255, 255, 255, 1).withOpacity(0.5),
+                      Color.fromRGBO (153, 255, 153, 1).withOpacity(0.6),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    stops: [0, 6],
+                  ),
+                ),
+                child: Column(
                 children: <Widget>[
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text(
                         'Sub Total:',
-                        style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color: Colors.grey[500]),
+                        style: TextStyle(fontSize: ScreenUtil.getInstance().setSp(45),fontWeight: FontWeight.bold,color: Colors.grey[500]),
                       ),
                       Text(
                         'Rs: ${cart.totalAmount}',
-                        style: TextStyle(fontSize: 14,fontWeight: FontWeight.normal),
+                        style: TextStyle(fontSize: ScreenUtil.getInstance().setSp(45),fontWeight: FontWeight.normal),
                       ),
                     ],
                   ),
@@ -275,11 +301,11 @@ class CartScreenState extends State<CartScreen> {
                     children: <Widget>[
                       Text(
                         'Shipping Charges:',
-                        style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color: Colors.grey[500]),
+                        style: TextStyle(fontSize: ScreenUtil.getInstance().setSp(45),fontWeight: FontWeight.bold,color: Colors.grey[500]),
                       ),
                       Text(
                         'Rs: ${cart.shippingcharge != null ? cart.shippingcharge : 0.0}',
-                        style: TextStyle(fontSize: 14,fontWeight: FontWeight.w600,color:Color(0xFF609f38)),
+                        style: TextStyle(fontSize: ScreenUtil.getInstance().setSp(45),fontWeight: FontWeight.w600,color:Color(0xFF609f38)),
                       ),
                     ],
                   ),
@@ -289,7 +315,7 @@ class CartScreenState extends State<CartScreen> {
                     children: <Widget>[
                       Text(
                         'Total:',
-                        style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: ScreenUtil.getInstance().setSp(45),fontWeight: FontWeight.bold),
                       ),
                       //Spacer(),
                       Chip(
@@ -299,7 +325,7 @@ class CartScreenState extends State<CartScreen> {
                             // color: Theme.of(context).primaryTextTheme.title.color,
                             color: Colors.white,
                             //fontWeight: FontWeight.bold,
-                            fontSize: 14,
+                            fontSize: ScreenUtil.getInstance().setSp(45),
                           ),
                         ),
                         backgroundColor:  Color(0xFF609f38),
@@ -308,9 +334,9 @@ class CartScreenState extends State<CartScreen> {
                     ],
                   ),
                 ],
-
               ),
             ),
+          ),
           ),
         ],
       ),
@@ -369,7 +395,7 @@ class CartScreenState extends State<CartScreen> {
                         width: 0.3,
                         style: BorderStyle.solid
                     ),
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(50),
                     ),
                     child:Container(
                       child: Row(
@@ -401,7 +427,7 @@ class CartScreenState extends State<CartScreen> {
                         width: 0.3,
                         style: BorderStyle.solid
                     ),
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(50),
                     ),
                     child:Container(
                       child: Row(
@@ -485,7 +511,7 @@ class CartScreenState extends State<CartScreen> {
                         width: 0.3,
                         style: BorderStyle.solid
                     ),
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(50),
                     ),
                     child:Container(
                       child: Row(
@@ -517,7 +543,7 @@ class CartScreenState extends State<CartScreen> {
                         width: 0.3,
                         style: BorderStyle.solid
                     ),
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(50),
                     ),
                     child:Container(
                       child: Row(
@@ -567,37 +593,7 @@ class _OrderButtonState extends State<OrderButton> {
 
   @override
   Widget build(BuildContext context) {
-    /*return MaterialButton(
-      elevation: 8,
-      //minWidth: 100.0,
-      //height: 40.0,
-      colorBrightness: Brightness.dark,
-      color: new Color(0xFF609f38),
-      shape: RoundedRectangleBorder(side: BorderSide(
-          color: Colors.white,
-          width: 1.3,
-          style: BorderStyle.solid
-      ),
-        borderRadius: BorderRadius.circular(40),
-      ),
-      child: _isLoading ? CircularProgressIndicator() : Text('Checkout',style: TextStyle(color: Colors.white,fontSize: 12)),
-      onPressed: (widget.cart.totalAmount <= 0 || _isLoading)
-          ? null
-          : () async {
-              setState(() {
-                _isLoading = true;
-              });
-              await Provider.of<Orders>(context, listen: false).addOrder(
-                widget.cart.items.values.toList(),
-                widget.cart.totalAmount,
-              );
-              setState(() {
-                _isLoading = false;
-              });
-              widget.cart.clear();
-            },
-      textColor: Theme.of(context).primaryColor,
-    );*/
+
     return MaterialButton(
       elevation: 8,
       //minWidth: 100.0,
@@ -611,7 +607,7 @@ class _OrderButtonState extends State<OrderButton> {
       ),
         borderRadius: BorderRadius.circular(40),
       ),
-      child: _isLoading ? CircularProgressIndicator() : Text('Checkout',style: TextStyle(color: Colors.white,fontSize: 12)),
+      child: _isLoading ? CircularProgressIndicator() : Text('Checkout*',style: TextStyle(color: Colors.white,fontSize: ScreenUtil.getInstance().setSp(50),)),
       onPressed: (widget.cart.totalAmount <= 0 || _isLoading)
           ? null
           : () {

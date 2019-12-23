@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:onlinemandi/screens/Term_conditions.dart';
 import 'package:onlinemandi/screens/about_us.dart';
+import 'package:onlinemandi/screens/mantines_mode.dart';
 import 'package:onlinemandi/screens/my_account.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -33,8 +35,9 @@ class AppDrawerState extends State<AppDrawer> {
   }
   @override
   Widget build(BuildContext context) {
-    getuserdetail();
+    ScreenUtil.instance = ScreenUtil()..init(context);
     return Drawer(
+      elevation: 10,
       child: Column(
         children: <Widget>[
           AppBar(
@@ -53,34 +56,79 @@ class AppDrawerState extends State<AppDrawer> {
                 child: Padding(
                   padding: EdgeInsets.all(1),
                   child:CircleAvatar(
-                    backgroundImage: AssetImage(
-                      'images/download.jpg',
-                    ),
-                    backgroundColor: Color(0xFFededdf),
-                    radius: 80
+                      backgroundImage: AssetImage(
+                        'images/download.jpg',
+                      ),
+                      backgroundColor: Color(0xFFededdf),
+                      radius: 80
                   ),
                 ),
               ),
             ),
             //leading: Icon(Icons.person,color: Colors.white),
-            title: Text(userData['username'] !=null ? userData['username'] : '' ,style: TextStyle(color: Color(0xFFededdf),fontWeight: FontWeight.bold)),
+            title: Text(userData['username'] !=null ? userData['username'] : '' ,style: TextStyle(color: Color(0xFFededdf),fontWeight: FontWeight.bold,
+              fontSize: ScreenUtil.getInstance().setSp(50),
+            )),
             automaticallyImplyLeading: false,
             backgroundColor: Color(0xFF609f38),
           ),
           //Divider(),
+          Expanded(
+            child: _chatEnvironment(context),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+Widget _chatEnvironment (context) {
+  return IconTheme(
+    data: new IconThemeData(color: Colors.blue),
+    child: SingleChildScrollView(
+      child: Column(
+        children: <Widget>[
           ListTile(
             leading: Icon(Icons.home,color: Color(0xFF609f38)),
             trailing:Icon (Icons.keyboard_arrow_right,color: Color(0xFF609f38)),
-            title: Text('Shop',style: TextStyle(fontWeight: FontWeight.bold)),
+            title: Text('Shop',style: TextStyle(fontWeight: FontWeight.bold,
+              fontSize: ScreenUtil.getInstance().setSp(40),
+            )),
             onTap: () {
               Navigator.of(context).pushReplacementNamed('/');
             },
           ),
           Divider(),
+          /*ListTile(
+            leading: Icon(Icons.payment,color: Color(0xFF609f38)),
+            trailing:Icon (Icons.keyboard_arrow_right,color: Color(0xFF609f38)),
+            title: Text('Orders',style: TextStyle(fontWeight: FontWeight.bold,
+              fontSize: ScreenUtil.getInstance().setSp(40),
+            )),
+            onTap: () {
+              Navigator.of(context)
+                  .pushNamed(OrdersScreen.routeName);
+            },
+          ),*/
+          /*Divider(),
+          ListTile(
+            leading: Icon(Icons.edit,color: Color(0xFF609f38)),
+            trailing:Icon (Icons.keyboard_arrow_right,color:Color(0xFF609f38)),
+            title: Text('Manage Products',style: TextStyle(fontWeight: FontWeight.bold,
+              fontSize: ScreenUtil.getInstance().setSp(40),
+            )),
+            onTap: () {
+              Navigator.of(context)
+                  .pushNamed(UserProductsScreen.routeName);
+            },
+          ),
+          Divider(),*/
           ListTile(
             leading: Icon(Icons.person,color: Color(0xFF609f38)),
             trailing:Icon (Icons.keyboard_arrow_right,color: Color(0xFF609f38)),
-            title: Text('My Account',style: TextStyle(fontWeight: FontWeight.bold)),
+            title: Text('My Account',style: TextStyle(fontWeight: FontWeight.bold,
+              fontSize: ScreenUtil.getInstance().setSp(40),
+            )),
             onTap: () {
               Navigator.of(context)
                   .pushNamed(MyAccount.routeName);
@@ -90,26 +138,45 @@ class AppDrawerState extends State<AppDrawer> {
           ListTile(
             leading: Icon(Icons.format_color_text,color: Color(0xFF609f38)),
             trailing:Icon (Icons.keyboard_arrow_right,color: Color(0xFF609f38)),
-            title: Text('About Us',style: TextStyle(fontWeight: FontWeight.bold)),
+            title: Text('About Us',style: TextStyle(fontWeight: FontWeight.bold,
+              fontSize: ScreenUtil.getInstance().setSp(40),
+            )),
             onTap: () {
               Navigator.of(context)
-                  .pushReplacementNamed(About.routeName);
+                  .pushNamed(About.routeName);
+            },
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.format_color_text,color: Color(0xFF609f38)),
+            trailing:Icon (Icons.keyboard_arrow_right,color: Color(0xFF609f38)),
+            title: Text('Mantines Mode',style: TextStyle(fontWeight: FontWeight.bold,
+              fontSize: ScreenUtil.getInstance().setSp(40),
+            )),
+            onTap: () {
+              Navigator.of(context)
+                  .pushNamed(MantinesMode.routeName);
             },
           ),
           Divider(),
           ListTile(
             leading: Icon(Icons.pan_tool,color: Color(0xFF609f38)),
             trailing:Icon (Icons.keyboard_arrow_right,color: Color(0xFF609f38)),
-            title: Text('Term & Conditions',style: TextStyle(fontWeight: FontWeight.bold)),
+            title: Text('Term & Conditions',style: TextStyle(fontWeight: FontWeight.bold,
+              fontSize: ScreenUtil.getInstance().setSp(40),
+            )),
             onTap: () {
               Navigator.of(context)
-                  .pushReplacementNamed(TermConditions.routeName);
+                  .pushNamed(TermConditions.routeName);
             },
           ),
           Divider(),
           ListTile(
             leading: Icon(Icons.exit_to_app,color: Color(0xFF609f38)),
-            title: Text('Logout',style: TextStyle(fontWeight: FontWeight.bold)),
+            trailing:Icon (Icons.keyboard_arrow_right,color: Color(0xFF609f38)),
+            title: Text('Logout',style: TextStyle(fontWeight: FontWeight.bold,
+              fontSize: ScreenUtil.getInstance().setSp(40),
+            )),
             onTap: () {
               Navigator.of(context).pop();
               Navigator.of(context).pushReplacementNamed('/');
@@ -119,6 +186,6 @@ class AppDrawerState extends State<AppDrawer> {
           Divider(),
         ],
       ),
-    );
-  }
+    ),
+  );
 }

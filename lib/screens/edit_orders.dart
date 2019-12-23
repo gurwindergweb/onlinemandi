@@ -52,6 +52,7 @@ class EditOrderState extends State<EditOrder> {
     var order = orders;
 
     Widget _showitemlist(){
+      ScreenUtil.instance = ScreenUtil()..init(context);
       return IconTheme(
           data: new IconThemeData(color: Colors.green),
           child: ListView.builder(
@@ -63,91 +64,95 @@ class EditOrderState extends State<EditOrder> {
                 return Slidable(
                   actionPane: SlidableDrawerActionPane(),
                   actionExtentRatio: 0.35,
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(0,15,0,18),
-                    color: Colors.white,
-                    child: ListTile(
-                      leading: Container(
-                        margin: const EdgeInsets.only(left:0 ,right:0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                          border: Border.all(
-                            color: Color(0xFFedeae6),
-                            width: 2.2,
-                            style: BorderStyle.solid,
-                          ),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(2),
-                          child:CircleAvatar(
-                            backgroundImage: NetworkImage(
-                              GlobalConfiguration().getString("assetsURL")+orders.products[index].image,
-                            ),
-                            backgroundColor: Colors.white12,
-                            radius: 25,
-                          ),
-                        ),
-                      ),
-                      trailing: Column(
-                        // mainAxisAlignment: MainAxisAlignment.end,
-                        //crossAxisAlignment: CrossAxisAlignment.end,
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(top: 0),
-                            child: InkWell(
-                              child: Icon(Icons.delete,size: 23,color: Colors.red),
-                              onTap: () => _deleteDialog(context,orders.products[index].id),
+                  child: Card(
+                    elevation: 6,
+                    margin: EdgeInsets.fromLTRB(0,5,0,5),
+                    child: Container(
+                      padding: EdgeInsets.fromLTRB(0,15,0,18),
+                      //color: Colors.white,
+                      child: ListTile(
+                        leading: Container(
+                          margin: const EdgeInsets.only(left:0 ,right:0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                            border: Border.all(
+                              color: Color(0xFFedeae6),
+                              width: 2.2,
+                              style: BorderStyle.solid,
                             ),
                           ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 10),
-                            child: Icon(Icons.edit,size: 23,color: Colors.lightGreen),
-                          ),
-                        ],
-                      ),
-                      title: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Text('${orders.products[index].title}',style: TextStyle(
-                            //fontSize: 14,
-                              fontSize: ScreenUtil.getInstance().setSp(40),
-                              color: Colors.black,fontWeight: FontWeight.bold)),
-                          Padding(padding: EdgeInsets.only(top: 4)),
-                          Padding(padding: EdgeInsets.only(top: 3)),
-                          Row(
-                            children: <Widget>[
-                              Text( 'Quality:',style: TextStyle(color: Color(0xFF609f38),
-                                  //fontSize: 13,
-                                  fontSize: ScreenUtil.getInstance().setSp(45),
-                                  fontWeight: FontWeight.bold),
+                          child: Padding(
+                            padding: EdgeInsets.all(2),
+                            child:CircleAvatar(
+                              backgroundImage: NetworkImage(
+                                GlobalConfiguration().getString("assetsURL")+orders.products[index].image,
                               ),
-                              Text('${orders.products[index].grade == 0 ? 'Premium': 'Regular'}',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  //fontSize: 13,
-                                  fontSize: ScreenUtil.getInstance().setSp(40),
+                              backgroundColor: Colors.white12,
+                              radius: 25,
+                            ),
+                          ),
+                        ),
+                        trailing: Column(
+                          // mainAxisAlignment: MainAxisAlignment.end,
+                          //crossAxisAlignment: CrossAxisAlignment.end,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(top: 0),
+                              child: InkWell(
+                                child: Icon(Icons.delete,size: 23,color: Colors.red),
+                                onTap: () => _deleteDialog(context,orders.products[index].id),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(top: 10),
+                              child: Icon(Icons.edit,size: 23,color: Colors.lightGreen),
+                            ),
+                          ],
+                        ),
+                        title: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Text('${orders.products[index].title}',style: TextStyle(
+                              //fontSize: 14,
+                                fontSize: ScreenUtil.getInstance().setSp(45),
+                                color: Colors.black,fontWeight: FontWeight.bold)),
+                            Padding(padding: EdgeInsets.only(top: 4)),
+                            Row(
+                              children: <Widget>[
+                                Text( 'Quality:',style: TextStyle(color: Color(0xFF609f38),
+                                    //fontSize: 13,
+                                    fontSize: ScreenUtil.getInstance().setSp(40),
+                                    fontWeight: FontWeight.bold),
                                 ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Text( 'Quantity:',style: TextStyle(color: Color(0xFF609f38),
-                                  //fontSize: 13,
-                                  fontSize: ScreenUtil.getInstance().setSp(45),
-                                  fontWeight: FontWeight.bold),
-                              ),
-                              Text('${orders.products[index].quantity} ${orders.products[index].unit}',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  //fontSize: 13,
-                                  fontSize: ScreenUtil.getInstance().setSp(40),
+                                Text('${orders.products[index].grade == 0 ? 'Premium': 'Regular'}',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    //fontSize: 13,
+                                    fontSize: ScreenUtil.getInstance().setSp(40),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
+                              ],
+                            ),
+                            Padding(padding: EdgeInsets.only(top: 2)),
+                            Row(
+                              children: <Widget>[
+                                Text( 'Quantity:',style: TextStyle(color: Color(0xFF609f38),
+                                    //fontSize: 13,
+                                    fontSize: ScreenUtil.getInstance().setSp(40),
+                                    fontWeight: FontWeight.bold),
+                                ),
+                                Text('${orders.products[index].quantity} ${orders.products[index].unit}',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    //fontSize: 13,
+                                    fontSize: ScreenUtil.getInstance().setSp(40),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -246,7 +251,18 @@ class EditOrderState extends State<EditOrder> {
               Card(
                 margin: EdgeInsets.only(top: 10),
                 elevation: 6,
-                child: Padding(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Color.fromRGBO(255, 255, 255, 9).withOpacity(0.1),
+                        Color.fromRGBO (153, 255, 153, 1).withOpacity(0.6),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      stops: [0, 6],
+                    ),
+                  ),
                   padding: EdgeInsets.all(10),
                   child: Column(
                     children: <Widget>[
@@ -322,7 +338,7 @@ class EditOrderState extends State<EditOrder> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           MaterialButton(
-                            elevation: 9,
+                            elevation: 10,
                             colorBrightness: Brightness.dark,
                             color: Colors.green,
                             shape: RoundedRectangleBorder(side: BorderSide(
@@ -330,7 +346,7 @@ class EditOrderState extends State<EditOrder> {
                                 width: 0.3,
                                 style: BorderStyle.solid
                             ),
-                              borderRadius: BorderRadius.circular(5),
+                              borderRadius: BorderRadius.circular(50),
                             ),
                             child:Container(
                               child: Row(
@@ -353,7 +369,7 @@ class EditOrderState extends State<EditOrder> {
                             },
                           ),
                           MaterialButton(
-                            elevation: 9,
+                            elevation: 10,
                             colorBrightness: Brightness.dark,
                             color: Colors.red,
                             shape: RoundedRectangleBorder(side: BorderSide(
@@ -361,7 +377,7 @@ class EditOrderState extends State<EditOrder> {
                                 width: 0.3,
                                 style: BorderStyle.solid
                             ),
-                              borderRadius: BorderRadius.circular(5),
+                              borderRadius: BorderRadius.circular(50),
                             ),
                             child:Container(
                               child: Row(
@@ -447,7 +463,7 @@ class EditOrderState extends State<EditOrder> {
                         width: 0.3,
                         style: BorderStyle.solid
                     ),
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(50),
                     ),
                     child:Container(
                       child: Row(
@@ -479,7 +495,7 @@ class EditOrderState extends State<EditOrder> {
                         width: 0.3,
                         style: BorderStyle.solid
                     ),
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(50),
                     ),
                     child:Container(
                       child: Row(
@@ -561,7 +577,7 @@ class EditOrderState extends State<EditOrder> {
                         width: 0.3,
                         style: BorderStyle.solid
                     ),
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(50),
                     ),
                     child:Container(
                       child: Row(
@@ -593,7 +609,7 @@ class EditOrderState extends State<EditOrder> {
                         width: 0.3,
                         style: BorderStyle.solid
                     ),
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(50),
                     ),
                     child:Container(
                       child: Row(
@@ -672,7 +688,7 @@ class EditOrderState extends State<EditOrder> {
                         width: 0.3,
                         style: BorderStyle.solid
                     ),
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(50),
                     ),
                     child:Container(
                       child: Row(
@@ -704,7 +720,7 @@ class EditOrderState extends State<EditOrder> {
                         width: 0.3,
                         style: BorderStyle.solid
                     ),
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(50),
                     ),
                     child:Container(
                       child: Row(
@@ -738,7 +754,7 @@ class EditOrderState extends State<EditOrder> {
                             timeInSecForIos: 1,
                             backgroundColor: Colors.black,
                             textColor: Colors.white,
-                            fontSize: 14.0
+                            fontSize: ScreenUtil.getInstance().setSp(40),
                         ).then((val){
 
                           Navigator.of(context).pop();
@@ -754,7 +770,7 @@ class EditOrderState extends State<EditOrder> {
                             timeInSecForIos: 1,
                             backgroundColor: Colors.black,
                             textColor: Colors.white,
-                            fontSize: 14.0
+                            fontSize: ScreenUtil.getInstance().setSp(40),
                         );
                       }
                       },
@@ -775,7 +791,7 @@ class EditOrderState extends State<EditOrder> {
 
     var orders = GetOrder(user['token'],user['userId']);
     await orders.getOrders().then((orders){
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => MyOrder(order: orders),

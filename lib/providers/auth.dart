@@ -30,7 +30,7 @@ class Auth with ChangeNotifier {
   String _serviceContact1;
   String _serviceContact2;
   Timer _authTimer;
-  bool isMantainance = false;
+  bool isMantainance;
   List<DropdownModel> _states = [];
   List<DropdownModel> _cities = [];
   List<DropdownModel> _emptyCities = [];
@@ -68,15 +68,16 @@ class Auth with ChangeNotifier {
   }
   Future<bool> checkMantainance() async {
     var url = GlobalConfiguration().getString('baseURL') + 'index/check-mantainance';
-    var response = await dio.get(url);
-    print(response);
-    if(int.parse(response.data['data']['value']) == 1){
+    var response = await http.get(url);
+    var body = json.decode(response.body);
+
+    if(body['data']['value'] == '1'){
       isMantainance = true;
     }
     else{
       isMantainance =  false;
-
     }
+    print(body);
 
   }
   Future forgotpasswordrequest(email,mode) async {

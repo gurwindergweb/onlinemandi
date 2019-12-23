@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Badge extends StatelessWidget {
   const Badge({
@@ -14,6 +15,7 @@ class Badge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.instance = ScreenUtil()..init(context);
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -37,7 +39,7 @@ class Badge extends StatelessWidget {
               value,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 10,
+                fontSize: ScreenUtil.getInstance().setSp(30),
                 color: Colors.white,
               ),
             ),

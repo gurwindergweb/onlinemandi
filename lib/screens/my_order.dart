@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:onlinemandi/providers/auth.dart';
 import 'package:onlinemandi/providers/orders.dart';
 import 'package:provider/provider.dart';
@@ -27,17 +28,17 @@ MyOrderState( {order}){
 
   @override
   Widget build(BuildContext context) {
-
+    ScreenUtil.instance = ScreenUtil()..init(context);
     return Scaffold(
       appBar: AppBar(
-          title: Text('My Orders',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
+          title: Text('My Orders',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: ScreenUtil.getInstance().setSp(60))),
           backgroundColor: Color(0xFF609f38),
           iconTheme: IconThemeData(color: Colors.white),
           centerTitle: true
       ),
-      body: Container(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(10.0),
-        decoration: BoxDecoration(
+        /*decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
               Color.fromRGBO(204, 255, 255, 1).withOpacity(0.9),
@@ -47,26 +48,26 @@ MyOrderState( {order}){
             end: Alignment.bottomRight,
             stops: [0, 6],
           ),
-        ),
+        ),*/
         child: Column(
           children: <Widget>[
             Card(
-              elevation: 12,
+              elevation: 6,
               child: Container(
                 padding: EdgeInsets.all(5),
                 child:  ListTile(
-                  title: Text('Total Orders:',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16)),
+                  title: Text('Total Orders:',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: ScreenUtil.getInstance().setSp(45))),
                   subtitle: Padding(
-                    padding: EdgeInsets.fromLTRB(0,20,0,5),
-                    child: Text('Total Purchase:',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16)),
+                    padding: EdgeInsets.fromLTRB(0,10,0,5),
+                    child: Text('Total Purchase:',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: ScreenUtil.getInstance().setSp(45))),
                   ),
                   trailing: Padding(
                     padding: EdgeInsets.all(1),
                     child: Column(
                       children: <Widget>[
-                        Text(order['tot'],style: TextStyle(color: Color(0xFF609f38),fontWeight: FontWeight.w600,fontSize: 16)),
-                        Padding(padding: EdgeInsets.all(8)),
-                        Text('Rs: ${order['tp']}',style: TextStyle(color: Color(0xFF609f38),fontWeight: FontWeight.w600,fontSize: 16)),
+                        Text(order['tot'],style: TextStyle(color: Color(0xFF609f38),fontWeight: FontWeight.w600,fontSize: ScreenUtil.getInstance().setSp(45))),
+                        Padding(padding: EdgeInsets.only(top: 10)),
+                        Text('Rs: ${order['tp']}',style: TextStyle(color: Color(0xFF609f38),fontWeight: FontWeight.w600,fontSize: ScreenUtil.getInstance().setSp(45))),
                       ],
                     ),
                   ),
@@ -78,10 +79,10 @@ MyOrderState( {order}){
               ),
             ),
             Card(
-              elevation: 12,
+              elevation: 6,
               child: InkWell(
                 child: ListTile(
-                  title: Text('Active Orders (${order['act']})',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16)),
+                  title: Text('Active Orders (${order['act']})',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: ScreenUtil.getInstance().setSp(45))),
                   /*subtitle:  Padding(
                   padding: EdgeInsets.fromLTRB(0,5,0,5),
                   child: Text('Customer Support Numbers:',style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,fontSize: 14,)),
@@ -103,16 +104,14 @@ MyOrderState( {order}){
                         builder: (context) => ActiveOrder(title:'Active Orders'),
                       ),
                     );
-
-
                 },
               )
             ),
             Card(
-              elevation: 12,
+              elevation: 6,
               child: InkWell(
                 child: ListTile(
-                  title: Text('Completed Orders (${order['com']})',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16)),
+                  title: Text('Completed Orders (${order['com']})',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: ScreenUtil.getInstance().setSp(45))),
                   /*subtitle:  Padding(
                   padding: EdgeInsets.fromLTRB(0,5,0,5),
                   child: Text('Customer Support Numbers:',style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,fontSize: 14,)),
@@ -139,10 +138,10 @@ MyOrderState( {order}){
               )
             ),
             Card(
-              elevation: 12,
+              elevation: 6,
               child: InkWell(
                 child: ListTile(
-                  title: Text('Cancelled Orders (${order['can']})',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16)),
+                  title: Text('Cancelled Orders (${order['can']})',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: ScreenUtil.getInstance().setSp(45))),
                   /*subtitle:  Padding(
                   padding: EdgeInsets.fromLTRB(0,5,0,5),
                   child: Text('Customer Support Numbers:',style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,fontSize: 14,)),

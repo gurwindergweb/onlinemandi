@@ -33,12 +33,15 @@ class ThankyouState extends State<Thankyou> {
         iconTheme: IconThemeData(color: Colors.white),
         centerTitle: true,
         actions: <Widget>[
-          InkWell(
-            child: Icon(Icons.home),
-            onTap: (){
-              Navigator.of(context).pushReplacementNamed('/');
-            },
-          )
+          Padding(
+            padding: EdgeInsets.all(15),
+            child: InkWell(
+              child: Icon(Icons.home),
+              onTap: (){
+                Navigator.of(context).pushReplacementNamed('/');
+              },
+            ),
+          ),
         ],
       ),
       body: Container(
@@ -88,31 +91,31 @@ Widget _contentcol (orderId,sellerContact) {
                     cycles: 0,
                     duration: Duration(seconds: 2),
                     builder: (anim) => Transform.scale(scale: anim.value,
-                      child: Text('Thank you *',style: TextStyle(color: Colors.red,fontSize: ScreenUtil.getInstance().setSp(50),fontWeight: FontWeight.bold)),
+                      child: Text('Thank you*',style: TextStyle(color: Colors.red,fontSize: ScreenUtil.getInstance().setSp(50),fontWeight: FontWeight.bold)),
                     )
                 ),
                 Padding(padding: EdgeInsets.all(10)),
                 //Text('Your have Successfully placed your order. Your order number is 1567',style: TextStyle(color: Colors.black,fontSize: 14,fontWeight: FontWeight.normal)),
-                RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: 'You have Successfully placed your order. Your order number is ',style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(50),fontWeight: FontWeight.normal),
+                Column(
+                  children: <Widget>[
+                    Text("You have Successfully placed your order. Your order number is (${orderId})",style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(50),fontWeight: FontWeight.normal),),
+                    /*Text('${orderId}',
+                      style: TextStyle(
+                        color: Color(0xFF609f38),
+                        fontWeight: FontWeight.bold,
+                        fontSize: ScreenUtil.getInstance().setSp(50),
                       ),
-                      TextSpan(
-                        text: '${orderId}',
-                        style: TextStyle(
-                          color: Color(0xFF609f38),
-                          fontWeight: FontWeight.bold,
-                          fontSize: ScreenUtil.getInstance().setSp(50),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),*/
+                  ],
                 ),
                 Padding(padding: EdgeInsets.all(8)),
                 //Text('Your order will be delivered at your registered address tomorrw before 1PM.',style: TextStyle(color: Colors.black,fontSize: 14,fontWeight: FontWeight.normal)),
-                RichText(
+               Column(
+                 children: <Widget>[
+                   Text("Your order will be delivered at your registered address tomorrow before '1PM.' ",style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(50),fontWeight: FontWeight.normal),),
+                 ],
+               ),
+               /* RichText(
                   text: TextSpan(
                     children: [
                       TextSpan(
@@ -128,10 +131,22 @@ Widget _contentcol (orderId,sellerContact) {
                       ),
                     ],
                   ),
-                ),
+                ),*/
                 Padding(padding: EdgeInsets.all(8)),
                 //Text('For any query. contact us at  9464772255, 9478109281',style: TextStyle(color: Colors.black,fontSize: 14,fontWeight: FontWeight.normal)),
-                RichText(
+                Column(
+                  children: <Widget>[
+                    Text("For any query. contact us at '${sellerContact}'",style: TextStyle(color: Colors.black,fontSize: ScreenUtil.getInstance().setSp(50),fontWeight: FontWeight.normal),),
+                    /*Text('${sellerContact}',
+                      style: TextStyle(
+                        color: Color(0xFF609f38),
+                        fontWeight: FontWeight.bold,
+                        fontSize: ScreenUtil.getInstance().setSp(50),
+                      ),
+                    ),*/
+                  ],
+                ),
+                /*RichText(
                   text: TextSpan(
                     children: [
                       TextSpan(
@@ -147,7 +162,7 @@ Widget _contentcol (orderId,sellerContact) {
                       ),
                     ],
                   ),
-                ),
+                ),*/
                 Padding(
                   padding: EdgeInsets.all(20),
                   child: Image.asset(

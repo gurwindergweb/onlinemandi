@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:onlinemandi/providers/auth.dart';
 import 'package:onlinemandi/providers/cart.dart';
 import 'package:onlinemandi/providers/orders.dart';
@@ -26,9 +27,10 @@ class MyAccountState extends State<MyAccount> {
 var auth = Auth();
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.instance = ScreenUtil()..init(context);
     return Scaffold(
       appBar: AppBar(
-          title: Text('My Account',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
+          title: Text('My Account',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: ScreenUtil.getInstance().setSp(60))),
           //title: Text('My Account',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
           backgroundColor: Color(0xFF609f38),
           iconTheme: IconThemeData(color: Colors.white),
@@ -62,56 +64,52 @@ var auth = Auth();
 
       ),
       drawer: AppDrawer(),
-      body: Padding(
+      body: ListView(
         padding: const EdgeInsets.fromLTRB(0,0,0,0),
-        child: Column(
-          children: <Widget>[
-            ListTile(
-              leading: Icon(Icons.person,color: Color(0xFF609f38)),
-              trailing:Icon (Icons.keyboard_arrow_right,color: Color(0xFF609f38)),
-              title: Text('Personal Details'),
-              onTap: () {
-                Navigator.of(context).pushNamed(UserDetail.routeName);
-              },
-            ),
-            Divider(),
-            ListTile(
-              leading: Icon(Icons.phone_in_talk,color: Color(0xFF609f38)),
-              trailing:Icon (Icons.keyboard_arrow_right,color: Color(0xFF609f38)),
-              title: Text('OnlineMandi Support'),
-              onTap: () {
-                Navigator.of(context).pushNamed(CareCenter.routeName);
-              },
-            ),
-            Divider(),
-            ListTile(
-              leading: Icon(Icons.shopping_basket,color: Color(0xFF609f38)),
-              trailing:Icon (Icons.keyboard_arrow_right,color: Color(0xFF609f38)),
-              title: Text('My Orders'),
-              onTap: getorders,
-            ),
-            Divider(),
-            ListTile(
+        children: <Widget>[
+          ListTile(
+            leading: Icon(Icons.person,color: Color(0xFF609f38)),
+            trailing:Icon (Icons.keyboard_arrow_right,color: Color(0xFF609f38)),
+            title: Text('Personal Details',style: TextStyle(fontSize: ScreenUtil.getInstance().setSp(45))),
+            onTap: () {
+              Navigator.of(context).pushNamed(UserDetail.routeName);
+            },
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.phone_in_talk,color: Color(0xFF609f38)),
+            trailing:Icon (Icons.keyboard_arrow_right,color: Color(0xFF609f38)),
+            title: Text('OnlineMandi Support',style: TextStyle(fontSize: ScreenUtil.getInstance().setSp(45))),
+            onTap: () {
+              Navigator.of(context).pushNamed(CareCenter.routeName);
+            },
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.shopping_basket,color: Color(0xFF609f38)),
+            trailing:Icon (Icons.keyboard_arrow_right,color: Color(0xFF609f38)),
+            title: Text('My Orders',style: TextStyle(fontSize: ScreenUtil.getInstance().setSp(45))),
+            onTap: getorders,
+          ),
+          Divider(),
+          /*ListTile(
               leading: Icon(Icons.account_balance_wallet,color: Color(0xFF609f38)),
               trailing:Icon (Icons.keyboard_arrow_right,color: Color(0xFF609f38)),
-              title: Text('My Wallet'),
+              title: Text('My Wallet',style: TextStyle(fontSize: ScreenUtil.getInstance().setSp(40))),
               onTap: () {
                 Navigator.of(context).pushNamed(MyWallet.routeName);
               },
-            ),
-            Divider(),
-            ListTile(
-              leading: Icon(Icons.phonelink_lock,color: Color(0xFF609f38)),
-              trailing:Icon (Icons.keyboard_arrow_right,color: Color(0xFF609f38)),
-              title: Text('Change Password'),
-              onTap: () {
-                Navigator.of(context).pushNamed(ChangePassword.routeName);
-              },
-            ),
-            Divider(),
-
-          ],
-        ),
+            ),*/
+          ListTile(
+            leading: Icon(Icons.phonelink_lock,color: Color(0xFF609f38)),
+            trailing:Icon (Icons.keyboard_arrow_right,color: Color(0xFF609f38)),
+            title: Text('Change Password',style: TextStyle(fontSize: ScreenUtil.getInstance().setSp(45))),
+            onTap: () {
+              Navigator.of(context).pushNamed(ChangePassword.routeName);
+            },
+          ),
+          Divider(),
+        ],
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }

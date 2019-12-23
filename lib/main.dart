@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:onlinemandi/providers/orderitem.dart';
 import 'package:onlinemandi/providers/weights.dart';
 import 'package:onlinemandi/screens/Term_conditions.dart';
 import 'package:onlinemandi/screens/about_us.dart';
 import 'package:onlinemandi/screens/care_center.dart';
+import 'package:onlinemandi/screens/home_page.dart';
+import 'package:onlinemandi/screens/mantines_mode.dart';
 import 'package:onlinemandi/screens/my_account.dart';
 import 'package:onlinemandi/screens/my_order.dart';
 import 'package:onlinemandi/screens/user_detail.dart';
@@ -31,8 +34,12 @@ import 'screens/my_wallet.dart';
 import 'screens/vegetable_overview_screen.dart';
 
 void main(){
-  GlobalConfiguration().loadFromMap(appSettings);
-  runApp(MyApp());
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+    .then((_) {
+    GlobalConfiguration().loadFromMap(appSettings);
+    //SystemChrome.setEnabledSystemUIOverlays([]);
+    runApp(MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -80,20 +87,19 @@ class MyApp extends StatelessWidget {
       ],
       child: Consumer<Auth>(
         builder: (ctx, auth, _) {
-          print(auth.isMantainance);
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             title: 'MyShop',
             theme: ThemeData(
               primarySwatch: Colors.lightGreen,
-              accentColor: Colors.deepOrange,
+              accentColor: Colors.lightGreen,
               backgroundColor: Colors.white,
               canvasColor: Colors.white,
               fontFamily: 'Lato',
             ),
-            home: auth.isAuth && auth.isMantainance == false
-                ? VegetableOverviewScreen()
-                : auth.isMantainance != true ? FutureBuilder(
+            home: auth.isAuth && auth.checkMantainance() == false
+                ? HomePage()
+                : auth.checkMantainance() == true ? FutureBuilder(
               future: auth.tryAutoLogin(),
               builder: (ctx, authResultSnapshot) =>
               authResultSnapshot.connectionState ==
@@ -119,6 +125,7 @@ class MyApp extends StatelessWidget {
               EditOrder.routeName: (ctx) => EditOrder(),
               ForgotPassword.routeName: (ctx) => ForgotPassword(),
               MantainanceMode.routeName: (ctx) => MantainanceMode(),
+              HomePage.routeName: (ctx) => HomePage(),
             },
           );
         }
