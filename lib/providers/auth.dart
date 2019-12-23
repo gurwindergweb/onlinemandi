@@ -30,9 +30,13 @@ class Auth with ChangeNotifier {
   String _serviceContact1;
   String _serviceContact2;
   Timer _authTimer;
+  bool isMantainance = false;
   List<DropdownModel> _states = [];
   List<DropdownModel> _cities = [];
   List<DropdownModel> _emptyCities = [];
+  Auth(){
+    checkMantainance();
+  }
   final dio = new Dio();
   static Database _db;
 
@@ -61,6 +65,65 @@ class Auth with ChangeNotifier {
 
   String get userId {
     return _userId;
+  }
+  Future<bool> checkMantainance() async {
+    var url = GlobalConfiguration().getString('baseURL') + 'index/check-mantainance';
+    var response = await dio.get(url);
+    print(response);
+    if(int.parse(response.data['data']['value']) == 1){
+      isMantainance = true;
+    }
+    else{
+      isMantainance =  false;
+
+    }
+
+  }
+  Future forgotpasswordrequest(email,mode) async {
+    final url = GlobalConfiguration().getString("baseURL") + 'index/forgot-password';
+    var response;
+    try{
+      if(mode == 'email') {
+         response = await dio.post(url, data: {'email': email});
+      }
+      else{
+         response = await dio.post(url, data: {'mobile': email});
+      }
+
+      if(response.statusCode == 200){
+        print(response.data);
+        return response.data['msg'];
+      }
+      else{
+        return 'error';
+      }
+    }
+    catch(e){
+      print(e);
+    }
+  }
+  Future changePassword(email,otp,password,method) async {
+    final url = GlobalConfiguration().getString("baseURL") + 'index/change-app-password';
+    var response;
+
+    try{
+      if(method == 'email'){
+        response = await dio.post(url, data: {'email': email,'otp': otp,'password': password});
+      }
+      else{
+        response = await dio.post(url, data: {'mobile': email,'otp': otp,'password': password});
+      }
+        print(response);
+        if(response.statusCode == 200){
+          return response.data['msg'];
+        }
+        else{
+          return 'error';
+        }
+    }
+    catch(e){
+      print(e);
+    }
   }
   Future<void> _authenticate( String email, String password) async {
     final url = GlobalConfiguration().getString("baseURL") + 'index/login';

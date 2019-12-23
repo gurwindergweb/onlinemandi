@@ -43,7 +43,6 @@ class Utilities extends Intercept with ChangeNotifier{
     var url = GlobalConfiguration().getString('baseURL') + 'index/update-numbers';
     final response = await dio.post(url,data: {'c1': contact1, 'c2': contact2});
     if(response.statusCode == 200){
-      print(response.data['result']);
       final responseData = response.data;
 
       final prefs = await SharedPreferences.getInstance();

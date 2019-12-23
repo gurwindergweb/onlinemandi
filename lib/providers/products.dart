@@ -94,7 +94,6 @@ class Products extends Intercept with ChangeNotifier {
     final response = await dio.get(url);//await http.get(url);
     try {
       final response = await dio.get(url);//await http.get(url);
-      //print(response);
       final extractedData = response.data['fruits'];
       final favData = response.data['fav'];
       // print(response.data['fruits']);
@@ -105,7 +104,48 @@ class Products extends Intercept with ChangeNotifier {
       //final favoriteResponse = await http.get(url);
       //final favoriteData = json.decode(favoriteResponse.body);
       final List<Product> loadedProducts = [];
+      extractedData.forEach((prodData) async {
 
+        if(prodData['rate_a']!=null){
+          createProduct(prodData: prodData,grade: 0,favData: favData,weightModel: weightModel).then((data){
+            loadedProducts.add(data);
+          });
+
+        }
+        if(prodData['rate_b']!=null){
+          createProduct(prodData: prodData,grade: 1,favData: favData,weightModel: weightModel).then((data){
+            loadedProducts.add(data);
+          });
+
+        }
+        if(prodData['rate_a']==null && prodData['rate_b']==null){
+          createProduct(prodData: prodData,grade: -1,favData: favData,weightModel: weightModel).then((data){
+            loadedProducts.add(data);
+          });
+        }
+      });
+      _items = loadedProducts;
+      notifyListeners();
+    } catch (error) {
+      throw (error);
+    }
+  }
+  Future<void> fetchAndSetVegetables(int type, Weights weightModel, [bool filterByUser = false]) async {
+    //final filterString = filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
+    var url = GlobalConfiguration().getString("baseURL") + 'vegetables/index?status=22';
+    final response = await dio.get(url);//await http.get(url);
+    try {
+      final response = await dio.get(url);//await http.get(url);
+      final extractedData = response.data['vegetables'];
+      final favData = response.data['fav'];
+      //if (extractedData == null) {
+      //  return;
+      //}
+      //url = 'https://flutter-update.firebaseio.com/userFavorites/$userId.json?auth=$authToken';
+      //final favoriteResponse = await http.get(url);
+      //final favoriteData = json.decode(favoriteResponse.body);
+      final List<Product> loadedProducts = [];
+      print(extractedData);
       extractedData.forEach((prodData) async {
 
         if(prodData['rate_a']!=null){
@@ -133,9 +173,8 @@ class Products extends Intercept with ChangeNotifier {
     }
   }
   Future<Product> createProduct({prodData,grade,favData,weightModel}) async {
-    print('rate');
-    print(prodData['rate_a']);
-    print(prodData['rate_b']);
+    prodData['rate_a'] == ''  ? prodData['rate_a'] = null : null;
+    prodData['rate_b'] == ''  ? prodData['rate_b'] = null : null;
    return Product(
         id: prodData['id'].toString(),
         title: prodData['name'],

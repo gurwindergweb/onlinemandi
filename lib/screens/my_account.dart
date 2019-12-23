@@ -2,11 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:onlinemandi/providers/auth.dart';
+import 'package:onlinemandi/providers/cart.dart';
 import 'package:onlinemandi/providers/orders.dart';
 import 'package:onlinemandi/screens/user_detail.dart';
+import 'package:onlinemandi/widgets/badge.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/app_drawer.dart';
 import 'care_center.dart';
+import 'cart_screen.dart';
 import 'my_order.dart';
 import 'change_password.dart';
 import 'my_wallet.dart';
@@ -31,13 +35,28 @@ var auth = Auth();
           centerTitle: true,
 
           actions: <Widget>[
-            Padding(
-              padding: EdgeInsets.all(10),
-              child: Icon(Icons.shopping_cart),
+            Consumer<Cart>(
+              builder: (_, cart, ch) => Badge(
+                child: ch,
+                value: cart.itemCount.toString(),
+              ),
+              child: IconButton(
+                icon: Icon(
+                  Icons.shopping_cart,color: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.of(context).pushNamed(CartScreen.routeName);
+                },
+              ),
             ),
             Padding(
               padding: EdgeInsets.all(10),
-              child: Icon(Icons.home),
+              child: InkWell(
+                child: Icon(Icons.home),
+                onTap: (){
+                  Navigator.of(context).pushReplacementNamed('/');
+                },
+              ),
             ),
           ],
 

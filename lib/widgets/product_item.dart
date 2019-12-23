@@ -133,7 +133,7 @@ class ProductItemState extends State<ProductItem> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Text(
-                          product.grade != -1 ? 'Rs ' + product.price.toString() + "/Kg" : 'Out of stock',
+                          product.grade != -1 ? 'Rs ' + product.price.toString(): 'Out of stock',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15,

@@ -26,7 +26,9 @@ import './screens/change_password.dart';
 import 'screens/checkout.dart';
 import 'screens/edit_orders.dart';
 import 'screens/forgot_password.dart';
+import 'screens/mantainance_mode.dart';
 import 'screens/my_wallet.dart';
+import 'screens/vegetable_overview_screen.dart';
 
 void main(){
   GlobalConfiguration().loadFromMap(appSettings);
@@ -34,6 +36,7 @@ void main(){
 }
 
 class MyApp extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -76,45 +79,49 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: Consumer<Auth>(
-        builder: (ctx, auth, _) => MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'MyShop',
-          theme: ThemeData(
-            primarySwatch: Colors.lightGreen,
-            accentColor: Colors.deepOrange,
-            backgroundColor: Colors.white,
-            canvasColor: Colors.white,
-            fontFamily: 'Lato',
-          ),
-          home: auth.isAuth
-              ? ProductsOverviewScreen()
-              : FutureBuilder(
-            future: auth.tryAutoLogin(),
-            builder: (ctx, authResultSnapshot) =>
-            authResultSnapshot.connectionState ==
-                ConnectionState.waiting
-                ? SplashScreen()
-                : AuthScreen(),
-          ),
-          routes: {
-            //ProductDetailScreen.routeName: (ctx) => AuthScreen(),
-            ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
-            CartScreen.routeName: (ctx) => CartScreen(),
-            OrdersScreen.routeName: (ctx) => OrdersScreen(),
-            UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
-            EditProductScreen.routeName: (ctx) => EditProductScreen(),
-            About.routeName: (ctx) => About(),
-            MyAccount.routeName: (ctx) => MyAccount(),
-            UserDetail.routeName: (ctx) => UserDetail(),
-            CareCenter.routeName: (ctx) => CareCenter(),
-            MyOrder.routeName: (ctx) => MyOrder(),
-            ChangePassword.routeName: (ctx) => ChangePassword(),
-            MyWallet.routeName: (ctx) => MyWallet(),
-            Checkout.routeName: (ctx) => Checkout(),
-            EditOrder.routeName: (ctx) => EditOrder(),
-            ForgotPassword.routeName: (ctx) => ForgotPassword(),
-          },
-        ),
+        builder: (ctx, auth, _) {
+          print(auth.isMantainance);
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'MyShop',
+            theme: ThemeData(
+              primarySwatch: Colors.lightGreen,
+              accentColor: Colors.deepOrange,
+              backgroundColor: Colors.white,
+              canvasColor: Colors.white,
+              fontFamily: 'Lato',
+            ),
+            home: auth.isAuth && auth.isMantainance == false
+                ? VegetableOverviewScreen()
+                : auth.isMantainance != true ? FutureBuilder(
+              future: auth.tryAutoLogin(),
+              builder: (ctx, authResultSnapshot) =>
+              authResultSnapshot.connectionState ==
+                  ConnectionState.waiting
+                  ? SplashScreen()
+                  : AuthScreen(),
+            ) : MantainanceMode(),
+            routes: {
+              //ProductDetailScreen.routeName: (ctx) => AuthScreen(),
+              ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
+              CartScreen.routeName: (ctx) => CartScreen(),
+              OrdersScreen.routeName: (ctx) => OrdersScreen(),
+              UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
+              EditProductScreen.routeName: (ctx) => EditProductScreen(),
+              About.routeName: (ctx) => About(),
+              MyAccount.routeName: (ctx) => MyAccount(),
+              UserDetail.routeName: (ctx) => UserDetail(),
+              CareCenter.routeName: (ctx) => CareCenter(),
+              MyOrder.routeName: (ctx) => MyOrder(),
+              ChangePassword.routeName: (ctx) => ChangePassword(),
+              MyWallet.routeName: (ctx) => MyWallet(),
+              Checkout.routeName: (ctx) => Checkout(),
+              EditOrder.routeName: (ctx) => EditOrder(),
+              ForgotPassword.routeName: (ctx) => ForgotPassword(),
+              MantainanceMode.routeName: (ctx) => MantainanceMode(),
+            },
+          );
+        }
       ),
     );
   }

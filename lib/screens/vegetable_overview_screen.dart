@@ -14,28 +14,19 @@ enum FilterOptions {
   All,
 }
 
-class ProductsOverviewScreen extends StatefulWidget {
-  var product_type;
-  ProductsOverviewScreen({product_type}){
-
-  }
+class VegetableOverviewScreen extends StatefulWidget {
   @override
-  _ProductsOverviewScreenState createState() => _ProductsOverviewScreenState();
+  _VegetableOverviewScreenState createState() => _VegetableOverviewScreenState();
 }
 
-class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
+class _VegetableOverviewScreenState extends State<VegetableOverviewScreen> {
   var _showOnlyFavorites = false;
   var _isInit = true;
   var _isLoading = false;
 
-  var product_type;
-
   @override
   void initState() {
-    // Provider.of<Products>(context).fetchAndSetProducts(); // WON'T WORK!
-    // Future.delayed(Duration.zero).then((_) {
-    //   Provider.of<Products>(context).fetchAndSetProducts();
-    // });
+
     super.initState();
   }
 
@@ -46,13 +37,6 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
         _isLoading = true;
       });
       final weightModel = Provider.of<Weights>(context);
-      product_type == 1 ?
-      Provider.of<Products>(context).fetchAndSetProducts(1, weightModel).then((_) {
-        setState(() {
-          _isLoading = false;
-        });
-      })
-      :
       Provider.of<Products>(context).fetchAndSetVegetables(1, weightModel).then((_) {
         setState(() {
           _isLoading = false;
@@ -62,14 +46,13 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
     _isInit = false;
     super.didChangeDependencies();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFe8e3da),
-    appBar: AppBar(
+      appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
-        title: Text('Fruits',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
+        title: Text('Vegetables',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
         backgroundColor:Color(0xFF609f38),
         centerTitle: true,
         actions: <Widget>[
@@ -87,28 +70,28 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
               Icons.more_vert,color: Colors.white,
             ),
             itemBuilder: (_) => [
-                  PopupMenuItem(
-                    child: Text('Only Favorites'),
-                    value: FilterOptions.Favorites,
-                  ),
-                  PopupMenuItem(
-                    child: Text('Show All'),
-                    value: FilterOptions.All,
-                  ),
-                ],
+              PopupMenuItem(
+                child: Text('Only Favorites'),
+                value: FilterOptions.Favorites,
+              ),
+              PopupMenuItem(
+                child: Text('Show All'),
+                value: FilterOptions.All,
+              ),
+            ],
           ),
           Consumer<Cart>(
             builder: (_, cart, ch) => Badge(
-                  child: ch,
-                  value: cart.itemCount.toString(),
-                ),
+              child: ch,
+              value: cart.itemCount.toString(),
+            ),
             child: IconButton(
               icon: Icon(
                 Icons.shopping_cart,color: Colors.white,
               ),
               onPressed: () {
-              Navigator.of(context).pushNamed(CartScreen.routeName);
-            },
+                Navigator.of(context).pushNamed(CartScreen.routeName);
+              },
             ),
           ),
         ],
@@ -116,8 +99,8 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
       drawer: AppDrawer(),
       body: _isLoading
           ? Center(
-              child: CircularProgressIndicator(),
-            )
+        child: CircularProgressIndicator(),
+      )
           : ProductsGrid(_showOnlyFavorites),
     );
   }

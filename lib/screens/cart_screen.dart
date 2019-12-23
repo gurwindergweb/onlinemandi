@@ -176,6 +176,7 @@ class CartScreenState extends State<CartScreen> {
                           ),
                         ),
                       ),
+
                       secondaryActions: <Widget>[
                         Container(
                           padding: EdgeInsets.fromLTRB(5,0,0,0),
