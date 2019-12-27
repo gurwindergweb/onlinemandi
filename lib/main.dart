@@ -106,7 +106,8 @@ class MyApp extends StatelessWidget {
                   ConnectionState.waiting
                   ? SplashScreen()
                   : AuthScreen(),
-            ) : MantainanceMode(),
+            //) : MantainanceMode(),
+            ) :  HomePage(),
             routes: {
               //ProductDetailScreen.routeName: (ctx) => AuthScreen(),
               ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
