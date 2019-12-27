@@ -101,7 +101,7 @@ class _VegetableOverviewScreenState extends State<VegetableOverviewScreen> {
           ? Center(
         child: CircularProgressIndicator(),
       )
-          : ProductsGrid(_showOnlyFavorites),
+          : ProductsGrid(_showOnlyFavorites,2),
     );
   }
 }

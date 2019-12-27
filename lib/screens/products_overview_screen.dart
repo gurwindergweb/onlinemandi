@@ -18,10 +18,10 @@ enum FilterOptions {
 class ProductsOverviewScreen extends StatefulWidget {
   var product_type;
   ProductsOverviewScreen({product_type}){
-
+      this.product_type = product_type;
   }
   @override
-  _ProductsOverviewScreenState createState() => _ProductsOverviewScreenState();
+  _ProductsOverviewScreenState createState() => _ProductsOverviewScreenState(this.product_type);
 }
 
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
@@ -30,7 +30,9 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   var _isLoading = false;
 
   var product_type;
-
+  _ProductsOverviewScreenState(prod_type){
+    this.product_type = prod_type;
+  }
   @override
   void initState() {
     // Provider.of<Products>(context).fetchAndSetProducts(); // WON'T WORK!
@@ -71,7 +73,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
       backgroundColor: Color(0xFFe8e3da),
     appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
-        title: Text('Fruits',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: ScreenUtil.getInstance().setSp(60))),
+        title: Text(this.product_type == 1 ? 'Fruits' : 'Vegetables',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: ScreenUtil.getInstance().setSp(60))),
         backgroundColor:Color(0xFF609f38),
         centerTitle: true,
         actions: <Widget>[
@@ -120,7 +122,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : ProductsGrid(_showOnlyFavorites),
+          : ProductsGrid(_showOnlyFavorites,product_type),
     );
   }
 }

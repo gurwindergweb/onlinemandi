@@ -87,6 +87,7 @@ class MyApp extends StatelessWidget {
       ],
       child: Consumer<Auth>(
         builder: (ctx, auth, _) {
+          print('mantainance - ${auth.isMantainance}');
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             title: 'MyShop',
@@ -97,9 +98,8 @@ class MyApp extends StatelessWidget {
               canvasColor: Colors.white,
               fontFamily: 'Lato',
             ),
-            home: auth.isAuth && auth.checkMantainance() == false
-                ? HomePage()
-                : auth.checkMantainance() == true ? FutureBuilder(
+            home: auth.isAuth && auth.isMantainance == false ? HomePage()
+                : auth.isMantainance == false ? FutureBuilder(
               future: auth.tryAutoLogin(),
               builder: (ctx, authResultSnapshot) =>
               authResultSnapshot.connectionState ==

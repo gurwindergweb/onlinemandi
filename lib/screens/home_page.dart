@@ -2,6 +2,7 @@ import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../widgets/app_drawer.dart';
+import 'products_overview_screen.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -114,37 +115,45 @@ class HomePageState extends State<HomePage> {
                                   ),
                                   height: 100,
                                   width: 150,
-                                  child: Card(
-                                    margin: EdgeInsets.all(0),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(20),
-                                        topRight: Radius.circular(20),
+                                  child: InkWell(
+                                    child: Card(
+                                      margin: EdgeInsets.all(0),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(20),
+                                          topRight: Radius.circular(20),
+                                        ),
                                       ),
-                                    ),
-                                    elevation: 19,
-                                    child: Container(
-                                      //padding: EdgeInsets.all(18),
-                                      child: Column(
-                                        children: <Widget>[
-                                          Image.asset('images/images.jpg',height: 60,width: 60,),
-                                          Container(
-                                            width: MediaQuery.of(context).size.width,
-                                            height: 37,
-                                            decoration: BoxDecoration(
-                                              color: Color(0xFF609f38),
-                                              borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(40),
-                                                bottomRight: Radius.circular(40),
+                                      elevation: 19,
+                                      child: Container(
+                                        //padding: EdgeInsets.all(18),
+                                        child: Column(
+                                          children: <Widget>[
+                                            Image.asset('images/images.jpg',height: 60,width: 60,),
+                                            Container(
+                                              width: MediaQuery.of(context).size.width,
+                                              height: 37,
+                                              decoration: BoxDecoration(
+                                                color: Color(0xFF609f38),
+                                                borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(40),
+                                                  bottomRight: Radius.circular(40),
+                                                ),
+                                              ),
+                                              child: Center(
+                                                child: Text('FRUITS ',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12,fontStyle: FontStyle.normal,fontFamily: 'Lato',color: Colors.white)),
                                               ),
                                             ),
-                                            child: Center(
-                                              child: Text('FRUITS ',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12,fontStyle: FontStyle.normal,fontFamily: 'Lato',color: Colors.white)),
-                                            ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
+                                    onTap: (){
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => ProductsOverviewScreen(product_type: 1)),
+                                      );
+                                    },
                                   ),
                                 ),
                                 Container(
@@ -158,37 +167,42 @@ class HomePageState extends State<HomePage> {
                                   ),
                                   height: 100,
                                   width: 150,
-                                  child: Card(
-                                    margin: EdgeInsets.all(0),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(15),
-                                        topRight: Radius.circular(15),
+                                  child: InkWell(
+                                    child: Card(
+                                      margin: EdgeInsets.all(0),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(15),
+                                          topRight: Radius.circular(15),
+                                        ),
                                       ),
-                                    ),
-                                    elevation: 12,
-                                    child: Container(
-                                      //padding: EdgeInsets.all(15),
-                                      child: Column(
-                                        children: <Widget>[
-                                          Image.asset('images/basket.png',height: 60,width: 60,fit: BoxFit.cover,),
-                                          Container(
-                                            width: MediaQuery.of(context).size.width,
-                                            height: 37,
-                                            decoration: BoxDecoration(
-                                              color: Color(0xFF609f38),
-                                              borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(40),
-                                                bottomRight: Radius.circular(40),
+                                      elevation: 12,
+                                      child: Container(
+                                        //padding: EdgeInsets.all(15),
+                                        child: Column(
+                                          children: <Widget>[
+                                            Image.asset('images/basket.png',height: 60,width: 60,fit: BoxFit.cover,),
+                                            Container(
+                                              width: MediaQuery.of(context).size.width,
+                                              height: 37,
+                                              decoration: BoxDecoration(
+                                                color: Color(0xFF609f38),
+                                                borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(40),
+                                                  bottomRight: Radius.circular(40),
+                                                ),
+                                              ),
+                                              child: Center(
+                                                child: Text('VEGETABLES',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12,fontStyle: FontStyle.normal,fontFamily: 'Lato',color: Colors.white)),
                                               ),
                                             ),
-                                            child: Center(
-                                              child: Text('VEGETABLES',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12,fontStyle: FontStyle.normal,fontFamily: 'Lato',color: Colors.white)),
-                                            ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
+                                    onTap: (){
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => ProductsOverviewScreen(product_type: 2)));
+                                    },
                                   ),
                                 ),
                               ],

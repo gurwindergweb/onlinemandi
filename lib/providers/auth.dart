@@ -76,9 +76,9 @@ class Auth with ChangeNotifier {
     }
     else{
       isMantainance =  false;
-    }
-    print(body);
 
+    }
+    notifyListeners();
   }
   Future forgotpasswordrequest(email,mode) async {
     final url = GlobalConfiguration().getString("baseURL") + 'index/forgot-password';
