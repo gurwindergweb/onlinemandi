@@ -87,7 +87,6 @@ class MyApp extends StatelessWidget {
       ],
       child: Consumer<Auth>(
         builder: (ctx, auth, _) {
-          print('mantainance - ${auth.isMantainance}');
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             title: 'MyShop',
