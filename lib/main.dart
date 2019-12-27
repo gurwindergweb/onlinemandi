@@ -106,7 +106,7 @@ class MyApp extends StatelessWidget {
                   ? SplashScreen()
                   : AuthScreen(),
             //) : MantainanceMode(),
-            ) :  HomePage(),
+            ) :  MantainanceMode(),
             routes: {
               //ProductDetailScreen.routeName: (ctx) => AuthScreen(),
               ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
