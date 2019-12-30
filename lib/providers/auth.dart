@@ -254,7 +254,10 @@ class Auth with ChangeNotifier {
       if (responseData['error'] != null) {
         throw HttpException(responseData['error']['message']);
       }
-      _token = responseData['access_token'];
+      else if(responseData['result'] == 1){
+        return _authenticate(email, password);
+      }
+      /*_token = responseData['access_token'];
       _userId = responseData['email'];
       _cityId =  int.parse(responseData['cid']);
       _city = responseData['city'];
@@ -265,13 +268,13 @@ class Auth with ChangeNotifier {
       _sellerContact2 = responseData['scont2'];
       _serviceContact1 = responseData['c1'];
       _serviceContact2 = responseData['c2'];
-      /* _expiryDate = DateTime.now().add(
+      *//* _expiryDate = DateTime.now().add(
         Duration(
           seconds: int.parse(
             responseData['expiresIn'],
           ),
         ),
-      );*/
+      );*//*
       _autoLogout();
       notifyListeners();
       final prefs = await SharedPreferences.getInstance();
@@ -291,7 +294,7 @@ class Auth with ChangeNotifier {
           'expiryDate': _expiryDate.toIso8601String(),
         },
       );
-      prefs.setString('userData', userData);
+      prefs.setString('userData', userData);*/
     } catch (error) {
       throw error;
     }
@@ -302,7 +305,7 @@ class Auth with ChangeNotifier {
 
 
 
-    return _authenticate(email, password);
+
   }
 
   Future<void> login(String email, String password) async {

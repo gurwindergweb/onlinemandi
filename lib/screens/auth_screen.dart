@@ -231,7 +231,6 @@ class _AuthCardState extends State<AuthCard> {
       _isLoading = true;
     });
     try {
-      print('qwer');
         // Sign user up
         await Provider.of<Auth>(context, listen: false).signup(
           _authRegisterData['name'],
@@ -255,6 +254,7 @@ class _AuthCardState extends State<AuthCard> {
       }
       _showErrorDialog(errorMessage);
     } catch (error) {
+      print(error);
       const errorMessage =
           'Could not authenticate you. Please try again later.';
       _showErrorDialog(errorMessage);
