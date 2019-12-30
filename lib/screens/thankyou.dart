@@ -28,6 +28,7 @@ class ThankyouState extends State<Thankyou> {
     ScreenUtil.instance = ScreenUtil()..init(context);
     return Scaffold(
       appBar: AppBar(
+        leading: Container(),
         title: Text('Placed Order',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: ScreenUtil.getInstance().setSp(60),)),
         backgroundColor: Color(0xFF609f38),
         iconTheme: IconThemeData(color: Colors.white),

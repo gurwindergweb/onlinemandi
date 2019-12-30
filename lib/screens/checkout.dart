@@ -43,6 +43,14 @@ class CheckoutState extends State<Checkout> {
           title: Text('Checkout',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,
             fontSize: ScreenUtil.getInstance().setSp(60),
           )),
+          actions: <Widget>[
+            InkWell(
+              child: Icon(Icons.home),
+              onTap: (){
+                Navigator.of(context).pushReplacementNamed('/');
+              },
+            ),
+          ],
           backgroundColor: Color(0xFF609f38),
           iconTheme: IconThemeData(color: Colors.white),
           centerTitle: true

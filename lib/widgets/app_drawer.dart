@@ -91,7 +91,7 @@ Widget _chatEnvironment (context) {
           ListTile(
             leading: Icon(Icons.home,color: Color(0xFF609f38)),
             trailing:Icon (Icons.keyboard_arrow_right,color: Color(0xFF609f38)),
-            title: Text('Shop',style: TextStyle(fontWeight: FontWeight.bold,
+            title: Text('Home',style: TextStyle(fontWeight: FontWeight.bold,
               fontSize: ScreenUtil.getInstance().setSp(40),
             )),
             onTap: () {
@@ -99,30 +99,6 @@ Widget _chatEnvironment (context) {
             },
           ),
           Divider(),
-          /*ListTile(
-            leading: Icon(Icons.payment,color: Color(0xFF609f38)),
-            trailing:Icon (Icons.keyboard_arrow_right,color: Color(0xFF609f38)),
-            title: Text('Orders',style: TextStyle(fontWeight: FontWeight.bold,
-              fontSize: ScreenUtil.getInstance().setSp(40),
-            )),
-            onTap: () {
-              Navigator.of(context)
-                  .pushNamed(OrdersScreen.routeName);
-            },
-          ),*/
-          /*Divider(),
-          ListTile(
-            leading: Icon(Icons.edit,color: Color(0xFF609f38)),
-            trailing:Icon (Icons.keyboard_arrow_right,color:Color(0xFF609f38)),
-            title: Text('Manage Products',style: TextStyle(fontWeight: FontWeight.bold,
-              fontSize: ScreenUtil.getInstance().setSp(40),
-            )),
-            onTap: () {
-              Navigator.of(context)
-                  .pushNamed(UserProductsScreen.routeName);
-            },
-          ),
-          Divider(),*/
           ListTile(
             leading: Icon(Icons.person,color: Color(0xFF609f38)),
             trailing:Icon (Icons.keyboard_arrow_right,color: Color(0xFF609f38)),
@@ -144,18 +120,6 @@ Widget _chatEnvironment (context) {
             onTap: () {
               Navigator.of(context)
                   .pushNamed(About.routeName);
-            },
-          ),
-          Divider(),
-          ListTile(
-            leading: Icon(Icons.format_color_text,color: Color(0xFF609f38)),
-            trailing:Icon (Icons.keyboard_arrow_right,color: Color(0xFF609f38)),
-            title: Text('Mantines Mode',style: TextStyle(fontWeight: FontWeight.bold,
-              fontSize: ScreenUtil.getInstance().setSp(40),
-            )),
-            onTap: () {
-              Navigator.of(context)
-                  .pushNamed(MantinesMode.routeName);
             },
           ),
           Divider(),
