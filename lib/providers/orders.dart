@@ -117,6 +117,7 @@ final dio =Dio();
     final response = await dio.get(url);
     final List<OrderItem> loadedOrders = [];
     response.data['o'].forEach((orderData) {
+      print(orderData);
       loadedOrders.add(
         OrderItem(
           id: orderData['id'],
@@ -124,23 +125,22 @@ final dio =Dio();
           shippingcharge: double.parse(orderData['dc']),
           grandtotal: double.parse(orderData['gt']),
           date: orderData['date'].toString(),
-          products: (orderData['items'] as List<dynamic>)
-              .map(
+          products: (orderData['items'] as List<dynamic>).map(
                 (item)  {
-                  return CartItem(
-                      id: item['pid'].toString(),
-                      title: item['n'].toString(),
-                      quantity:  item['q'],
-                      grade: item['g'] == 'A' ? 0: 1,
-                      totalprice: double.parse(item['tp']),
-                      discountrate: double.parse(item['dr']),
+              return CartItem(
+                  id: item['pid'].toString(),
+                  title: item['n'].toString(),
+                  quantity:  item['q'],
+                  grade: item['g'] == 'A' ? 0: 1,
+                  totalprice: double.parse(item['tp']),
+                  discountrate: double.parse(item['dr']),
 
-                      rate: double.parse(item['r']),
-                      unit: item['u'],
-                      image: item['img']
+                  rate: double.parse(item['r']),
+                  unit: item['u'],
+                  image: item['img']
 
-                  );
-                },
+              );
+            },
           ).toList(),
         ),
       );
@@ -173,7 +173,7 @@ final dio =Dio();
                   id: item['pid'].toString(),
                   title: item['n'].toString(),
                   quantity:  item['q'],
-                  grade: item['g'],
+                  grade: item['g'] == 'A' ? 0: 1,
                   totalprice: double.parse(item['tp']),
                   discountrate: double.parse(item['dr']),
 
@@ -199,6 +199,7 @@ final dio =Dio();
     final response = await dio.get(url);
     final List<OrderItem> loadedOrders = [];
     response.data['o'].forEach((orderData) {
+      print(orderData);
       loadedOrders.add(
         OrderItem(
           id: orderData['id'],
@@ -213,7 +214,7 @@ final dio =Dio();
                   id: item['pid'].toString(),
                   title: item['n'].toString(),
                   quantity:  item['q'],
-                  grade: item['g'],
+                  grade: item['g'] == 'A' ? 0: 1,
                   totalprice: double.parse(item['tp']),
                   discountrate: double.parse(item['dr']),
 
