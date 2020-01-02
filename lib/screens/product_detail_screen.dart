@@ -1,11 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:onlinemandi/providers/cart.dart';
+import 'package:onlinemandi/widgets/badge.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/products.dart';
+import 'cart_screen.dart';
 class ProductDetailScreen extends StatefulWidget{
   static const routeName = '/product-detail';
   @override
@@ -37,6 +40,22 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
         backgroundColor: Color(0xFF609f38),
         iconTheme: IconThemeData(color: Colors.white),
         centerTitle: true,
+        actions: <Widget>[
+          Consumer<Cart>(
+            builder: (_, cart, ch) => Badge(
+              child: ch,
+              value: cart.itemCount.toString(),
+            ),
+            child: IconButton(
+              icon: Icon(
+                Icons.shopping_cart,color: Colors.white,
+              ),
+              onPressed: () {
+                Navigator.of(context).pushNamed(CartScreen.routeName);
+              },
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -179,15 +198,6 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                         'hii',
                         textAlign: TextAlign.center,
                       ),
-                      /*title: Text(
-                      'Offers !',
-                      style: TextStyle(
-                        color: Colors.redAccent,
-                        fontSize: 16,
-                        fontFamily: 'Lato',
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),*/
                       trailing: MaterialButton(
                         elevation: 6.0,
                         minWidth: 100.0,
@@ -219,21 +229,14 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                         onPressed: loadedProduct.grade != -1 ? () {
                           if(loadedProduct.price>0){
                             cart.addItem(productId: loadedProduct.id, image: loadedProduct.imageUrl,grade: loadedProduct.grade, price: loadedProduct.price, title: loadedProduct.title, quantity: selectedweight != null ? int.parse(selectedweight) : int.parse(loadedProduct.selectedweight));
-                            Scaffold.of(context).hideCurrentSnackBar();
-                            Scaffold.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'Added item to cart!',
-                                ),
-                                duration: Duration(seconds: 3),
-                                action: SnackBarAction(
-                                  label: 'UNDO',
-                                  textColor: Color(0xFF609f38),
-                                  onPressed: () {
-                                    cart.removeSingleItem(loadedProduct.id);
-                                  },
-                                ),
-                              ),
+                            Fluttertoast.showToast(
+                                msg: "Added item to cart",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIos: 1,
+                                backgroundColor: Colors.black,
+                                textColor: Colors.white,
+                                fontSize: 16.0
                             );
                           }
                           else{

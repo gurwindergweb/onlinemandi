@@ -30,7 +30,8 @@ class ProductItemState extends State<ProductItem> {
   @override
   Widget build(BuildContext context) {
     ScreenUtil.instance = ScreenUtil()..init(context);
-    final product = Provider.of<Product>(context, listen: false);
+    final product = Provider.of<Product>(context);
+    print(product.isFavorite);
     final cart = Provider.of<Cart>(context, listen: false);
     final authData = Provider.of<Auth>(context, listen: false);
     return ClipRRect(
